@@ -1,0 +1,171 @@
+.app-shell {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  height: 100vh;
+  min-height: 0;
+  background: #f7f9fc;
+}
+
+.desktop-runtime-gate {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+  padding: 24px;
+  background: #f7f9fc;
+}
+
+.desktop-runtime-gate__panel {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 560px);
+}
+
+.app-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  grid-column: 1;
+  grid-row: 1;
+  padding: 10px 8px;
+  border-right: 1px solid #d8dee8;
+  background: #111827;
+}
+
+.app-sidebar-button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: #cbd5e1;
+  padding: 0;
+  text-decoration: none;
+}
+
+.app-sidebar-button:hover,
+.app-sidebar-button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.22);
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+.app-sidebar-button[aria-current="page"] {
+  border-color: rgba(255, 255, 255, 0.28);
+  background: #ffffff;
+  color: #111827;
+}
+
+.app-sidebar-button[data-sidebar-placement="bottom"] {
+  margin-top: auto;
+}
+
+.app-sidebar-button svg {
+  width: 1rem;
+  height: 1rem;
+}
+
+.app-sidebar-button span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.app-sidebar-version {
+  display: block;
+  width: 100%;
+  margin-top: 4px;
+  padding: 2px 0 0;
+  border: 0;
+  background: transparent;
+  color: #64748b;
+  font-size: 0.58rem;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  word-break: break-word;
+}
+
+.app-sidebar-version:hover,
+.app-sidebar-version:focus-visible {
+  color: #94a3b8;
+}
+
+.app-main-area {
+  display: grid;
+  grid-column: 2;
+  grid-row: 1;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+
+.app-main-area[data-has-workspace-bar="false"] {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.app-view-stack {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+}
+
+.not-found-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  background: #f7f9fc;
+  padding: 24px;
+}
+
+.not-found-panel {
+  display: grid;
+  gap: 12px;
+  width: min(100%, 420px);
+}
+
+.not-found-panel h1,
+.not-found-panel p {
+  margin: 0;
+}
+
+.not-found-panel h1 {
+  color: #111827;
+  font-size: 1.35rem;
+  line-height: 1.2;
+}
+
+.not-found-panel p {
+  color: #697386;
+}
+
+
+.app-sidebar-button { position: relative; }
+.app-sidebar-button .chat-completion-badge {
+  display: grid;
+  place-items: center;
+  top: -4px;
+  right: -4px;
+  width: 17px;
+  height: 17px;
+  border: 2px solid #111827;
+  border-radius: 50%;
+  background: #86efac;
+  color: #14291e;
+  clip: auto;
+  overflow: visible;
+  font-size: 11px;
+  font-weight: 800;
+}
+.app-sidebar-button .chat-completion-badge[data-outcome="failed"] { background: #fcd34d; color: #422006; }
+.app-sidebar-button .chat-completion-badge > span[aria-hidden] {
+  position: static;
+  width: auto;
+  height: auto;
+  clip: auto;
+}

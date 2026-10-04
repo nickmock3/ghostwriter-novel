@@ -1,0 +1,74 @@
+.chat-pane--full-page {
+  min-width: 0;
+}
+
+.chat-pane--full-page .pane-heading,
+.chat-pane--full-page .message-list,
+.chat-pane--full-page .chat-form {
+  box-sizing: border-box;
+  width: min(calc(100% - 48px), 768px);
+  margin-inline: auto;
+}
+
+.chat-pane--full-page .chat-scroll-area {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding-right: 0;
+}
+
+.chat-pane--full-page .message-list {
+  flex: 1;
+  min-height: 100%;
+}
+
+.chat-pane--full-page .message-list:has(.chat-empty-message:only-child) {
+  align-content: center;
+  justify-items: center;
+}
+
+.chat-pane--full-page .user-message,
+.chat-pane--full-page .assistant-message,
+.chat-pane--full-page .system-message,
+.chat-pane--full-page .tool-message,
+.chat-pane--full-page .edit-proposal {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.chat-pane--full-page .user-message {
+  justify-self: end;
+  width: fit-content;
+  max-width: min(86%, 660px);
+}
+
+.chat-pane--workspace-unavailable .chat-scroll-area {
+  opacity: 0.72;
+}
+
+.chat-form--disabled {
+  opacity: 0.78;
+}
+
+.chat-pane--workspace-unavailable .chat-form textarea,
+.chat-form--disabled textarea {
+  background: #f3f5f8;
+  color: #8a94a6;
+  cursor: not-allowed;
+}
+
+.chat-pane--workspace-unavailable .chat-form-footer,
+.chat-form--disabled .chat-form-footer {
+  filter: saturate(0.75);
+}
+
+.chat-empty-message {
+  width: min(100%, 560px);
+  justify-self: center;
+  margin: 0;
+  color: #8a94a6;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  text-align: left;
+}
+

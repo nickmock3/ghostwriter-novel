@@ -1,0 +1,13 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "bundle": {
+    "targets": [
+      "msi"
+    ],
+    "windows": {
+      "wix": {
+        "version": "1.0.6999"
+      }
+    }
+  }
+}

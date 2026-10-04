@@ -1,0 +1,28 @@
+node_modules
+dist
+.DS_Store
+test-results
+playwright-report
+# Local environment files; keep the shareable template.
+.env
+.env.*
+!.env.example
+.data/
+src-tauri/target/
+src-tauri/gen/schemas/
+src-tauri/runtime-artifacts/
+
+# Local agent settings and framework caches.
+/.agents/
+/.codex/
+/.tanstack/
+
+# Credential exports, signing keys, and local diagnostics.
+*.pfx
+*.p12
+*.pem
+*.key
+/auth.json
+/credentials.json
+*.log
+*-diagnostics.jsonl

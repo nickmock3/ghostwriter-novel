@@ -1,0 +1,45 @@
+name: R2 Smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  put-object:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create smoke object
+        run: |
+          mkdir -p dist/r2-smoke
+          date -u +"ghostwriter r2 smoke %Y-%m-%dT%H:%M:%SZ" > dist/r2-smoke/smoke.txt
+
+      - name: Upload smoke object to R2
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: |
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          test -n "$R2_BUCKET"
+          test -n "$R2_ACCESS_KEY_ID"
+          test -n "$R2_SECRET_ACCESS_KEY"
+          bun run scripts/r2-put-object.ts \
+            --key ghostwriter/smoke/smoke.txt \
+            --file dist/r2-smoke/smoke.txt \
+            --content-type text/plain
+
+      - name: Print public URL
+        env:
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+        run: |
+          test -n "$R2_PUBLIC_BASE_URL"
+          echo "${R2_PUBLIC_BASE_URL%/}/ghostwriter/smoke/smoke.txt"

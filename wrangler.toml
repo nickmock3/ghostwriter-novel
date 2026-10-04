@@ -1,0 +1,8 @@
+name = "ghostwriter-desktop-preview"
+compatibility_date = "2024-09-23"
+
+# R2 bucket name placeholder for local wrangler tooling.
+# Production uploads use the R2_BUCKET environment variable or GitHub Actions secret.
+[[r2_buckets]]
+binding = "DESKTOP_PREVIEW"
+bucket_name = "ghostwriter-desktop-preview"

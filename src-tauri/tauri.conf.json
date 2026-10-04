@@ -1,0 +1,45 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Ghostwriter",
+  "version": "../package.json",
+  "identifier": "com.ghostwriter.app",
+  "build": {
+    "beforeDevCommand": "bun run build:desktop:web",
+    "beforeBuildCommand": "bun run build:desktop:web && bun run scripts/desktop-runtime.ts prepare-for-tauri-build",
+    "frontendDist": "../dist/client"
+  },
+  "app": {
+    "windows": [
+      {
+        "dragDropEnabled": false,
+        "label": "main",
+        "title": "Ghostwriter",
+        "width": 1280,
+        "height": 800
+      }
+    ],
+    "security": {
+      "csp": {
+        "default-src": "'self'",
+        "base-uri": "'self'",
+        "object-src": "'none'",
+        "connect-src": ["ipc:", "http://ipc.localhost", "http://127.0.0.1:*"],
+        "style-src": ["'self'", "'unsafe-inline'"]
+      },
+      "capabilities": ["default"]
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "externalBin": ["runtime-artifacts/sidecar/ghostwriter-sidecar"],
+    "resources": ["runtime-artifacts/ripgrep/current/", "../src/features/siwc/LICENSE"],
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ]
+  }
+}

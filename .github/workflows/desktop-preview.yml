@@ -1,0 +1,159 @@
+name: Desktop Preview
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      build_macos:
+        description: Build the macOS Apple Silicon preview artifact
+        type: boolean
+        default: false
+      build_windows_store_msix:
+        description: Build the Windows Store MSIX artifact
+        type: boolean
+        default: false
+      upload_to_r2:
+        description: Upload the selected macOS preview artifact to Cloudflare R2
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  validate-dispatch-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate selected desktop builds
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" \
+            && "${{ inputs.build_macos }}" != "true" \
+            && "${{ inputs.build_windows_store_msix }}" != "true" ]]; then
+            echo "::error::Select build_macos and/or build_windows_store_msix when starting Desktop Preview manually."
+            exit 1
+          fi
+
+  build-macos:
+    needs: validate-dispatch-inputs
+    if: github.event_name == 'push' || inputs.build_macos
+    runs-on: macos-26
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Verify application version metadata
+        run: bun run version:check
+
+      - name: Install ripgrep
+        run: brew install ripgrep
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Desktop smoke tests
+        run: bun run test:desktop
+
+      - name: Build desktop preview
+        run: bun run build:desktop:mac
+
+      - name: Package preview artifacts
+        run: bun run scripts/package-desktop-preview.ts --target aarch64-apple-darwin
+
+      - name: Verify SHA256SUMS manifest
+        run: bun -e "if (!require('node:fs').existsSync('dist/desktop-preview/aarch64-apple-darwin/SHA256SUMS')) process.exit(1)"
+
+      - name: Upload preview artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: desktop-preview-aarch64-apple-darwin
+          path: dist/desktop-preview/aarch64-apple-darwin/
+          retention-days: 7
+
+  build-windows-store-msix:
+    needs: validate-dispatch-inputs
+    if: github.event_name == 'push' || inputs.build_windows_store_msix
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Verify application version metadata
+        run: bun run version:check
+
+      - name: Install ripgrep
+        run: choco install ripgrep --no-progress -y
+
+      - name: Run tests
+        run: bun run test
+
+      - name: Typecheck
+        run: bun run typecheck
+
+      - name: Desktop smoke tests
+        run: bun run test:desktop
+
+      - name: Build Windows release binary for Store MSIX
+        run: bun run build:desktop:windows:msix
+
+      - name: Package unsigned Store MSIX
+        run: bun run package:windows:msix
+
+      - name: Validate Windows MSIX layout
+        run: bun run validate:windows:msix
+
+      - name: Upload unsigned Store MSIX
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-store-msix
+          path: dist/windows-msix/*.msix
+          retention-days: 7
+
+  upload-r2:
+    needs: build-macos
+    if: github.event_name == 'workflow_dispatch' && inputs.build_macos && inputs.upload_to_r2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Download preview artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: desktop-preview-aarch64-apple-darwin
+          path: dist/desktop-preview/aarch64-apple-darwin
+
+      - name: Upload to Cloudflare R2
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          R2_BUCKET: ${{ secrets.R2_BUCKET }}
+          R2_PUBLIC_BASE_URL: ${{ secrets.R2_PUBLIC_BASE_URL }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+        run: bun run scripts/upload-desktop-preview-to-r2.ts --target aarch64-apple-darwin
