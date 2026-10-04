@@ -58,7 +58,7 @@ API呼出しはtransport境界へ集約する。
 
 ### 配布
 
-- macOSのコード署名・notarizationとStore外Windows code signingは未完了で、タスク054で扱う。初回previewの未署名配布方針と区別する。
+- macOSのコード署名・notarizationとStore外Windows code signingは未完了。初回previewの未署名配布方針と区別する。
 - Microsoft Store版WindowsはStoreの署名・更新を使用する。Store外の配布条件と混同しない。
 - macOS Apple SiliconとWindows x64について、Tauri本体、sidecar、`rg`の組み合わせを生成する。
 - 自動更新を導入する場合は、署名済み更新artifactとupdate manifestを生成する。
@@ -90,7 +90,7 @@ TypeScript sidecarを採用している。Tauri固有機能だけをRust/plugin�
 ## 配布の現在の方針
 
 - Web版は開発用途として維持する。
-- 初回previewは未署名artifactの手動配布とし、auto updaterは導入しない。macOSとStore外Windowsの更新機構はタスク055で扱う。
+- 初回previewは未署名artifactの手動配布とし、auto updaterは導入しない。macOSとStore外Windows向けのauto updaterは未導入。
 - Windowsの一般リリースはMicrosoft Store用MSIXとする。Store署名と更新を使い、sideload検証用の署名コピーとは分離する。
 - 現行StoreのPackage Identity・Publisher・表示名はOSS化後も保持する。鍵・資格情報は公開しない。
 - 最新の表示だけを変えた場合は配布画面の確認に絞り、OS境界を変更していないのに両OSの認証・保存検証をやり直さない。
