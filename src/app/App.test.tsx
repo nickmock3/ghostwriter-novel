@@ -978,6 +978,39 @@ describe("App", () => {
     );
   });
 
+  it.each([200, 400])("keeps a newly selected workspace when stale restoration finishes with HTTP %s", async (status) => {
+    localStorage.setItem("ghostwriter:last-workspace-root", "/tmp/stored-workspace");
+    let finishValidation!: (response: Response) => void;
+    const validation = new Promise<Response>((resolve) => {
+      finishValidation = resolve;
+    });
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) => {
+      if (input === "/api/workspace/validate") {
+        return validation;
+      }
+      return llmSettingsFetchResponse(input);
+    });
+
+    await renderApp("/editor");
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith("/api/workspace/validate", expect.anything());
+    });
+    fireEvent.click(screen.getByRole("button", { name: "ワークスペースを開く" }));
+
+    await act(async () => {
+      finishValidation(new Response(JSON.stringify(
+        status === 200
+          ? { workspaceRoot: "/private/tmp/stored-workspace" }
+          : { code: "workspace_selection_failed", message: "missing" },
+      ), { headers: { "Content-Type": "application/json" }, status }));
+      await validation;
+    });
+
+    expect(screen.getByText("workspace /tmp/workspace")).toBeInTheDocument();
+    expect(localStorage.getItem("ghostwriter:last-workspace-root")).toBe("/tmp/workspace");
+    expect(screen.queryByRole("dialog", { name: "小説ワークスペースを開く" })).not.toBeInTheDocument();
+  });
+
   it("restores legacy workspace keys only when a ghostwriter key is not present", async () => {
     localStorage.setItem("ghostwriter:last-workspace-root", "/tmp/new-workspace");
     localStorage.setItem("simple-ai-agent:last-workspace-root", "/tmp/legacy-workspace");

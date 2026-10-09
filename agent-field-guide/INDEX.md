@@ -33,3 +33,5 @@
 | AI / connection defaults | 新規利用者の接続既定値を変えるとき | 自動保存前に既存設定を識別し、接続選択と候補取得を分離する | [接続の既定値変更では自動保存前の明示設定を識別する](entries/connection-default-migration.md) |
 
 - [Viteを使うE2E検証中はReact contextのソース編集を止める](entries/playwright-vite-hmr-context.md): 検証と整形を並行した後、provider欠落エラーで画面操作がtimeoutするとき。
+
+- [hydrateRootの戻りは画面操作の準備完了を保証しない](entries/react-hydration-readiness.md): ルートimport変更後に、完了フラグを待っても初回クリックが効かなくなるとき。

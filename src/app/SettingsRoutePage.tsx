@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { SettingsPage } from "../features/settings/SettingsPage";
-import { useLlmSettingsContext } from "./LlmSettingsContext";
+import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 
 export function SettingsRoutePage() {

@@ -5,6 +5,7 @@ import { configDefaults, defineConfig } from "vitest/config";
 const domTests = [
   "**/*.{test,spec}.tsx",
   "src/app/workspaceSessionStorage.test.ts",
+  "src/features/workspace/workspaceSessionStorage.test.ts",
   "src/features/llm/profiles/llmProfileStorage.test.ts",
   "src/features/settings/settingsStorage.test.ts",
   "src/features/ai-assist/useAiAssistExecutionOptions.test.ts",

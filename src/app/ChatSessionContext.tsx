@@ -2,10 +2,10 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { useRouterState } from "@tanstack/react-router";
 import { useChatConversationController } from "../features/ai-chat/useChatConversationController";
 import { useEditorSessionContext } from "./EditorSessionContext";
-import { useLlmSettingsContext } from "./LlmSettingsContext";
+import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
-import { buildMainLlmChatPaneProps, type MainLlmChatPaneProps } from "./llmMainRoleAssignment";
-import { displayLlmProfiles } from "./llmDisplay";
+import { buildMainLlmChatPaneProps, type MainLlmChatPaneProps } from "../features/ai-chat/mainLlmChatPaneProps";
+import { displayLlmProfiles } from "../features/llm/llmDisplay";
 
 type ChatSession = {
   controller: ReturnType<typeof useChatConversationController>;

@@ -6,13 +6,13 @@
 
 アプリはローカル小説執筆ワークスペースを対象に、チャット、エディット、リーダーの3モードを持つWeb/デスクトップエディターです。エディットモードだけがファイルツリー、CodeMirror、単発実行型のAIアシストの3ペイン構成になります。AIアシストは会話を持たず、選択範囲または本文を入力として1回の実行で編集案を返し、適用前にユーザーの承認を求めます。
 
-- UI: `src/routes/__root.tsx`がTanStack Startのroot route、`src/app/App.tsx`が共有状態、`src/app/AppShell.tsx`がサイドバーと共通レイアウト、`src/routes/*.tsx`が各ページルートを担当します。
-- ワークスペース操作: `src/features/workspace/` がパス検証、ファイルストア、検索ストア、テンプレート、ワークスペース選択を担当します。
+- UI: `src/routes/__root.tsx`がTanStack Startのroot route、`src/app/App.tsx`がfeatureのhookと共有Contextの組み立て、`src/app/AppShell.tsx`がサイドバーと共通レイアウト、`src/routes/*.tsx`が各ページルートを担当し、`src/app/*RoutePage.tsx`を直接参照します。`src/app/`にはシェル、レイアウト、画面間の共有Context、ページの組み立てと作業モードのルート解決を残します。
+- ワークスペース操作: `src/features/workspace/` がパス検証、ファイルストア、検索ストア、テンプレート、ワークスペース選択を担当します。`useWorkspaceSession.ts`が保存済みルートの検証・復元、選択と開始ガイドの判定を、`workspaceSessionStorage.ts`がルートの保存・旧キー互換を担当します。
 - エディター: `src/features/editor/` がCodeMirror表示、読み込み、保存APIを担当します。
 - AIチャット: `src/features/ai-chat/` が会話API、履歴JSON、会話圧縮、チャットのツール活動表示、編集案と会話履歴の紐付け・自動適用を担当します。
 - AIアシスト: `src/features/ai-assist/` がエディット画面の単発実行、ChatGPTプラン・APIキー接続の実行、アシスト定義、編集案のApply/Rejectを担当します。共通の編集案契約とApply/Rejectは`src/features/edit-proposals/`を使います。
 - AIエージェント: `src/features/ai-agent/` がAgentProfile、AgentSkillPlugin、AgentToolPlugin、`runAgentLoop`、system prompt合成、執筆委譲を担当します。
-- LLM接続・設定: `src/features/llm/` がModelProvider、provider生成、APIキー解決・保存、LLMプロフィール、モデル選択を担当します。
+- LLM接続・設定: `src/features/llm/` がModelProvider、provider生成、APIキー解決・保存、LLMプロフィール、モデル選択を担当します。`useLlmSettings.ts`と`LlmSettingsContext.tsx`は設定の取得・更新と共有、`llmDisplay.ts`と`llmMainRoleAssignment.ts`は表示用変換とメインロールの選択・更新を担当します。チャット向けpropsの組み立ては`ai-chat/mainLlmChatPaneProps.ts`に置きます。SIWC接続設定の初期化は、LLM設定が既定値を保存する前にAppの組み立て処理から呼びます。
 - ChatGPT接続: `src/features/siwc/` が認証・モデルinventoryとSIWC用ModelProviderアダプタを担当します。
 - AI検索ツール入力: `src/features/ai-agent/tools/ripgrepTools.ts` がRead/Glob/Grep/SearchのZod schemaとRead実装を持ちます。
 - リーダー: `src/features/reader/`が章一覧導出、本文の読み取り専用表示、ルビ・傍点表示を担当します。
@@ -72,7 +72,7 @@ shared → workspace → edit-proposals → llm → siwc → ai-agent → ai-cha
 - `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`llm`から直接参照します。localStorageのキーと保存JSONの形は維持します。
 - 既定のアプリデータ保存先は`shared/server/applicationStorage.ts`の`defaultServerDataRoot()`で解決し、会話、AIアシスト、ワークスペーステンプレートから直接参照します。このmoduleはサーバー専用です。
 
-結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査と`src/app/`の責務整理は別タスクで扱います。
+結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査は別タスクで扱います。
 
 ## HTTP API composition
 
@@ -240,7 +240,7 @@ production chatは`src/features/ai-chat/modelMessages.ts`の`conversation-compac
 - `/templates`: テンプレート管理ページ。
 - `/llm-profiles`: LLMプロフィールと用途別割り当ての管理ページ。
 
-`src/app/App.tsx`が共有stateを個別の`WorkspaceContext`、`EditorSessionContext`、`PaneLayoutContext`、`LlmSettingsContext`として提供し、`src/app/AppShell.tsx`が左端サイドバー、route outlet、ワークスペースヘッダーをまとめます。ワークスペース操作ヘッダーは`/chat`と`/editor`だけに表示します。
+`src/app/App.tsx`が`workspace/useWorkspaceSession`と`llm/useLlmSettings`を呼び、共有stateを個別の`WorkspaceContext`、`EditorSessionContext`、`PaneLayoutContext`、`LlmSettingsContext`として提供し、`src/app/AppShell.tsx`が左端サイドバー、route outlet、ワークスペースヘッダーをまとめます。ワークスペース操作ヘッダーは`/chat`と`/editor`だけに表示します。
 
 共有Contextの責務:
 

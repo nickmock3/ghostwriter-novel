@@ -1,27 +1,25 @@
-import { initializeAiConnectionPreferences } from "../features/siwc/useAiConnection";
 import { useCallback, useEffect, useState, type Dispatch, type SetStateAction } from "react";
 import {
   llmProfilesResponseSchema,
   readLlmProfileSettings,
   writeLlmProfileSettings,
   type LlmProfileSettings,
-} from "../features/llm/profiles/llmProfileStorage";
-import type { LlmProfile } from "../features/llm/profiles/llmProfiles";
-import { normalizeUserSettings, type UserSettings } from "../features/settings/settingsStorage";
+} from "./profiles/llmProfileStorage";
+import type { LlmProfile } from "./profiles/llmProfiles";
+import { normalizeUserSettings, type UserSettings } from "../settings/settingsStorage";
 import {
   llmSecretListResponseSchema,
   llmProviderListResponseSchema,
   type LlmSecretStatus,
   type LlmProviderChoice,
-} from "../features/llm/selection/llmSelection";
-import { apiFetch } from "../shared/client/apiTransport";
+} from "./selection/llmSelection";
+import { apiFetch } from "../../shared/client/apiTransport";
 
 export function useLlmSettings(
   workspaceRoot: string | null,
   settings: UserSettings,
   setSettings: Dispatch<SetStateAction<UserSettings>>,
 ) {
-  useState(() => { initializeAiConnectionPreferences(); return true; });
   const [llmProviders, setLlmProviders] = useState<LlmProviderChoice[]>([]);
   const [llmProfiles, setLlmProfiles] = useState<
     Array<LlmProfile & { available: boolean; unavailableReason?: string }>

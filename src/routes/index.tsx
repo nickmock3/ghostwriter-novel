@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from "@tanstack/react-router";
-import { resolveStartupWorkModeRoute } from "../app/App";
+import { resolveStartupWorkModeRoute } from "../app/workspaceSessionStorage";
 
 export const Route = createFileRoute("/")({
   beforeLoad: () => {

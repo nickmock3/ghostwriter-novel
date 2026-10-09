@@ -16,7 +16,7 @@ import { EditorPane } from "../features/editor/EditorPane";
 import { FileTreePane } from "../features/file-tree/FileTreePane";
 import { StartGuideModal } from "../features/workspace/StartGuideModal";
 import { useEditorSessionContext } from "./EditorSessionContext";
-import { useLlmSettingsContext } from "./LlmSettingsContext";
+import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { usePaneLayoutContext } from "./PaneLayoutContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 

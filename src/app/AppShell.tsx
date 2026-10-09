@@ -13,11 +13,7 @@ import { WorkspaceBar } from "../features/workspace/WorkspaceBar";
 import { APP_DISPLAY_VERSION } from "../shared/appVersion";
 import { useChatSession } from "./ChatSessionContext";
 import { writeStoredWorkMode } from "./workspaceSessionStorage";
-
-type WorkspaceRestoreState =
-  | { status: "idle" }
-  | { previousRoot: string; status: "restoring" }
-  | { previousRoot: string; status: "failed" };
+import type { WorkspaceRestoreState } from "../features/workspace/useWorkspaceSession";
 
 type AppShellProps = {
   onTemplateApplied: () => void;

@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { AppliedEditProposal } from "../features/ai-chat/ChatPane";
-import {
-  IDEA_CONSULT_PROMPT,
-  shouldShowStartGuide,
-} from "../features/workspace/StartGuideModal";
-import { workspaceSelectSuccessSchema } from "../features/workspace/workspaceSchemas";
+import { IDEA_CONSULT_PROMPT } from "../features/workspace/StartGuideModal";
 import { useFileSession } from "../features/editor/useFileSession";
-import { apiFetch } from "../shared/client/apiTransport";
 import {
   readUserSettings,
   writeUserSettings,
@@ -17,28 +12,29 @@ import {
   type EditorSelectionJumpRequest,
   type NewEditorSelectionJumpRequest,
 } from "./EditorSessionContext";
-import { LlmSettingsContext } from "./LlmSettingsContext";
+import { LlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { PaneLayoutContext } from "./PaneLayoutContext";
 import { WorkspaceContext } from "./WorkspaceContext";
 import { ChatSessionProvider } from "./ChatSessionContext";
 import { AppShell } from "./AppShell";
 import { useThreePaneLayout } from "./threePaneLayout";
-import { useLlmSettings } from "./useLlmSettings";
-import {
-  clearStoredWorkspaceRoot,
-  readStoredWorkspaceRoot,
-  writeStoredWorkspaceRoot,
-} from "./workspaceSessionStorage";
-
-type WorkspaceRestoreState =
-  | { status: "idle" }
-  | { previousRoot: string; status: "restoring" }
-  | { previousRoot: string; status: "failed" };
+import { useLlmSettings } from "../features/llm/useLlmSettings";
+import { useWorkspaceSession } from "../features/workspace/useWorkspaceSession";
+import { initializeAiConnectionPreferences } from "../features/siwc/useAiConnection";
 
 export function App() {
+  useEffect(() => {
+    // hydrateRoot schedules hydration; shell controls are ready after this commit.
+    window.__GHOSTWRITER_HYDRATED__ = true;
+  }, []);
   const [settings, setSettings] = useState<UserSettings>(() => readUserSettings());
-  const [workspaceRoot, setWorkspaceRoot] = useState<string | null>(null);
-  const [workspaceRestoreState, setWorkspaceRestoreState] = useState<WorkspaceRestoreState>({ status: "idle" });
+  const { dismissStartGuide, selectWorkspace, showStartGuide, workspaceRestoreState, workspaceRoot } =
+    useWorkspaceSession(settings.restoreLastWorkspace);
+  // Capture SIWC migration intent before LLM settings persist generated defaults.
+  useState(() => {
+    initializeAiConnectionPreferences();
+    return true;
+  });
   const [selectedPath, setSelectedPath] = useState<string | null>(null);
   const [dirtyPaths, setDirtyPaths] = useState<string[]>([]);
   const [editorRefreshKey, setEditorRefreshKey] = useState(0);
@@ -46,11 +42,8 @@ export function App() {
   const [chatAppendRequest, setChatAppendRequest] = useState<{ id: number; text: string } | null>(null);
   const [editorSelectionJumpRequest, setEditorSelectionJumpRequest] =
     useState<EditorSelectionJumpRequest | null>(null);
-  const [showStartGuide, setShowStartGuide] = useState(false);
   const chatAppendRequestIdRef = useRef(0);
   const editorSelectionJumpRequestIdRef = useRef(0);
-  const suppressStartGuideForWorkspaceRef = useRef<string | null>(null);
-  const showStartGuideForWorkspaceRef = useRef<string | null>(null);
 
   const {
     handleDeleteLlmSecret,
@@ -86,70 +79,6 @@ export function App() {
     writeUserSettings(settings);
   }, [settings]);
 
-  useEffect(() => {
-    if (!settings.restoreLastWorkspace) {
-      return;
-    }
-
-    const storedWorkspaceRoot = readStoredWorkspaceRoot();
-
-    if (!storedWorkspaceRoot) {
-      setWorkspaceRestoreState({ status: "idle" });
-      return;
-    }
-
-    const previousWorkspaceRoot = storedWorkspaceRoot;
-    let isActive = true;
-    setWorkspaceRestoreState({ previousRoot: previousWorkspaceRoot, status: "restoring" });
-
-    async function restoreWorkspace() {
-      try {
-        const response = await apiFetch("/api/workspace/validate", {
-          body: JSON.stringify({ workspaceRoot: storedWorkspaceRoot }),
-          headers: {
-            "Content-Type": "application/json",
-          },
-          method: "POST",
-        });
-        const body: unknown = await response.json();
-        const parsedBody = workspaceSelectSuccessSchema.safeParse(body);
-
-        if (!response.ok || !parsedBody.success) {
-          throw new Error("Workspace validation failed");
-        }
-
-        if (readStoredWorkspaceRoot() !== previousWorkspaceRoot) {
-          return;
-        }
-
-        if (!isActive) {
-          return;
-        }
-
-        setWorkspaceRoot(parsedBody.data.workspaceRoot);
-        setWorkspaceRestoreState({ status: "idle" });
-        writeStoredWorkspaceRoot(parsedBody.data.workspaceRoot);
-      } catch {
-        if (readStoredWorkspaceRoot() !== previousWorkspaceRoot) {
-          return;
-        }
-
-        if (!isActive) {
-          return;
-        }
-
-        clearStoredWorkspaceRoot();
-        setWorkspaceRestoreState({ previousRoot: previousWorkspaceRoot, status: "failed" });
-      }
-    }
-
-    void restoreWorkspace();
-
-    return () => {
-      isActive = false;
-    };
-  }, [settings.restoreLastWorkspace]);
-
   const handleDirtyStateChange = useCallback((path: string | null, isDirty: boolean) => {
     setDirtyPaths(path && isDirty ? [path] : []);
   }, []);
@@ -180,48 +109,9 @@ export function App() {
     setEditorSelectionJumpRequest((current) => (current?.id === id ? null : current));
   }, []);
 
-  const dismissStartGuide = useCallback(() => {
-    setShowStartGuide(false);
-  }, []);
-
   const handleStartGuideIdeaConsult = useCallback(() => {
     handleSendEditorSelectionToChat(IDEA_CONSULT_PROMPT);
   }, [handleSendEditorSelectionToChat]);
-
-  useEffect(() => {
-    if (!workspaceRoot) {
-      setShowStartGuide(false);
-      return;
-    }
-
-    if (suppressStartGuideForWorkspaceRef.current === workspaceRoot) {
-      suppressStartGuideForWorkspaceRef.current = null;
-      setShowStartGuide(false);
-      return;
-    }
-
-    if (showStartGuideForWorkspaceRef.current === workspaceRoot) {
-      showStartGuideForWorkspaceRef.current = null;
-      setShowStartGuide(true);
-      return;
-    }
-
-    const abortController = new AbortController();
-
-    void shouldShowStartGuide(workspaceRoot, abortController.signal)
-      .then((shouldShow) => {
-        if (!abortController.signal.aborted) {
-          setShowStartGuide(shouldShow);
-        }
-      })
-      .catch(() => {
-        if (!abortController.signal.aborted) {
-          setShowStartGuide(false);
-        }
-      });
-
-    return () => abortController.abort();
-  }, [workspaceRoot]);
 
   const handleAppliedEdit = useCallback(
     (proposal: AppliedEditProposal) => {
@@ -336,15 +226,7 @@ export function App() {
                   setFileTreeRefreshKey((current) => current + 1);
                 }}
                 onWorkspaceSelected={(nextWorkspaceRoot, options) => {
-                  if (options?.suppressStartGuide) {
-                    suppressStartGuideForWorkspaceRef.current = nextWorkspaceRoot;
-                  }
-                  if (options?.showStartGuide) {
-                    showStartGuideForWorkspaceRef.current = nextWorkspaceRoot;
-                  }
-                  setWorkspaceRoot(nextWorkspaceRoot);
-                  setWorkspaceRestoreState({ status: "idle" });
-                  writeStoredWorkspaceRoot(nextWorkspaceRoot);
+                  selectWorkspace(nextWorkspaceRoot, options);
                   setSelectedPath(null);
                   setDirtyPaths([]);
                   setEditorSelectionJumpRequest(null);
@@ -359,9 +241,3 @@ export function App() {
     </LlmSettingsContext.Provider>
   );
 }
-
-export { resolveStartupWorkModeRoute } from "./workspaceSessionStorage";
-export { ChatRoutePage } from "./ChatRoutePage";
-export { EditorRoutePage } from "./EditorRoutePage";
-export { SettingsRoutePage } from "./SettingsRoutePage";
-export { LlmProfilesRoutePage } from "./LlmProfilesRoutePage";

@@ -1,9 +1,9 @@
 import { useEffect } from "react";
 import { LlmProfilesPage } from "../features/llm/profiles/LlmProfilesPage";
 import { createDefaultRoleAssignments } from "../features/llm/profiles/llmProfiles";
-import { useLlmSettingsContext } from "./LlmSettingsContext";
+import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
-import { availableProvidersFromChoices, displayLlmProfiles } from "./llmDisplay";
+import { availableProvidersFromChoices, displayLlmProfiles } from "../features/llm/llmDisplay";
 
 export function LlmProfilesRoutePage() {
   const { workspaceRoot } = useWorkspaceContext();

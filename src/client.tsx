@@ -8,5 +8,3 @@ hydrateRoot(
     <StartClient />
   </StrictMode>,
 );
-
-window.__GHOSTWRITER_HYDRATED__ = true;
