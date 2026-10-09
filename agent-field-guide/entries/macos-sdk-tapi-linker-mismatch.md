@@ -15,6 +15,8 @@ macOS 27.0 SDKのFramework `.tbd`をCommand Line Toolsのld-1267が読めず、d
 3. 対応するSDKが既にある場合だけ、`SDKROOT=<そのSDKの絶対path> bun run test:desktop`で再検証する。
 4. 検証記録にはSDKの変更を明記する。xcode-selectやグローバル設定を変更しない。
 
+Bun 1.2.21では、`.env.local`へ`SDKROOT`を書き、`bun --print 'process.env.SDKROOT'`で取得できても、`bun run test:desktop`内のCargoへは渡らなかった。`bun run env`でも当該変数がないことを確認し、実際のlinkは既定のmacOS 27.0 SDKで失敗した。SDK選択は上記のコマンド先頭の環境変数指定を使い、Bun内での読み取りだけを子プロセスへの引き渡しの保証にしない。
+
 ## Failure signals
 
 Foundation/AppKitの`.tbd`解析で失敗し、sidecar smokeがまだ実行されていない。
