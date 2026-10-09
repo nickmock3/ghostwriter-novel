@@ -1,4 +1,5 @@
 import { Link, createRouter, type RouterHistory } from "@tanstack/react-router";
+import { ModeLoadingStatus } from "./app/ModeLoadingStatus";
 import { routeTree } from "./routeTree.gen";
 
 type GetRouterOptions = {
@@ -8,6 +9,10 @@ type GetRouterOptions = {
 export function getRouter(options: GetRouterOptions = {}) {
   return createRouter({
     defaultNotFoundComponent: NotFoundComponent,
+    // Show route chunk loading in the SPA shell immediately instead of a blank view.
+    defaultPendingComponent: ModeLoadingStatus,
+    defaultPendingMinMs: 0,
+    defaultPendingMs: 0,
     history: options.history,
     routeTree,
     scrollRestoration: true,

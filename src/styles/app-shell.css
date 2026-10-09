@@ -169,3 +169,31 @@
   height: auto;
   clip: auto;
 }
+
+.mode-loading-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 0;
+  padding: 24px;
+  color: #697386;
+  font-size: 0.86rem;
+}
+
+.mode-loading-spinner {
+  flex-shrink: 0;
+  animation: mode-loading-spin 1s linear infinite;
+}
+
+@keyframes mode-loading-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mode-loading-spinner {
+    animation: none;
+  }
+}

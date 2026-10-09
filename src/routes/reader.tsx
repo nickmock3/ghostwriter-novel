@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { useEditorSessionContext } from "../app/EditorSessionContext";
+import { ModeLoadingStatus } from "../app/ModeLoadingStatus";
 import { useWorkspaceContext } from "../app/WorkspaceContext";
 import { ReaderPage } from "../features/reader/ReaderPage";
 
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/reader")({
 });
 
 function ReaderRoutePage() {
-  const { workspaceRoot } = useWorkspaceContext();
+  const { isWorkspaceRestoring, workspaceRoot } = useWorkspaceContext();
   const { requestEditorSelectionJump, setSelectedPath } = useEditorSessionContext();
   const navigate = useNavigate();
   const handleOpenEditorSelection = useCallback(
@@ -25,6 +26,10 @@ function ReaderRoutePage() {
     },
     [navigate, requestEditorSelectionJump, setSelectedPath],
   );
+
+  if (!workspaceRoot && isWorkspaceRestoring) {
+    return <ModeLoadingStatus />;
+  }
 
   return (
     <ReaderPage

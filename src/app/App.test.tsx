@@ -30,14 +30,17 @@ const useAiAssistDefinitionsMock = vi.hoisted(() =>
 
 vi.mock("../features/workspace/WorkspaceBar", () => ({
   WorkspaceBar: ({
+    isRestoring,
     onWorkspaceSelected,
     workspaceRoot,
   }: {
+    isRestoring?: boolean;
     onWorkspaceSelected: (workspaceRoot: string) => void;
     workspaceRoot: string | null;
   }) => (
     <div>
       <span>workspace {workspaceRoot ?? "none"}</span>
+      {isRestoring ? <span>workspace restoring</span> : null}
       <button type="button" onClick={() => onWorkspaceSelected("/tmp/workspace")}>
         ワークスペースを開く
       </button>
@@ -719,7 +722,7 @@ describe("App", () => {
         "page",
       );
     });
-    expect(screen.getByRole("region", { name: "エディターワークスペース" })).toBeInTheDocument();
+    expect(await screen.findByRole("region", { name: "エディターワークスペース" })).toBeInTheDocument();
   });
 
   it("routes / to chat mode when the stored work mode value is invalid", async () => {
@@ -959,6 +962,31 @@ describe("App", () => {
     expect(screen.getByText("workspace none")).toBeInTheDocument();
   });
 
+  it.each([
+    ["/editor", "エディターワークスペース", true],
+    ["/chat", "チャットモードを始める", true],
+    ["/reader", "リーダーモード", false],
+  ])("shows a loading state instead of the unselected UI while restoring the workspace on %s", async (
+    path,
+    readyRegionName,
+    hasWorkspaceBar,
+  ) => {
+    localStorage.setItem("ghostwriter:last-workspace-root", "/tmp/stored-workspace");
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) =>
+      input === "/api/workspace/validate" ? new Promise<Response>(() => {}) : llmSettingsFetchResponse(input));
+
+    await renderApp(path);
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith("/api/workspace/validate", expect.anything());
+    });
+
+    expect(screen.getByRole("status")).toHaveTextContent("前回のワークスペースを開いています…");
+    expect(screen.queryByText("workspace restoring") !== null).toBe(hasWorkspaceBar);
+    expect(screen.queryByRole("dialog", { name: "小説ワークスペースを準備する" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("region", { name: readyRegionName })).not.toBeInTheDocument();
+    expect(screen.queryByText("ワークスペースが開かれていません。")).not.toBeInTheDocument();
+  });
+
   it("shows a recovery modal when restoring the previous workspace fails", async () => {
     localStorage.setItem("ghostwriter:last-workspace-root", "/tmp/deleted-workspace");
     vi.spyOn(globalThis, "fetch").mockResolvedValue(
@@ -1012,6 +1040,8 @@ describe("App", () => {
     await waitFor(() => {
       expect(screen.getByText("workspace /private/tmp/stored-workspace")).toBeInTheDocument();
     });
+    expect(screen.queryByText("前回のワークスペースを開いています…")).not.toBeInTheDocument();
+    expect(screen.queryByText("workspace restoring")).not.toBeInTheDocument();
     expect(fetchSpy).toHaveBeenCalledWith("/api/workspace/validate", {
       body: JSON.stringify({ workspaceRoot: "/tmp/stored-workspace" }),
       headers: { "Content-Type": "application/json" },
@@ -1638,6 +1668,8 @@ describe("App", () => {
     await renderApp("/editor");
 
     expect(screen.getByText("workspace none")).toBeInTheDocument();
+    expect(screen.getByRole("dialog", { name: "小説ワークスペースを準備する" })).toBeInTheDocument();
+    expect(screen.queryByText("前回のワークスペースを開いています…")).not.toBeInTheDocument();
     expect(fetchSpy).not.toHaveBeenCalledWith("/api/workspace/validate", expect.anything());
   });
 

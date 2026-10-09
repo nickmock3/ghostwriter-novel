@@ -20,6 +20,7 @@ import { useUserSettingsContext } from "./UserSettingsContext";
 import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { usePaneLayoutContext } from "./PaneLayoutContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
+import { ModeLoadingStatus } from "./ModeLoadingStatus";
 
 export function EditorRoutePage() {
   const { settings } = useUserSettingsContext();
@@ -27,6 +28,7 @@ export function EditorRoutePage() {
   const {
     dismissStartGuide,
     handleStartGuideIdeaConsult,
+    isWorkspaceRestoring,
     showStartGuide,
     workspaceRoot,
   } = useWorkspaceContext();
@@ -209,6 +211,10 @@ export function EditorRoutePage() {
       <FiChevronsLeft aria-hidden="true" focusable="false" />
     </button>
   ) : null;
+
+  if (!workspaceRoot && isWorkspaceRestoring) {
+    return <ModeLoadingStatus />;
+  }
 
   return (
     <section

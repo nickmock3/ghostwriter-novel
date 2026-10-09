@@ -5,27 +5,28 @@ import { workspaceSelectSuccessSchema } from "./workspaceSchemas";
 import { apiFetch } from "../../shared/client/apiTransport";
 import { clearStoredWorkspaceRoot, readStoredWorkspaceRoot, writeStoredWorkspaceRoot } from "./workspaceSessionStorage";
 
+export const WORKSPACE_RESTORING_MESSAGE = "前回のワークスペースを開いています…";
+
 export type WorkspaceRestoreState =
+  // The SPA shell and hydration cannot read localStorage, so restore is undecided until mount.
+  | { status: "checking" }
   | { status: "idle" }
   | { previousRoot: string; status: "restoring" }
   | { previousRoot: string; status: "failed" };
 
 export function useWorkspaceSession(restoreLastWorkspace: boolean) {
   const [workspaceRoot, setWorkspaceRoot] = useState<string | null>(null);
-  const [workspaceRestoreState, setWorkspaceRestoreState] = useState<WorkspaceRestoreState>({ status: "idle" });
+  const [workspaceRestoreState, setWorkspaceRestoreState] = useState<WorkspaceRestoreState>({ status: "checking" });
   const [showStartGuide, setShowStartGuide] = useState(false);
   const suppressStartGuideForWorkspaceRef = useRef<string | null>(null);
   const showStartGuideForWorkspaceRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (!restoreLastWorkspace) {
-      return;
-    }
-
-    const storedWorkspaceRoot = readStoredWorkspaceRoot();
+    const storedWorkspaceRoot = restoreLastWorkspace ? readStoredWorkspaceRoot() : null;
 
     if (!storedWorkspaceRoot) {
-      setWorkspaceRestoreState({ status: "idle" });
+      // Keep a failed restore visible; a pending one was cancelled by turning restore off.
+      setWorkspaceRestoreState((current) => (isWorkspaceRestorePending(current) ? { status: "idle" } : current));
       return;
     }
 
@@ -133,4 +134,8 @@ export function useWorkspaceSession(restoreLastWorkspace: boolean) {
   }, []);
 
   return { dismissStartGuide, selectWorkspace, showStartGuide, workspaceRestoreState, workspaceRoot };
+}
+
+export function isWorkspaceRestorePending(state: WorkspaceRestoreState) {
+  return state.status === "checking" || state.status === "restoring";
 }

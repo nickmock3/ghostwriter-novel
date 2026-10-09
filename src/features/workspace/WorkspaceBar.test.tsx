@@ -1,5 +1,5 @@
 import { RouterProvider, createMemoryHistory } from "@tanstack/react-router";
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getRouter } from "../../router";
 
@@ -56,6 +56,30 @@ describe("WorkspaceBar", () => {
       src: expect.stringMatching(/\/favicon\.png$/),
       tagName: "IMG",
     });
+  });
+
+  it("shows restoring progress instead of the unselected status while the last workspace is validated", async () => {
+    localStorage.setItem("ghostwriter:last-workspace-root", "/tmp/stored-workspace");
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(async (input) =>
+      input === "/api/workspace/validate"
+        ? new Promise<Response>(() => {})
+        : new Response(JSON.stringify({ providers: [] }), {
+          headers: { "content-type": "application/json" },
+          status: 200,
+        }));
+
+    const { container } = await renderApp();
+    await waitFor(() => {
+      expect(fetchSpy).toHaveBeenCalledWith("/api/workspace/validate", expect.anything());
+    });
+
+    const header = container.querySelector<HTMLElement>(".workspace-bar");
+    expect(header).not.toBeNull();
+    expect(within(header!).getByRole("status")).toHaveTextContent("前回のワークスペースを開いています…");
+    expect(screen.queryByText("未選択")).not.toBeInTheDocument();
+    expect(screen.queryByText("ワークスペースを選択してください。")).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("ワークスペースの絶対パス")).not.toBeInTheDocument();
+    expect(within(header!).getByRole("button", { name: "ワークスペースを開く" })).toBeEnabled();
   });
 
   it("keeps only meaningful header actions available", async () => {

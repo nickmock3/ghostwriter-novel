@@ -21,7 +21,7 @@ import { ChatSessionProvider } from "./ChatSessionContext";
 import { AppShell } from "./AppShell";
 import { useThreePaneLayout } from "./threePaneLayout";
 import { useLlmSettings } from "../features/llm/useLlmSettings";
-import { useWorkspaceSession } from "../features/workspace/useWorkspaceSession";
+import { isWorkspaceRestorePending, useWorkspaceSession } from "../features/workspace/useWorkspaceSession";
 import { initializeAiConnectionPreferences } from "../features/siwc/useAiConnection";
 
 export function App() {
@@ -188,6 +188,7 @@ export function App() {
           value={{
             dismissStartGuide,
             handleStartGuideIdeaConsult,
+            isWorkspaceRestoring: isWorkspaceRestorePending(workspaceRestoreState),
             showStartGuide,
             workspaceRoot,
           }}

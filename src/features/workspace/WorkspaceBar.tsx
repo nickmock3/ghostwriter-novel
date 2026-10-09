@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { getWorkspaceFolderName } from "./workspaceFolderName";
+import { WORKSPACE_RESTORING_MESSAGE } from "./useWorkspaceSession";
 import {
   applyWorkspaceTemplate,
   listWorkspaceTemplates,
@@ -14,6 +15,7 @@ import {
 type WorkspaceBarProps = {
   chatMode?: boolean;
   compactWhenUnselected?: boolean;
+  isRestoring?: boolean;
   onTemplateApplied?(): void;
   workspaceRoot: string | null;
   onWorkspaceSelected(
@@ -35,6 +37,7 @@ type NewWorkspaceStartMode = "empty" | string;
 export function WorkspaceBar({
   chatMode = false,
   compactWhenUnselected = false,
+  isRestoring = false,
   onTemplateApplied,
   workspaceRoot,
   onWorkspaceSelected,
@@ -53,7 +56,7 @@ export function WorkspaceBar({
   const [chatNewNovelManualFallback, setChatNewNovelManualFallback] = useState(false);
 
   const showManualWorkspaceControls =
-    (!workspaceRoot || errorMessage) &&
+    ((!workspaceRoot && !isRestoring) || errorMessage) &&
     (!compactWhenUnselected || chatNewNovelManualFallback);
 
   const selectedNewWorkspaceTemplate =
@@ -236,7 +239,10 @@ export function WorkspaceBar({
         <h1 title={workspaceRoot ?? undefined}>
           {workspaceRoot ? getWorkspaceFolderName(workspaceRoot) : "Ghostwriter"}
         </h1>
-        {!workspaceRoot ? (
+        {!workspaceRoot && isRestoring ? (
+          <p className="workspace-status" role="status">{WORKSPACE_RESTORING_MESSAGE}</p>
+        ) : null}
+        {!workspaceRoot && !isRestoring ? (
           <>
             <p className="workspace-status">未選択</p>
             {!compactWhenUnselected ? (

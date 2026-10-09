@@ -13,7 +13,7 @@ import { WorkspaceBar } from "../features/workspace/WorkspaceBar";
 import { APP_DISPLAY_VERSION } from "../shared/appVersion";
 import { useChatSession } from "./ChatSessionContext";
 import { writeStoredWorkMode } from "./workspaceSessionStorage";
-import type { WorkspaceRestoreState } from "../features/workspace/useWorkspaceSession";
+import { isWorkspaceRestorePending, type WorkspaceRestoreState } from "../features/workspace/useWorkspaceSession";
 
 type AppShellProps = {
   onTemplateApplied: () => void;
@@ -44,8 +44,8 @@ export function AppShell({
       writeStoredWorkMode(workspaceRoot, "editor");
     }
   }, [pathname, workspaceRoot]);
-  const shouldBlockForWorkspace =
-    pathname === "/editor" && !workspaceRoot && workspaceRestoreState.status !== "restoring";
+  const isWorkspaceRestoring = isWorkspaceRestorePending(workspaceRestoreState);
+  const shouldBlockForWorkspace = pathname === "/editor" && !workspaceRoot && !isWorkspaceRestoring;
 
   return (
     <main className="app-shell" aria-label="Ghostwriter">
@@ -141,6 +141,7 @@ export function AppShell({
           <WorkspaceBar
             chatMode={pathname === "/chat"}
             compactWhenUnselected={pathname === "/chat" && workspaceRoot === null}
+            isRestoring={isWorkspaceRestoring}
             workspaceRoot={workspaceRoot}
             onTemplateApplied={onTemplateApplied}
             onWorkspaceSelected={onWorkspaceSelected}

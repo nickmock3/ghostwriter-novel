@@ -35,3 +35,5 @@
 - [Viteを使うE2E検証中はReact contextのソース編集を止める](entries/playwright-vite-hmr-context.md): 検証と整形を並行した後、provider欠落エラーで画面操作がtimeoutするとき。
 
 - [hydrateRootの戻りは画面操作の準備完了を保証しない](entries/react-hydration-readiness.md): ルートimport変更後に、完了フラグを待っても初回クリックが効かなくなるとき。
+
+- [SPAシェルはlocalStorageなしの初期stateとpending表示で描画される](entries/spa-shell-initial-state-and-pending.md): 再読み込み直後に初回モーダルや空白画面が一瞬見えるとき。

@@ -3,6 +3,7 @@ import { createContext, useContext } from "react";
 export type WorkspaceContextValue = {
   dismissStartGuide: () => void;
   handleStartGuideIdeaConsult: () => void;
+  isWorkspaceRestoring: boolean;
   showStartGuide: boolean;
   workspaceRoot: string | null;
 };

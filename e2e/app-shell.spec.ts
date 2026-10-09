@@ -277,6 +277,54 @@ test("routes between editor and settings as full pages", async ({ page }) => {
   await expect(page.getByRole("region", { name: "エディターワークスペース" })).toBeVisible();
 });
 
+test("never shows the first-run modal or unselected header while restoring the last workspace", async ({
+  page,
+}) => {
+  const workspaceRoot = "/tmp/ghostwriter-restore-e2e";
+  await page.addInitScript((root) => {
+    window.localStorage.setItem("ghostwriter:last-workspace-root", root);
+    window.localStorage.setItem(`ghostwriter:start-guide-dismissed:${root}`, "true");
+    // Record parser-inserted SPA shell nodes too, so a one-frame flash is still detected.
+    new MutationObserver(() => {
+      const text = document.body?.textContent ?? "";
+      if (text.includes("小説ワークスペースを準備する")) {
+        document.documentElement.dataset.sawFirstRunModal = "true";
+      }
+      if (document.querySelector(".workspace-status")?.textContent === "未選択") {
+        document.documentElement.dataset.sawUnselected = "true";
+      }
+    }).observe(document, { childList: true, characterData: true, subtree: true });
+  }, workspaceRoot);
+  let releaseValidation!: () => void;
+  const validationReleased = new Promise<void>((resolve) => {
+    releaseValidation = resolve;
+  });
+  await page.route("**/api/workspace/validate", async (route) => {
+    await validationReleased;
+    await route.fulfill({ contentType: "application/json", json: { workspaceRoot } });
+  });
+  await page.route("**/api/files/tree**", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      json: { items: [], limit: 100, truncated: false },
+    });
+  });
+
+  await page.goto("/editor");
+
+  await expect(page.locator(".workspace-bar").getByRole("status")).toHaveText(
+    "前回のワークスペースを開いています…",
+  );
+  await expect(page.locator(".app-view-stack").getByRole("status")).toHaveText(
+    "前回のワークスペースを開いています…",
+  );
+  releaseValidation();
+  await expect(page.locator(".workspace-summary h1")).toHaveAttribute("title", workspaceRoot);
+  await expect(page.getByRole("complementary", { name: "ファイルツリー" })).toBeVisible();
+  await expect(page.getByText("前回のワークスペースを開いています…")).toHaveCount(0);
+  expect(await page.evaluate(() => ({ ...document.documentElement.dataset }))).toEqual({});
+});
+
 test("keeps the templates page list compact and avoids duplicate validation text", async ({
   page,
 }) => {

@@ -4,9 +4,10 @@ import { ChatPane } from "../features/ai-chat/ChatPane";
 import { useEditorSessionContext } from "./EditorSessionContext";
 import { useChatSession } from "./ChatSessionContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
+import { ModeLoadingStatus } from "./ModeLoadingStatus";
 
 export function ChatRoutePage() {
-  const { workspaceRoot } = useWorkspaceContext();
+  const { isWorkspaceRestoring, workspaceRoot } = useWorkspaceContext();
   const {
     chatAppendRequest,
     dirtyPaths,
@@ -33,7 +34,8 @@ export function ChatRoutePage() {
         className="chat-mode-shell"
         data-workspace-selected={workspaceRoot ? "true" : undefined}
       >
-        {!workspaceRoot ? (
+        {!workspaceRoot && isWorkspaceRestoring ? <ModeLoadingStatus /> : null}
+        {!workspaceRoot && !isWorkspaceRestoring ? (
           <section aria-label="チャットモードを始める" className="chat-mode-empty-state">
             <img className="chat-mode-empty-icon" src="/favicon.png" alt="" />
             <h2 className="chat-mode-empty-title">チャットモードを始める</h2>

@@ -8,6 +8,10 @@ const manuscript = "第一章　星の港\n前｜漢字《かんじ》後の一�
 const localBaseUrl = process.env.GHOSTWRITER_E2E_BASE_URL;
 
 async function openWorkspace(page: Page) {
+  // The nearly empty fixture tree always triggers the start guide; keep it out of the reader flow.
+  await page.addInitScript((root) => {
+    localStorage.setItem(`ghostwriter:start-guide-dismissed:${root}`, "true");
+  }, workspaceRoot);
   await page.route("**/api/workspace/select**", async (route) => {
     await route.fulfill({
       contentType: "application/json",
@@ -44,11 +48,6 @@ async function openWorkspace(page: Page) {
   await page.waitForFunction(() => window.__GHOSTWRITER_HYDRATED__ === true);
   await page.getByRole("button", { name: "既存のフォルダを開く" }).click();
   await expect(page.locator(".workspace-summary h1")).toHaveAttribute("title", workspaceRoot);
-
-  const startGuide = page.getByRole("dialog", { name: "何から始めますか？" });
-  if (await startGuide.isVisible()) {
-    await page.getByRole("button", { name: "開始ガイドを閉じる" }).click();
-  }
 }
 
 test("jumps from a reader DOM selection to the matching CodeMirror source range", async ({
