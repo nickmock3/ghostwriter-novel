@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { LlmProfileSettings } from "../ai-agent/llmProfileStorage";
 import { resolveLlmProfileForRole } from "../ai-agent/llmProfiles";
 import type { AvailableLlmProvider } from "../ai-agent/modelProvider";
-import type { LlmProfileWithAvailability } from "../ai-chat/chatModelSelection";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
 import type { AiAssistExecutionOption } from "./aiAssistContracts";
 
 export type UseAiAssistExecutionOptionsInput = {

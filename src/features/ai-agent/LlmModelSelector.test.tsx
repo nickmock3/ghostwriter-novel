@@ -1,13 +1,13 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
-import { unavailableReasonForCurrentChatModelSelection } from "./chatModelSelection";
-import { ChatModelSelector, ChatModelUnavailableReasons } from "./ChatModelSelector";
+import { unavailableReasonForCurrentModelSelection } from "./llmModelSelection";
+import { LlmModelSelector, LlmModelUnavailableReasons } from "./LlmModelSelector";
 
-describe("ChatModelSelector", () => {
+describe("LlmModelSelector", () => {
   it("lists provider models and user-defined profiles", () => {
     const onChange = vi.fn();
     render(
-      <ChatModelSelector
+      <LlmModelSelector
         chatModelValue="deepseek:deepseek-v4-pro"
         disabled={false}
         llmProviders={[
@@ -64,7 +64,7 @@ describe("ChatModelSelector", () => {
 
   it("hides built-in profiles and shows their model label when selected", () => {
     render(
-      <ChatModelSelector
+      <LlmModelSelector
         chatModelValue="openai:gpt-5.4-mini"
         disabled={false}
         llmProviders={[
@@ -132,7 +132,7 @@ describe("ChatModelSelector", () => {
         ],
       },
     ];
-    const reasons = unavailableReasonForCurrentChatModelSelection({
+    const reasons = unavailableReasonForCurrentModelSelection({
       chatModelValue,
       llmProfiles: [],
       llmProviders,
@@ -140,7 +140,7 @@ describe("ChatModelSelector", () => {
 
     render(
       <>
-        <ChatModelSelector
+        <LlmModelSelector
           chatModelValue={chatModelValue}
           disabled={false}
           llmProviders={llmProviders}
@@ -148,7 +148,7 @@ describe("ChatModelSelector", () => {
           resolvedMainSelection={{ modelId: "deepseek-v4-pro", providerId: "deepseek" }}
           userDefinedProfiles={[]}
         />
-        <ChatModelUnavailableReasons reasons={reasons} />
+        <LlmModelUnavailableReasons reasons={reasons} />
       </>,
     );
 
@@ -185,7 +185,7 @@ describe("ChatModelSelector", () => {
         unavailableReason: "このプロフィールはツール実行に対応していません。",
       },
     ];
-    const reasons = unavailableReasonForCurrentChatModelSelection({
+    const reasons = unavailableReasonForCurrentModelSelection({
       chatModelValue,
       llmProfiles,
       llmProviders: [],
@@ -193,7 +193,7 @@ describe("ChatModelSelector", () => {
 
     render(
       <>
-        <ChatModelSelector
+        <LlmModelSelector
           chatModelValue={chatModelValue}
           disabled={false}
           llmProviders={[]}
@@ -201,7 +201,7 @@ describe("ChatModelSelector", () => {
           resolvedMainSelection={{ modelId: "openai/gpt-oss-20b", providerId: "openai-compatible" }}
           userDefinedProfiles={llmProfiles}
         />
-        <ChatModelUnavailableReasons reasons={reasons} />
+        <LlmModelUnavailableReasons reasons={reasons} />
       </>,
     );
 

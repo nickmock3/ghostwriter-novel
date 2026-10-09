@@ -8,10 +8,7 @@ import {
 } from "react";
 import { apiFetch } from "../../shared/client/apiTransport";
 import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
-import type {
-  LlmProviderChoice,
-  SelectedModel,
-} from "../settings/settingsStorage";
+import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
 import {
   compactActiveConversation,
   type DroppedTextFileStatus,
@@ -19,14 +16,14 @@ import {
 } from "./chatConversationClient";
 import type { WorkspaceOperationGeneration } from "./chatConversationControllerHelpers";
 import type { ChatConversationDispatch } from "./useChatConversationState";
-import type { LlmProfileWithAvailability } from "./chatModelSelection";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
 import {
-  chatModelSelectValue,
+  llmModelSelectValue,
   profileIdFromRoleAssignment,
   requiresApiKeySetup,
   selectedModelFromRoleAssignment,
-  unavailableReasonForCurrentChatModelSelection,
-} from "./chatModelSelection";
+  unavailableReasonForCurrentModelSelection,
+} from "../ai-agent/llmModelSelection";
 import type {
   AgentPlan,
   Conversation,
@@ -251,13 +248,13 @@ export function useChatConversationSubmit({
     }
 
     const mainAssignment = llmProfileRoleAssignments?.main;
-    const submitChatModelValue = chatModelSelectValue({
+    const submitChatModelValue = llmModelSelectValue({
       mainAssignment,
       modelSelection,
       profiles: llmProfiles,
     });
     const submitUnavailableReasons =
-      unavailableReasonForCurrentChatModelSelection({
+      unavailableReasonForCurrentModelSelection({
         chatModelValue: submitChatModelValue,
         llmProfiles,
         llmProviders,

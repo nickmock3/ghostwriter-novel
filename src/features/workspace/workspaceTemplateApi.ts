@@ -1,3 +1,4 @@
+import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import {
   applicationStorageUnavailableBody,
   isApplicationStorageError,
@@ -7,7 +8,7 @@ import {
   listWorkspaceTemplates,
   saveUserWorkspaceTemplate,
 } from "./workspaceTemplateStore";
-import { defaultConversationDataRoot } from "../ai-chat/conversationHistory";
+
 import { saveWorkspaceTemplateBodySchema } from "./workspaceTemplateContracts";
 
 export type WorkspaceTemplateApiOptions = {
@@ -60,7 +61,7 @@ function templateIdFromRequest(request: Request): string | null {
 export function createWorkspaceTemplateApiHandler(
   options: WorkspaceTemplateApiOptions = {},
 ) {
-  const dataRoot = options.dataRoot ?? defaultConversationDataRoot();
+  const dataRoot = options.dataRoot ?? defaultServerDataRoot();
 
   return async function workspaceTemplateApiHandler(
     request: Request,

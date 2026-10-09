@@ -5,8 +5,9 @@ import type {
   LlmProfileRoleAssignments,
 } from "../features/ai-agent/llmProfiles";
 import type { LlmProviderId } from "../features/ai-agent/modelProvider";
-import type { LlmProfileWithAvailability } from "../features/ai-chat/chatModelSelection";
-import type { LlmProviderChoice, SelectedModel, UserSettings } from "../features/settings/settingsStorage";
+import type { LlmProfileWithAvailability } from "../features/ai-agent/llmModelSelection";
+import type { UserSettings } from "../features/settings/settingsStorage";
+import type { LlmProviderChoice, SelectedModel } from "../features/ai-agent/llmSelection";
 
 export type BuildMainLlmChatPanePropsInput = {
   llmProfileSettings: LlmProfileSettings | null | undefined;

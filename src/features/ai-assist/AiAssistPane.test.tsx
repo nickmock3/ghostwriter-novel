@@ -1,19 +1,20 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
 import { builtInAiAssists, type AiAssistDefinition } from "./aiAssistContracts";
-import { AiAssistPane, type AiAssistEditorTarget } from "./AiAssistPane";
+import { AiAssistPane } from "./AiAssistPane";
 
 beforeEach(() => localStorage.clear());
 
-const fileTarget: AiAssistEditorTarget = {
+const fileTarget: EditorTarget = {
   content: "星の港に朝が来た。",
   isDirty: false,
   path: "小説/第001章/本文.txt",
   selection: null,
 };
 
-const selectionTarget: AiAssistEditorTarget = {
+const selectionTarget: EditorTarget = {
   ...fileTarget,
   selection: { end: 3, start: 0 },
 };
@@ -129,7 +130,6 @@ describe("AiAssistPane", () => {
     const polish = within(assistList).getByRole("button", { name: "推敲を実行" });
     expect(within(assistList).getByRole("button", { name: "校正を実行" })).toBeInTheDocument();
     expect(within(assistList).getByRole("button", { name: "ルビ候補を実行" })).toBeInTheDocument();
-
 
     const tooltip = within(assistList).getByRole("tooltip", {
       name: "文章表現を改善する編集案を作成します。",

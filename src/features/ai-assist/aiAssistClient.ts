@@ -1,3 +1,4 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import { z } from "zod";
 import { llmProfileRoleAssignmentsSchema, llmProfileSchema } from "../ai-agent/llmProfiles";
 import { apiFetch } from "../../shared/client/apiTransport";
@@ -12,7 +13,6 @@ import {
   type AiAssistExecutionOption,
   type CustomAiAssistDefinition,
 } from "./aiAssistContracts";
-import type { AiAssistEditorTarget } from "./AiAssistPane";
 import type { AiAssistStandardModelSelection } from "./aiAssistModelSelection";
 
 const aiAssistExecuteResponseSchema = z.object({
@@ -33,7 +33,7 @@ export type ExecuteAiAssistInput = {
   executionOptions: AiAssistExecutionOption[];
   roleAssignments?: z.infer<typeof llmProfileRoleAssignmentsSchema>;
   standardModelSelection?: AiAssistStandardModelSelection;
-  target: AiAssistEditorTarget;
+  target: EditorTarget;
   userProfiles?: z.infer<typeof llmProfileSchema>[];
   workspaceRoot: string;
 };
@@ -51,7 +51,7 @@ function formatApiMessage(body: unknown, fallbackMessage: string): string {
   return fallbackMessage;
 }
 
-function resolveTargetRange(target: AiAssistEditorTarget) {
+function resolveTargetRange(target: EditorTarget) {
   if (target.selection) {
     return target.selection;
   }

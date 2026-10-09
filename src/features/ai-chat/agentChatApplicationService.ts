@@ -1,3 +1,4 @@
+import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import {
   chatModeAgentProfile,
   mainAgentProfile,
@@ -24,7 +25,7 @@ import {
 } from "../ai-agent/trustedAgentExtensions";
 import { normalizeWorkspaceRelativePath } from "../workspace/workspaceFilePaths";
 import { cleanupDroppedTextFiles } from "./droppedTextFiles";
-import { defaultConversationDataRoot, getConversation } from "./conversationHistory";
+import { getConversation } from "./conversationHistory";
 import { conversationSchema } from "./conversationSchemas";
 import {
   compactConversation as defaultCompactConversation,
@@ -107,7 +108,7 @@ function createDefaultCompactConversationHandler(input: {
 export function createAgentChatApplicationService(
   options: AgentChatApplicationServiceOptions = {},
 ) {
-  const dataRoot = options.dataRoot ?? defaultConversationDataRoot();
+  const dataRoot = options.dataRoot ?? defaultServerDataRoot();
   const runtime = createLlmRuntime({
     config: options.llmProviderConfig,
     llmProviderPlugins: options.llmProviderPlugins,

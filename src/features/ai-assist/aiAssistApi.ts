@@ -1,3 +1,4 @@
+import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import type { SiwcService } from "../siwc/service";
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
@@ -21,7 +22,7 @@ import {
   applicationStorageUnavailableBody,
   isApplicationStorageError,
 } from "../../shared/server/applicationStorage";
-import { defaultConversationDataRoot } from "../ai-chat/conversationHistory";
+
 import { createAiAssistStore, type AiAssistStore } from "./aiAssistStore";
 
 const aiAssistApplyBodySchema = z.object({
@@ -123,7 +124,7 @@ export function createProductionAiAssistApiHandler(options: {
   siwcService?: SiwcService;
   dataRoot?: string;
 }): (request: Request) => Promise<Response> {
-  const dataRoot = options.dataRoot ?? defaultConversationDataRoot();
+  const dataRoot = options.dataRoot ?? defaultServerDataRoot();
   const assistStore = createAiAssistStore({ dataRoot });
   const resolveAiAssist = (assistId: string) => assistStore.getAiAssist(assistId);
   const standardService = createStandardAiAssistExecutionService({

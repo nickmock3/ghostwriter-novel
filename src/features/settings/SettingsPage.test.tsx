@@ -2,7 +2,8 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { APP_DISPLAY_VERSION } from "../../shared/appVersion";
 import { SettingsPage } from "./SettingsPage";
-import type { LlmProviderChoice, LlmSecretStatus, UserSettings } from "./settingsStorage";
+import type { UserSettings } from "./settingsStorage";
+import type { LlmProviderChoice, LlmSecretStatus } from "../ai-agent/llmSelection";
 
 const providers: LlmProviderChoice[] = [
   {

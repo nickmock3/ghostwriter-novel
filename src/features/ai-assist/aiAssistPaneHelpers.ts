@@ -1,18 +1,10 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import type { AiAssistDefinition, AiAssistExecutionOption } from "./aiAssistContracts";
-import {
-  type AiAssistStandardModelSelection,
-} from "./aiAssistModelSelection";
-
-export type AiAssistEditorTarget = {
-  content: string;
-  isDirty: boolean;
-  path: string;
-  selection: { end: number; start: number } | null;
-};
+import { type AiAssistStandardModelSelection } from "./aiAssistModelSelection";
 
 export const defaultInstructionPlaceholder = "追加指示（任意）";
 
-export function targetKindLabel(target: AiAssistEditorTarget): string {
+export function targetKindLabel(target: EditorTarget): string {
   if (!target.selection) {
     return "ファイル全体";
   }
@@ -22,7 +14,7 @@ export function targetKindLabel(target: AiAssistEditorTarget): string {
 }
 
 export function executionBlockReason(
-  target: AiAssistEditorTarget | null,
+  target: EditorTarget | null,
   executionOptions: AiAssistExecutionOption[],
   isExecutionOptionsLoading: boolean,
 ): string | null {

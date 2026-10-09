@@ -1,3 +1,4 @@
+import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import { cleanupDroppedTextFilesForConversation } from "./droppedTextFiles";
 import type { SiwcService } from "../siwc/service";
 import { withSiwcRuntime } from "../ai-agent/llm-providers/siwcRuntime";
@@ -29,7 +30,6 @@ import {
   appendConversationMessage,
   applyConversationEditProposal,
   createConversation,
-  defaultConversationDataRoot,
   deleteConversation,
   getConversation,
   listConversations,
@@ -212,7 +212,7 @@ function apiErrorResponse(error: unknown, fallback: string, status = 400): Respo
 }
 
 export function createConversationApiHandler(options: ConversationApiOptions = {}) {
-  const dataRoot = options.dataRoot ?? defaultConversationDataRoot();
+  const dataRoot = options.dataRoot ?? defaultServerDataRoot();
   const compactConversation =
     options.compactConversation ?? createDefaultCompactConversationHandler({ ...options, dataRoot });
 

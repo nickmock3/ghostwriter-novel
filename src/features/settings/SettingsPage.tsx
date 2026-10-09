@@ -1,10 +1,10 @@
 import { SiwcSettingsSection } from "../siwc/SiwcSettingsSection";
+import type { UserSettings } from "./settingsStorage";
 import type {
   LlmProviderChoice,
   LlmSecretProviderId,
   LlmSecretStatus,
-  UserSettings,
-} from "./settingsStorage";
+} from "../ai-agent/llmSelection";
 import { AppInfoSettingsSection } from "./AppInfoSettingsSection";
 import { ConversationCompactSettingsSection } from "./ConversationCompactSettingsSection";
 import { LlmSecretSettingsSection } from "./LlmSecretSettingsSection";

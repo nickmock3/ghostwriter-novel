@@ -1,3 +1,4 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import { describe, expect, it } from "vitest";
 import type { AiAssistDefinition } from "./aiAssistContracts";
 import {
@@ -5,10 +6,9 @@ import {
   modelSelectionBlockReason,
   resolveInstructionPlaceholder,
   targetKindLabel,
-  type AiAssistEditorTarget,
 } from "./aiAssistPaneHelpers";
 
-const fileTarget: AiAssistEditorTarget = {
+const fileTarget: EditorTarget = {
   content: "星の港に朝が来た。",
   isDirty: false,
   path: "小説/第001章/本文.txt",

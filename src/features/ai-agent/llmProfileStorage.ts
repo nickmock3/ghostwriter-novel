@@ -7,7 +7,7 @@ import {
   type LlmProfileRoleAssignments,
 } from "./llmProfiles";
 import type { AvailableLlmProvider, LlmProviderId } from "./modelProvider";
-import type { LlmProviderChoice } from "../settings/settingsStorage";
+import type { LlmProviderChoice } from "./llmSelection";
 
 export const LLM_PROFILE_SETTINGS_STORAGE_KEY = "ghostwriter:llm-profile-settings:v1";
 export const LEGACY_LLM_PROFILE_SETTINGS_STORAGE_KEY =

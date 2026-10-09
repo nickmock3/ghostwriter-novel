@@ -72,7 +72,27 @@ editor / file-tree / reader は workspace と edit-proposals に依存してよ�
 
 ## 完了条件
 
-- [ ] 対象1〜6の逆向き・循環依存を解消した（テストファイルを除く）。
-- [ ] `docs/architecture.md`に依存の向きを追記した。
-- [ ] `bun run typecheck`、`bun run test`、`bun run build`、`bun run test:e2e`が成功した。`bun run test:desktop`は`shared/server`を変更した場合に実行する。
-- [ ] 作業範囲外の挙動変更がない。doneへ移動してcommitした。
+- [x] 対象1〜6の逆向き・循環依存を解消した（テストファイルを除く）。
+- [x] `docs/architecture.md`に依存の向きを追記した。
+- [x] `bun run typecheck`、`bun run test`、`bun run build`、`bun run test:e2e`が成功した。`bun run test:desktop`は`shared/server`を変更した場合に実行する。
+- [x] 作業範囲外の挙動変更がない。doneへ移動してcommitした。
+
+## 作業記録
+
+- 開始時に難易度「中」が対象範囲に合うことと、製品仕様に矛盾がないことを確認した。
+- 共通の保存先解決を`shared/server/applicationStorage.ts`、プラン項目を`ai-agent/agentPlan.ts`、検索契約を`workspaceSearchStore.ts`へ移した。
+- LLM契約を`ai-agent/llmSelection.ts`、共通の選択ロジック・UIを`llmModelSelection.ts`と`LlmModelSelector.tsx`へ移し、呼び出し側を直接参照へ変更した。
+- 本文・選択範囲の型は`editor/editorTarget.ts`の`EditorTarget`として公開した。
+- 既存のUIテストとLLM secret provider判定テストは定義と一緒に移動した。新しい振る舞いテストは追加していない。挙動不変の整理のため、既存テスト・型チェック・buildで契約と回帰を検証した。
+- 対象の逆向きimportはテストを除いて0件。タスクの広い検索パターンに残る`ai-agent/agentTools.ts`→`ai-tools/ripgrepTools.ts`は、前提で許可した上位から下位への依存であり、除去対象ではない。`ai-assist`→`settings`のUI設定参照も残っていない。
+- `docs/architecture.md`へ依存方向と共通定義の所在を追記した。製品仕様・localStorageのキーとJSON・検索上限・保存先解決順は変更していない。
+
+### 検証結果
+
+- `bun run typecheck`: 成功。
+- `bun run test`: 147ファイル、1211件成功、既存6件skip。sandboxでの初回はlisten制限、sandbox外の初回はstream cancellationケースのfixture削除が`ENOTEMPTY`となった。全体再実行は成功した。
+- `bun run build`: 成功。クライアントへのサーバー専用module混入は発生していない。初回のsandbox内実行はViteのlisten制限で中断したため、sandbox外で検証した。
+- `bun run test:e2e`: 29件成功。初回のsandbox内実行はlisten制限。sandbox外の初回は検証中のソース整形後にcontext例外が出たため、編集を止めて全体を再実行し成功した。実ファイルの保存・Apply/Undoを含む。外部OAuth/LLMは既存fixtureによる置換。
+- `SDKROOT=/Library/Developer/CommandLineTools/SDKs/MacOSX26.5.sdk bun run test:desktop`: 成功（sidecar smoke、Rust、Vitest 12ファイル75件）。既定27.0 SDKでは既存linkerとのTAPI不整合で失敗したため、既存Field Guideに従いコマンド単位で26.5 SDKを選択した。グローバル設定は変更していない。
+- `git diff --check`、差分レビュー、対象import調査: 成功。手動の画面操作は行っていない。画面回帰は既存Playwrightで確認した。
+- 必須検証に未実行項目はない。実LLMの品質やWindows実機は接続契約・製品挙動を変えていないため対象外。

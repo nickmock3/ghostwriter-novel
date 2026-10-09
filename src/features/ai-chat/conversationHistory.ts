@@ -18,8 +18,12 @@ import {
   type ToolActivity,
   type ToolResultSummary,
 } from "./conversationSchemas";
-import { resolveServerDataRoot } from "../../shared/server/runtimeConfig";
-import { applyEditProposal, createEditProposalForWorkspace, rejectEditProposal, undoEditProposal } from "../edit-proposals/editProposalService";
+import {
+  applyEditProposal,
+  createEditProposalForWorkspace,
+  rejectEditProposal,
+  undoEditProposal,
+} from "../edit-proposals/editProposalService";
 import { latestUndoableProposalId as latestUndoableProposalIdFromProposals } from "./editProposalUndo";
 import { replaceConversationJson, withConversationFileLock } from "./conversationStorage";
 import { recoverConversationEdit } from "./conversationEditRecovery";
@@ -101,10 +105,6 @@ type AppendConversationCompactionOptions = ConversationHistoryOptions & {
   summary: string;
   tokenUsage?: TokenUsage;
 };
-
-export function defaultConversationDataRoot() {
-  return resolveServerDataRoot({ cwd: process.cwd(), env: process.env });
-}
 
 export function workspaceIdForRoot(workspaceRoot: string): string {
   return createHash("sha256").update(path.resolve(workspaceRoot)).digest("hex").slice(0, 24);

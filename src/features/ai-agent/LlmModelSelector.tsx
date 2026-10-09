@@ -2,10 +2,10 @@ import {
   modelSelectionFromValue,
   type LlmProviderChoice,
   type SelectedModel,
-} from "../settings/settingsStorage";
-import { selectedModelLabel, type LlmProfileWithAvailability } from "./chatModelSelection";
+} from "./llmSelection";
+import { selectedModelLabel, type LlmProfileWithAvailability } from "./llmModelSelection";
 
-export type ChatModelSelectorProps = {
+export type LlmModelSelectorProps = {
   ariaLabel?: string;
   chatModelValue: string;
   disabled: boolean;
@@ -15,7 +15,7 @@ export type ChatModelSelectorProps = {
   userDefinedProfiles: LlmProfileWithAvailability[];
 };
 
-export function ChatModelSelector({
+export function LlmModelSelector({
   ariaLabel = "チャットLLMモデル",
   chatModelValue,
   disabled,
@@ -23,7 +23,7 @@ export function ChatModelSelector({
   onChange,
   resolvedMainSelection,
   userDefinedProfiles,
-}: ChatModelSelectorProps) {
+}: LlmModelSelectorProps) {
   const hasSelectedOption = userDefinedProfiles.some(profile => `profile:${profile.id}` === chatModelValue)
     || llmProviders.some(provider => provider.models.some(model => `${provider.id}:${model.id}` === chatModelValue));
   return (
@@ -70,11 +70,11 @@ export function ChatModelSelector({
   );
 }
 
-export type ChatModelUnavailableReasonsProps = {
+export type LlmModelUnavailableReasonsProps = {
   reasons: Array<{ id: string; reason: string }>;
 };
 
-export function ChatModelUnavailableReasons({ reasons }: ChatModelUnavailableReasonsProps) {
+export function LlmModelUnavailableReasons({ reasons }: LlmModelUnavailableReasonsProps) {
   if (reasons.length === 0) {
     return null;
   }
@@ -88,7 +88,7 @@ export function ChatModelUnavailableReasons({ reasons }: ChatModelUnavailableRea
   );
 }
 
-export function handleChatModelSelectorChange(
+export function handleLlmModelSelectorChange(
   value: string,
   callbacks: {
     onMainLlmProfileIdChange?: (profileId: string | null) => void;

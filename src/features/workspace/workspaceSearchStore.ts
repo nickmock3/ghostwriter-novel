@@ -7,14 +7,28 @@ import {
   toWorkspaceRelativePath,
 } from "./workspaceFilePaths";
 import { resolveWorkspaceRoot } from "./workspacePaths";
-import type {
-  GlobToolInput,
-  GlobToolOutput,
-  GrepToolInput,
-  GrepToolOutput,
-  SearchToolInput,
-  SearchToolOutput,
-} from "../ai-tools/ripgrepTools";
+export type WorkspaceGlobInput = { pattern: string };
+export type WorkspaceGlobOutput = {
+  limit: number;
+  matches: string[];
+  truncated: boolean;
+};
+export type WorkspaceGrepInput = {
+  query: string;
+  options?: { glob?: string; path?: string };
+};
+export type WorkspaceGrepOutput = {
+  limit: number;
+  matches: { line: string; lineNumber: number; path: string }[];
+  truncated: boolean;
+};
+export type WorkspaceSearchInput = { query: string };
+export type WorkspaceSearchOutput = {
+  limit: number;
+  queryTerms: string[];
+  results: { lineNumber: number; path: string; score: number; snippet: string }[];
+  truncated: boolean;
+};
 
 const MAX_SEARCH_RESULTS = 10;
 
@@ -26,16 +40,16 @@ export type WorkspaceSearchStore = {
   createContext(workspaceRoot: string): Promise<WorkspaceSearchContext>;
   glob(
     context: WorkspaceSearchContext,
-    input: Omit<GlobToolInput, "workspaceRoot">,
-  ): Promise<GlobToolOutput>;
+    input: WorkspaceGlobInput,
+  ): Promise<WorkspaceGlobOutput>;
   grep(
     context: WorkspaceSearchContext,
-    input: Omit<GrepToolInput, "workspaceRoot">,
-  ): Promise<GrepToolOutput>;
+    input: WorkspaceGrepInput,
+  ): Promise<WorkspaceGrepOutput>;
   search(
     context: WorkspaceSearchContext,
-    input: Omit<SearchToolInput, "workspaceRoot">,
-  ): Promise<SearchToolOutput>;
+    input: WorkspaceSearchInput,
+  ): Promise<WorkspaceSearchOutput>;
 };
 
 type RgResult = {
@@ -247,8 +261,8 @@ export function createLocalWorkspaceSearchStore(
 
   async function glob(
     context: WorkspaceSearchContext,
-    input: Omit<GlobToolInput, "workspaceRoot">,
-  ): Promise<GlobToolOutput> {
+    input: WorkspaceGlobInput,
+  ): Promise<WorkspaceGlobOutput> {
     const result = await runRg(["--files"], context.workspaceRoot);
     ensureRgSuccess(result);
 
@@ -275,8 +289,8 @@ export function createLocalWorkspaceSearchStore(
 
   async function grep(
     context: WorkspaceSearchContext,
-    input: Omit<GrepToolInput, "workspaceRoot">,
-  ): Promise<GrepToolOutput> {
+    input: WorkspaceGrepInput,
+  ): Promise<WorkspaceGrepOutput> {
     const args = [
       "--line-number",
       "--with-filename",
@@ -324,8 +338,8 @@ export function createLocalWorkspaceSearchStore(
 
   async function search(
     context: WorkspaceSearchContext,
-    input: Omit<SearchToolInput, "workspaceRoot">,
-  ): Promise<SearchToolOutput> {
+    input: WorkspaceSearchInput,
+  ): Promise<WorkspaceSearchOutput> {
     const queryTerms = extractQueryTerms(input.query);
     const rankedMatches = new Map<string, GrepMatch & { score: number }>();
 

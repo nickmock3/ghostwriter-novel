@@ -29,3 +29,5 @@
 | SIWC / workspace | 同じBunアプリがtokenを保存し任意の原稿rootを読めるとき | ファイル権限だけでは同プロセスのReadを防げない。private保存領域とのroot重複を入口で拒否する | [アプリ内token保存はワークスペースのRead境界も保護する](entries/siwc-private-workspace-boundary.md) |
 | SIWC / Windows | Windowsへ本人限定の資格情報保存を追加するとき | 作成時ACL・子fileの権限・reparse pointを実ファイルで確認し、POSIX modeやdirectory fsyncに依存しない | [Windowsの資格情報保存では作成時ACLと子PowerShellの実環境を確認する](entries/windows-siwc-permissions.md) |
 | AI / connection defaults | 新規利用者の接続既定値を変えるとき | 自動保存前に既存設定を識別し、接続選択と候補取得を分離する | [接続の既定値変更では自動保存前の明示設定を識別する](entries/connection-default-migration.md) |
+
+- [Viteを使うE2E検証中はReact contextのソース編集を止める](entries/playwright-vite-hmr-context.md): 検証と整形を並行した後、provider欠落エラーで画面操作がtimeoutするとき。

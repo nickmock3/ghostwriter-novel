@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { beforeEach, expect, it, vi } from "vitest";
 import { useAiConnection } from "./useAiConnection";
-import type { LlmProviderChoice } from "../settings/settingsStorage";
+import type { LlmProviderChoice } from "../ai-agent/llmSelection";
 
 const providers: LlmProviderChoice[] = [
   { id: "openai", displayName: "API", models: [{ id: "api-model", displayName: "API", available: true, supportsTools: true }] },

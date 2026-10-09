@@ -5,13 +5,13 @@ import {
   profileIdFromRoleAssignment,
   selectedModelFromRoleAssignment,
   type LlmProfileWithAvailability,
-} from "../ai-chat/chatModelSelection";
+} from "../ai-agent/llmModelSelection";
 import {
   modelSelectionFromValue,
   modelSelectionValue,
   type LlmProviderChoice,
   type SelectedModel,
-} from "../settings/settingsStorage";
+} from "../ai-agent/llmSelection";
 
 export const aiAssistStandardModelSelectionSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("default-writing") }),

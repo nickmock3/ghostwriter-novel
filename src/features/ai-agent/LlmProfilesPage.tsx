@@ -1,6 +1,11 @@
 import { useState } from "react";
-import { llmProfileRoles, llmProfileSchema, type LlmProfile, type LlmProfileRoleAssignments } from "./llmProfiles";
-import type { LlmProviderChoice, SelectedModel } from "../settings/settingsStorage";
+import {
+  llmProfileRoles,
+  llmProfileSchema,
+  type LlmProfile,
+  type LlmProfileRoleAssignments,
+} from "./llmProfiles";
+import type { LlmProviderChoice, SelectedModel } from "./llmSelection";
 
 type DisplayProfile = LlmProfile & {
   available: boolean;

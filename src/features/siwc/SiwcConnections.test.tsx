@@ -3,7 +3,7 @@ import { beforeEach, expect, it, vi } from "vitest";
 import { ChatPane } from "../ai-chat/ChatPane";
 import { AiAssistPane } from "../ai-assist/AiAssistPane";
 import { StartGuideModal } from "../workspace/StartGuideModal";
-import type { LlmProviderChoice } from "../settings/settingsStorage";
+import type { LlmProviderChoice } from "../ai-agent/llmSelection";
 const providers: LlmProviderChoice[] = [{ id: "openai-chatgpt", displayName: "ChatGPT", models: [] }];
 let signedIn = false;
 const requests: Record<string, unknown>[] = [];

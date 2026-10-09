@@ -1,8 +1,16 @@
-import { act, fireEvent, render, screen, waitFor, within, type RenderOptions } from "@testing-library/react";
+import {
+  act,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+  type RenderOptions,
+} from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
-import type { LlmProviderChoice, SelectedModel } from "../settings/settingsStorage";
+import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
 import { ChatPane, type AppliedEditProposal, type ChatPaneProps } from "./ChatPane";
 import { useChatConversationController } from "./useChatConversationController";
 
@@ -2331,7 +2339,6 @@ describe("ChatPane", () => {
     await waitFor(() => expect(screen.getByRole("region", { name: "推論の詳細" }).textContent).toHaveLength(12_000));
     expect(screen.getByRole("region", { name: "推論の詳細" }).textContent).toMatch(/末尾$/);
     expect(screen.queryByText("章のつながりを確認しています", { exact: true })).not.toBeInTheDocument();
-
 
     finishStream?.();
 

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { apiFetch } from "../../shared/client/apiTransport";
 import type { LlmProfile } from "../ai-agent/llmProfiles";
-import type { SelectedModel } from "../settings/settingsStorage";
+import type { SelectedModel } from "../ai-agent/llmSelection";
 import {
   conversationListResponseSchema,
   conversationSchema,

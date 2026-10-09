@@ -1,11 +1,12 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import { z } from "zod";
 import { aiAssistStandardModelSelectionSchema } from "./aiAssistModelSelection";
 import { useAiConnection } from "../siwc/useAiConnection";
 import { useEffect, useMemo, useState } from "react";
 import type { LlmProfileRoleAssignment } from "../ai-agent/llmProfiles";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
-import type { LlmProfileWithAvailability } from "../ai-chat/chatModelSelection";
-import type { LlmProviderChoice } from "../settings/settingsStorage";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { LlmProviderChoice } from "../ai-agent/llmSelection";
 import {
   builtInAiAssists,
   type AiAssistDefinition,
@@ -24,7 +25,6 @@ import {
   executionBlockReason,
   modelSelectionBlockReason,
   resolveInstructionPlaceholder,
-  type AiAssistEditorTarget,
 } from "./aiAssistPaneHelpers";
 import type { AiAssistSaveInput } from "./useAiAssistDefinitions";
 
@@ -52,11 +52,11 @@ export type UseAiAssistPaneStateInput = {
     assistId: string;
     executionOptionId: string;
     standardModelSelection?: AiAssistStandardModelSelection;
-    target: AiAssistEditorTarget;
+    target: EditorTarget;
   }) => Promise<EditProposal>;
   onReject: (proposal: EditProposal) => Promise<EditProposal>;
   onSaveAssist?: (input: AiAssistSaveInput) => Promise<CustomAiAssistDefinition>;
-  target: AiAssistEditorTarget | null;
+  target: EditorTarget | null;
   writingAssignment?: LlmProfileRoleAssignment;
 };
 

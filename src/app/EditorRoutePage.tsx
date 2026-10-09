@@ -1,11 +1,9 @@
+import type { EditorTarget } from "../features/editor/editorTarget";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
 import { FiChevronsLeft, FiChevronsRight } from "react-icons/fi";
 import { FaUndo } from "react-icons/fa";
-import {
-  AiAssistPane,
-  type AiAssistEditorTarget,
-} from "../features/ai-assist/AiAssistPane";
+import { AiAssistPane } from "../features/ai-assist/AiAssistPane";
 import {
   applyAiAssistProposal,
   executeAiAssist,
@@ -59,7 +57,7 @@ export function EditorRoutePage() {
     threePaneLayoutStyle,
   } = usePaneLayoutContext();
   const { llmProfileSettings, llmProfiles, llmProviders, settings } = useLlmSettingsContext();
-  const [aiAssistTarget, setAiAssistTarget] = useState<AiAssistEditorTarget | null>(null);
+  const [aiAssistTarget, setAiAssistTarget] = useState<EditorTarget | null>(null);
   const { executionOptions, isLoading: isExecutionOptionsLoading } = useAiAssistExecutionOptions({
     llmProfileSettings,
     llmProfiles,
@@ -73,7 +71,7 @@ export function EditorRoutePage() {
     saveAssist,
   } = useAiAssistDefinitions();
 
-  const handleAiAssistTargetChange = useCallback((next: AiAssistEditorTarget | null) => {
+  const handleAiAssistTargetChange = useCallback((next: EditorTarget | null) => {
     setAiAssistTarget((current) => {
       if (current === next) {
         return current;
@@ -106,7 +104,7 @@ export function EditorRoutePage() {
       assistId: string;
       executionOptionId: string;
       standardModelSelection?: Parameters<typeof executeAiAssist>[0]["standardModelSelection"];
-      target: AiAssistEditorTarget;
+      target: EditorTarget;
     }) => {
       if (!workspaceRoot) {
         throw new Error("ワークスペースが選択されていません。");

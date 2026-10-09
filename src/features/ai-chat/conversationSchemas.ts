@@ -1,3 +1,6 @@
+import { planItemSchema } from "../ai-agent/agentPlan";
+export { planItemSchema, planItemStatusSchema } from "../ai-agent/agentPlan";
+export type { PlanItem } from "../ai-agent/agentPlan";
 import { siwcBindingSchema, siwcHistorySchema } from "./siwcHistory";
 import { z } from "zod";
 import { editProposalSchema } from "../edit-proposals/editProposalSchemas";
@@ -51,21 +54,6 @@ export const toolActivitySchema = z.object({
   status: z.enum(["running", "completed", "failed"]),
   toolCallId: z.string().min(1),
   toolName: z.string().min(1),
-});
-
-export const planItemStatusSchema = z.enum([
-  "pending",
-  "in_progress",
-  "completed",
-  "blocked",
-  "skipped",
-]);
-
-export const planItemSchema = z.object({
-  detail: z.string().min(1).optional(),
-  id: z.string().min(1),
-  status: planItemStatusSchema,
-  title: z.string().min(1),
 });
 
 export const agentPlanSchema = z
@@ -162,7 +150,6 @@ export type ConversationMessage = z.infer<typeof conversationMessageSchema>;
 export type ConversationMessageWarning = z.infer<typeof conversationMessageWarningSchema>;
 export type ConversationListResponse = z.infer<typeof conversationListResponseSchema>;
 export type AgentPlan = z.infer<typeof agentPlanSchema>;
-export type PlanItem = z.infer<typeof planItemSchema>;
 export type ToolActivity = z.infer<typeof toolActivitySchema>;
 export type ToolResultSummary = z.infer<typeof toolResultSummarySchema>;
 export type ConversationCompaction = z.infer<typeof conversationCompactionSchema>;

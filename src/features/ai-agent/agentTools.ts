@@ -18,7 +18,7 @@ import {
 import {
   planItemSchema,
   type PlanItem,
-} from "../ai-chat/conversationSchemas";
+} from "./agentPlan";
 import {
   globToolInputSchema,
   grepToolInputSchema,

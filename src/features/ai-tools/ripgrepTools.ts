@@ -1,7 +1,24 @@
 import { readFile, stat } from "node:fs/promises";
 import { z } from "zod";
 import { resolveWorkspaceFilePath } from "../workspace/workspaceFilePaths";
-import { localWorkspaceSearchStore } from "../workspace/workspaceSearchStore";
+import {
+  localWorkspaceSearchStore,
+  type WorkspaceGlobInput,
+  type WorkspaceGlobOutput,
+  type WorkspaceGrepInput,
+  type WorkspaceGrepOutput,
+  type WorkspaceSearchInput,
+  type WorkspaceSearchOutput,
+} from "../workspace/workspaceSearchStore";
+
+export type ReadToolInput = z.infer<typeof readToolInputSchema>;
+export type ReadToolOutput = z.infer<typeof readToolOutputSchema>;
+export type GlobToolInput = WorkspaceGlobInput & { workspaceRoot: string };
+export type GlobToolOutput = WorkspaceGlobOutput;
+export type GrepToolInput = WorkspaceGrepInput & { workspaceRoot: string };
+export type GrepToolOutput = WorkspaceGrepOutput;
+export type SearchToolInput = WorkspaceSearchInput & { workspaceRoot: string };
+export type SearchToolOutput = WorkspaceSearchOutput;
 
 const MAX_READ_BYTES = 1024 * 1024;
 const MAX_READ_LINES = 2000;
@@ -22,13 +39,13 @@ export const readToolOutputSchema = z.object({
 
 export const globToolInputSchema = baseToolInputSchema.extend({
   pattern: z.string().min(1),
-});
+}) satisfies z.ZodType<GlobToolInput>;
 
 export const globToolOutputSchema = z.object({
   limit: z.number().int().positive(),
   matches: z.array(z.string()),
   truncated: z.boolean(),
-});
+}) satisfies z.ZodType<GlobToolOutput>;
 
 export const grepToolInputSchema = baseToolInputSchema.extend({
   query: z.string().min(1),
@@ -38,7 +55,7 @@ export const grepToolInputSchema = baseToolInputSchema.extend({
       path: z.string().min(1).optional(),
     })
     .optional(),
-});
+}) satisfies z.ZodType<GrepToolInput>;
 
 export const grepMatchSchema = z.object({
   line: z.string(),
@@ -50,11 +67,11 @@ export const grepToolOutputSchema = z.object({
   limit: z.number().int().positive(),
   matches: z.array(grepMatchSchema),
   truncated: z.boolean(),
-});
+}) satisfies z.ZodType<GrepToolOutput>;
 
 export const searchToolInputSchema = baseToolInputSchema.extend({
   query: z.string().min(1),
-});
+}) satisfies z.ZodType<SearchToolInput>;
 
 export const searchToolOutputSchema = z.object({
   limit: z.number().int().positive(),
@@ -68,16 +85,7 @@ export const searchToolOutputSchema = z.object({
     }),
   ),
   truncated: z.boolean(),
-});
-
-export type ReadToolInput = z.infer<typeof readToolInputSchema>;
-export type ReadToolOutput = z.infer<typeof readToolOutputSchema>;
-export type GlobToolInput = z.infer<typeof globToolInputSchema>;
-export type GlobToolOutput = z.infer<typeof globToolOutputSchema>;
-export type GrepToolInput = z.infer<typeof grepToolInputSchema>;
-export type GrepToolOutput = z.infer<typeof grepToolOutputSchema>;
-export type SearchToolInput = z.infer<typeof searchToolInputSchema>;
-export type SearchToolOutput = z.infer<typeof searchToolOutputSchema>;
+}) satisfies z.ZodType<SearchToolOutput>;
 
 function truncateLines(content: string): { content: string; totalLines: number; truncated: boolean } {
   const lines = content.split(/\r?\n/);

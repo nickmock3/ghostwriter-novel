@@ -10,14 +10,14 @@ import {
   type RefObject,
 } from "react";
 import { FaArrowUp } from "react-icons/fa";
-import type { LlmProviderChoice, SelectedModel } from "../settings/settingsStorage";
+import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
 import type { DroppedTextFileStatus } from "./chatConversationClient";
 import {
-  ChatModelSelector,
-  ChatModelUnavailableReasons,
-  handleChatModelSelectorChange,
-} from "./ChatModelSelector";
-import type { LlmProfileWithAvailability } from "./chatModelSelection";
+  LlmModelSelector,
+  LlmModelUnavailableReasons,
+  handleLlmModelSelectorChange,
+} from "../ai-agent/LlmModelSelector";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
 import { ChatTokenUsageIndicator } from "./ChatTokenUsageIndicator";
 import type { Conversation, MainContextSnapshot, TokenUsage } from "./conversationSchemas";
 import { slashCommandSuggestions, type SlashCommandDefinition } from "./slashCommands";
@@ -319,13 +319,13 @@ export function ChatComposer({
           </select>
         </label>
         {connection?.connection === "chatgpt" ? <ChatGptModelControls state={connection} disabled={isLoading} fixed={connectionFixed} /> : connection?.connection === "codex" ? null : (
-          <ChatModelSelector
+          <LlmModelSelector
             chatModelValue={chatModelValue}
             disabled={isModelSelectorDisabled}
             llmProviders={llmProviders.filter(provider => provider.id !== "openai-chatgpt")}
             onChange={(value) => {
               setShowApiKeySetupGuidance(false);
-              handleChatModelSelectorChange(value, {
+              handleLlmModelSelectorChange(value, {
                 onMainLlmProfileIdChange,
                 onMainLlmModelSelectionChange,
                 onModelSelectionChange,
@@ -351,7 +351,7 @@ export function ChatComposer({
           <FaArrowUp className="send-action-icon" aria-hidden="true" />
         </button>
       </div>
-      {!isCodexRuntime && connection?.connection !== "chatgpt" ? <ChatModelUnavailableReasons reasons={unavailableReasons} /> : null}
+      {!isCodexRuntime && connection?.connection !== "chatgpt" ? <LlmModelUnavailableReasons reasons={unavailableReasons} /> : null}
     </form>
   );
 }

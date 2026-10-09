@@ -1,8 +1,9 @@
+import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import { randomUUID } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
-import { defaultConversationDataRoot } from "../ai-chat/conversationHistory";
+
 import {
   hasHiddenPathSegment,
   normalizeWorkspaceRelativePath,
@@ -154,7 +155,7 @@ function templatesFilePath(dataRoot: string): string {
 }
 
 function dataRootOrDefault(dataRoot?: string): string {
-  return dataRoot ?? defaultConversationDataRoot();
+  return dataRoot ?? defaultServerDataRoot();
 }
 
 function pathSegments(workspaceRelativePath: string): string[] {

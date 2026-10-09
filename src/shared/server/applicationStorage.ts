@@ -1,3 +1,9 @@
+import { resolveServerDataRoot } from "./runtimeConfig";
+
+export function defaultServerDataRoot() {
+  return resolveServerDataRoot({ cwd: process.cwd(), env: process.env });
+}
+
 export const APPLICATION_DATA_STORAGE_UNAVAILABLE =
   "Application data storage is unavailable" as const;
 

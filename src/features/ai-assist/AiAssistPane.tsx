@@ -1,12 +1,13 @@
+import type { EditorTarget } from "../editor/editorTarget";
 import { siwcExecutionMessage } from "../siwc/useAiConnection";
 import { useId, type ReactNode } from "react";
 import { FiCpu } from "react-icons/fi";
 import type { LlmProfileRoleAssignment } from "../ai-agent/llmProfiles";
 import type { AvailableLlmProvider } from "../ai-agent/modelProvider";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
-import type { LlmProfileWithAvailability } from "../ai-chat/chatModelSelection";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
 import { EditProposalCard } from "../edit-proposals/EditProposalCard";
-import type { LlmProviderChoice } from "../settings/settingsStorage";
+import type { LlmProviderChoice } from "../ai-agent/llmSelection";
 import { AiAssistList } from "./AiAssistList";
 import { AiAssistManagementDialog } from "./AiAssistManagementDialog";
 import { AiAssistModelControls } from "./AiAssistModelControls";
@@ -17,14 +18,10 @@ import {
   type CustomAiAssistDefinition,
 } from "./aiAssistContracts";
 import type { AiAssistStandardModelSelection } from "./aiAssistModelSelection";
-import {
-  targetKindLabel,
-  type AiAssistEditorTarget,
-} from "./aiAssistPaneHelpers";
+import { targetKindLabel } from "./aiAssistPaneHelpers";
 import type { AiAssistSaveInput } from "./useAiAssistDefinitions";
 import { useAiAssistPaneState } from "./useAiAssistPaneState";
 
-export type { AiAssistEditorTarget } from "./aiAssistPaneHelpers";
 export type { AiAssistExecutionOption } from "./aiAssistContracts";
 
 export type AiAssistPaneProps = {
@@ -43,7 +40,7 @@ export type AiAssistPaneProps = {
     assistId: string;
     executionOptionId: string;
     standardModelSelection?: AiAssistStandardModelSelection;
-    target: AiAssistEditorTarget;
+    target: EditorTarget;
   }) => Promise<EditProposal>;
   onReject: (proposal: EditProposal) => Promise<EditProposal>;
   onSaveAssist?: (input: AiAssistSaveInput) => Promise<CustomAiAssistDefinition>;
@@ -51,7 +48,7 @@ export type AiAssistPaneProps = {
     paneCollapseControl?: ReactNode;
     paneLayoutResetControl?: ReactNode;
   };
-  target: AiAssistEditorTarget | null;
+  target: EditorTarget | null;
   writingAssignment?: LlmProfileRoleAssignment;
 };
 

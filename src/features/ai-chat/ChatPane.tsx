@@ -2,16 +2,16 @@ import { siwcExecutionMessage } from "../siwc/useAiConnection";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { FaExclamationTriangle, FaHistory, FaPlus } from "react-icons/fa";
 import type { EditProposal } from "./conversationSchemas";
-import type { LlmProviderChoice, SelectedModel } from "../settings/settingsStorage";
+import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
 import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
 import { ChatComposer } from "./ChatComposer";
 import { ChatMessageList } from "./ChatMessageList";
-import type { LlmProfileWithAvailability } from "./chatModelSelection";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
 import {
-  chatModelSelectValue,
+  llmModelSelectValue,
   selectedModelFromRoleAssignment,
-  unavailableReasonForCurrentChatModelSelection,
-} from "./chatModelSelection";
+  unavailableReasonForCurrentModelSelection,
+} from "../ai-agent/llmModelSelection";
 import { ConversationHistoryDialog } from "./ConversationHistoryDialog";
 import { latestMainContextSnapshot, sessionTokenUsage } from "./tokenUsageDisplay";
 import { useChatConversationController } from "./useChatConversationController";
@@ -189,7 +189,7 @@ function ChatPaneView({
   const mainAssignment = llmProfileRoleAssignments?.main;
   const chatModelValue = useMemo(
     () =>
-      chatModelSelectValue({
+      llmModelSelectValue({
         mainAssignment,
         modelSelection,
         profiles: llmProfiles,
@@ -202,7 +202,7 @@ function ChatPaneView({
   );
   const unavailableReasons = useMemo(
     () =>
-      unavailableReasonForCurrentChatModelSelection({
+      unavailableReasonForCurrentModelSelection({
         chatModelValue,
         llmProfiles,
         llmProviders,

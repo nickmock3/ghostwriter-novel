@@ -1,10 +1,10 @@
-import type { LlmProfile, LlmProfileRoleAssignment } from "../ai-agent/llmProfiles";
+import type { LlmProfile, LlmProfileRoleAssignment } from "./llmProfiles";
 import {
   modelSelectionFromValue,
   modelSelectionValue,
   type LlmProviderChoice,
   type SelectedModel,
-} from "../settings/settingsStorage";
+} from "./llmSelection";
 
 export function selectedModelFromRoleAssignment(
   assignment: LlmProfileRoleAssignment | undefined,
@@ -34,7 +34,7 @@ export function profileIdFromRoleAssignment(assignment: LlmProfileRoleAssignment
   return assignment?.kind === "profile" ? assignment.profileId : undefined;
 }
 
-export function chatModelSelectValue(options: {
+export function llmModelSelectValue(options: {
   mainAssignment: LlmProfileRoleAssignment | undefined;
   modelSelection: SelectedModel | null;
   profiles: LlmProfile[];
@@ -58,7 +58,7 @@ export type LlmProfileWithAvailability = LlmProfile & {
   unavailableReason?: string;
 };
 
-export function unavailableReasonForCurrentChatModelSelection(options: {
+export function unavailableReasonForCurrentModelSelection(options: {
   chatModelValue: string;
   llmProfiles: LlmProfileWithAvailability[];
   llmProviders: LlmProviderChoice[];

@@ -55,6 +55,25 @@ flowchart TD
   AssistApplyApi --> AssistFileStore["shared editProposalService\nlocalWorkspaceFileStore"]
 ```
 
+## feature間の依存方向
+
+下位featureは上位featureの実装を参照しません。次の順序は左側が下位で、importは上位から下位へ向けます。
+
+```text
+shared → workspace → edit-proposals → ai-tools → ai-agent → ai-chat / ai-assist
+                                                  ↑
+                                          siwc（LLM接続の実装）
+```
+
+- `ai-chat`と`ai-assist`は互いに依存しません。共通のLLM選択契約・選択ロジック・UIは`ai-agent/llmSelection.ts`、`llmModelSelection.ts`、`LlmModelSelector.tsx`に置きます。これらはブラウザから利用でき、サーバー専用moduleを参照しません。
+- `UpdatePlan`の項目schemaと型は`ai-agent/agentPlan.ts`が所有し、会話履歴schemaが参照します。
+- 検索ストアの入出力型は`workspace/workspaceSearchStore.ts`が所有し、`ai-tools/ripgrepTools.ts`のZod schemaをその契約に適合させます。
+- `editor`、`file-tree`、`reader`は`workspace`と`edit-proposals`を参照できます。エディター本文・選択範囲のsnapshot型は`editor/editorTarget.ts`が公開し、`ai-assist`が参照します。
+- `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`ai-agent`から直接参照します。localStorageのキーと保存JSONの形は維持します。
+- 既定のアプリデータ保存先は`shared/server/applicationStorage.ts`の`defaultServerDataRoot()`で解決し、会話、AIアシスト、ワークスペーステンプレートから直接参照します。このmoduleはサーバー専用です。
+
+結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査、LLM featureの分離、`src/app/`の責務整理は別タスクで扱います。
+
 ## HTTP API composition
 
 本番HTTP composition rootは`src/shared/server/apiRouter.ts`です。現在のcanonical pathは次のとおりです。個別操作の一部は同じpathをHTTP methodまたはrequest bodyの`action`で振り分けます。

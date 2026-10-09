@@ -1,3 +1,4 @@
+import type { EditorTarget } from "./editorTarget";
 import CodeMirror, {
   EditorSelection,
   EditorView,
@@ -15,7 +16,6 @@ import {
 import { createEditorExtensions } from "./codeMirrorConfig";
 import { readDroppedEditorText } from "./droppedEditorTextFiles";
 import { useFileSession, type FileSession } from "./useFileSession";
-import type { AiAssistEditorTarget } from "../ai-assist/AiAssistPane";
 
 export type EditorPaneSelectionRequest = {
   end: number;
@@ -30,7 +30,7 @@ type EditorPaneProps = {
   fileSession?: FileSession;
   fileTreeRestoreControl?: ReactNode;
   onActivePathChange?: (path: string | null) => void;
-  onAiAssistTargetChange?: (target: AiAssistEditorTarget | null) => void;
+  onAiAssistTargetChange?: (target: EditorTarget | null) => void;
   onDirtyStateChange?: (path: string | null, isDirty: boolean) => void;
   onSelectionRequestConsumed?: (id: number) => void;
   refreshKey?: number;

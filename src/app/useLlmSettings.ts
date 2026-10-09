@@ -7,14 +7,13 @@ import {
   type LlmProfileSettings,
 } from "../features/ai-agent/llmProfileStorage";
 import type { LlmProfile } from "../features/ai-agent/llmProfiles";
+import { normalizeUserSettings, type UserSettings } from "../features/settings/settingsStorage";
 import {
   llmSecretListResponseSchema,
   llmProviderListResponseSchema,
-  normalizeUserSettings,
   type LlmSecretStatus,
   type LlmProviderChoice,
-  type UserSettings,
-} from "../features/settings/settingsStorage";
+} from "../features/ai-agent/llmSelection";
 import { apiFetch } from "../shared/client/apiTransport";
 
 export function useLlmSettings(

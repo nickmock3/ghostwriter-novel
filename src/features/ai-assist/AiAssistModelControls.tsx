@@ -2,11 +2,11 @@ import { ChatGptModelControls } from "../siwc/ChatGptModelControls";
 import type { AiConnectionState } from "../siwc/useAiConnection";
 import type { AvailableLlmProvider } from "../ai-agent/modelProvider";
 import {
-  ChatModelSelector,
-  ChatModelUnavailableReasons,
-} from "../ai-chat/ChatModelSelector";
-import type { LlmProfileWithAvailability } from "../ai-chat/chatModelSelection";
-import type { SelectedModel } from "../settings/settingsStorage";
+  LlmModelSelector,
+  LlmModelUnavailableReasons,
+} from "../ai-agent/LlmModelSelector";
+import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { SelectedModel } from "../ai-agent/llmSelection";
 import type { AiAssistExecutionOption } from "./aiAssistContracts";
 
 export type AiAssistModelControlsProps = {
@@ -77,7 +77,7 @@ export function AiAssistModelControls({
             </select>
           </label>
           {connection?.connection === "chatgpt" ? <ChatGptModelControls state={connection} disabled={isBusy} label="AIアシストChatGPTモデル" /> : connection?.connection === "codex" ? null : (
-            <ChatModelSelector
+            <LlmModelSelector
               ariaLabel="AIアシストLLMモデル"
               chatModelValue={chatModelValue}
               disabled={
@@ -95,7 +95,7 @@ export function AiAssistModelControls({
       ) : null}
       {connection?.connection === "codex" ? <p role="status">旧Codex連携は廃止されました。接続を選び直してください。</p> : null}
       {!executionOptions.some(option => option.id === selectedExecutionOptionId) ? <p role="status">選択した接続を利用できません。<a href="/settings">設定を確認</a>してください。</p> : null}
-      {connection?.connection !== "chatgpt" ? <ChatModelUnavailableReasons reasons={unavailableReasons} /> : null}
+      {connection?.connection !== "chatgpt" ? <LlmModelUnavailableReasons reasons={unavailableReasons} /> : null}
     </div>
   );
 }
