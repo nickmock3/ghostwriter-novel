@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { SettingsPage } from "../features/settings/SettingsPage";
+import { useUserSettingsContext } from "./UserSettingsContext";
 import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 
 export function SettingsRoutePage() {
+  const { settings, setSettings } = useUserSettingsContext();
   const { workspaceRoot } = useWorkspaceContext();
   const {
     handleDeleteLlmSecret,
@@ -13,8 +15,6 @@ export function SettingsRoutePage() {
     llmSecrets,
     refreshLlmSecrets,
     refreshLlmSettings,
-    setSettings,
-    settings,
     settingsError,
   } = useLlmSettingsContext();
   useEffect(() => {

@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useRef, useState, type ReactNode 
 import { useRouterState } from "@tanstack/react-router";
 import { useChatConversationController } from "../features/ai-chat/useChatConversationController";
 import { useEditorSessionContext } from "./EditorSessionContext";
+import { useUserSettingsContext } from "./UserSettingsContext";
 import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 import { buildMainLlmChatPaneProps, type MainLlmChatPaneProps } from "../features/ai-chat/mainLlmChatPaneProps";
@@ -22,9 +23,10 @@ export function useChatSession() {
 
 // Lives above route pages; keyed by workspace in App to isolate sessions.
 export function ChatSessionProvider({ children }: { children: ReactNode }) {
+  const { settings, setSettings } = useUserSettingsContext();
   const { workspaceRoot } = useWorkspaceContext();
   const { dirtyPaths, handleAppliedEdit, selectedPath } = useEditorSessionContext();
-  const { llmProfileSettings, llmProfiles, llmProviders, setLlmProfileSettings, setSettings, settings } = useLlmSettingsContext();
+  const { llmProfileSettings, llmProfiles, llmProviders, setLlmProfileSettings } = useLlmSettingsContext();
   const isChatVisible = useRouterState({ select: (state) => state.location.pathname === "/chat" });
   const [hasOpenedChat, setHasOpenedChat] = useState(isChatVisible);
   useEffect(() => {

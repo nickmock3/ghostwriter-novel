@@ -106,6 +106,13 @@ export function firstAvailableModel(providers: LlmProviderChoice[]): SelectedMod
   return null;
 }
 
+export function resolveModelSelection(
+  selection: SelectedModel | null,
+  providers: LlmProviderChoice[],
+): SelectedModel | null {
+  return selection ?? firstAvailableModel(providers);
+}
+
 export function isModelAvailable(providers: LlmProviderChoice[], modelSelection: SelectedModel | null) {
   if (!modelSelection) {
     return false;

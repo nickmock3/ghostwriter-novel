@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getRouter } from "../router";
 import { APP_DISPLAY_VERSION } from "../shared/appVersion";
+import { defaultUserSettings, USER_SETTINGS_STORAGE_KEY, type UserSettings } from "../features/settings/settingsStorage";
 import { IDEA_CONSULT_PROMPT } from "../features/workspace/StartGuideModal";
 
 const useAiAssistDefinitionsMock = vi.hoisted(() =>
@@ -468,6 +469,49 @@ describe("App", () => {
 
   afterEach(() => {
     localStorage.clear();
+  });
+
+  it.each([null, { providerId: "openai", modelId: "saved-model" }])(
+    "fills a missing model after providers load and preserves saved selection %j",
+    async (modelSelection) => {
+      const saved: UserSettings = { ...defaultUserSettings, modelSelection };
+      localStorage.setItem(USER_SETTINGS_STORAGE_KEY, JSON.stringify(saved));
+      let completeProviders!: (response: Response) => void;
+      const providers = new Promise<Response>((resolve) => { completeProviders = resolve; });
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (input) =>
+        String(input) === "/api/llm/providers" ? providers : llmSettingsFetchResponse(input));
+      await renderApp("/editor");
+      fireEvent.click(screen.getByRole("button", { name: "ワークスペースを開く" }));
+      expect(JSON.parse(localStorage.getItem(USER_SETTINGS_STORAGE_KEY)!)).toEqual(saved);
+      await act(async () => { completeProviders(providerResponse()); });
+      await waitFor(() => {
+        expect(JSON.parse(localStorage.getItem(USER_SETTINGS_STORAGE_KEY)!)).toEqual({
+          ...saved,
+          modelSelection: modelSelection ?? { providerId: "anthropic", modelId: "claude-sonnet-4-6" },
+        });
+      });
+    },
+  );
+
+  it("preserves all user settings when provider loading fails", async () => {
+    const saved: UserSettings = {
+      ...defaultUserSettings,
+      autoCompactEnabled: false,
+      autoCompactThresholdRatio: 0.8,
+      restoreLastWorkspace: false,
+      showEditorLineNumbers: true,
+      showNoisyDirectories: true,
+      wrapEditorLines: false,
+    };
+    localStorage.setItem(USER_SETTINGS_STORAGE_KEY, JSON.stringify(saved));
+    vi.spyOn(globalThis, "fetch").mockImplementation(async (input) =>
+      String(input) === "/api/llm/providers"
+        ? new Response(null, { status: 500 }) : llmSettingsFetchResponse(input));
+    await renderApp("/editor");
+    fireEvent.click(screen.getByRole("button", { name: "ワークスペースを開く" }));
+    fireEvent.click(screen.getByRole("link", { name: "設定ページ" }));
+    expect(await screen.findByText("LLMモデル一覧の読み込みに失敗しました。")).toBeInTheDocument();
+    expect(JSON.parse(localStorage.getItem(USER_SETTINGS_STORAGE_KEY)!)).toEqual(saved);
   });
 
   it("renders the three-pane editor shell", async () => {

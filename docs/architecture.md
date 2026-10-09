@@ -70,10 +70,9 @@ shared → workspace → edit-proposals → llm → siwc → ai-agent → ai-cha
 - 検索ストアの入出力型は`workspace/workspaceSearchStore.ts`が所有し、`ai-agent/tools/ripgrepTools.ts`のZod schemaをその契約に適合させます。
 - `editor`、`file-tree`、`reader`は`workspace`と`edit-proposals`を参照できます。エディター本文・選択範囲のsnapshot型は`editor/editorTarget.ts`が公開し、`ai-assist`が参照します。
 - `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`llm`から直接参照します。localStorageのキーと保存JSONの形は維持します。
-- ユーザー設定契約の例外として、`llm`と`ai-chat`から`settings/settingsStorage.ts`への参照だけは許可します。`settings`の画面など他のmoduleへの逆依存は許可しません。
 - 既定のアプリデータ保存先は`shared/server/applicationStorage.ts`の`defaultServerDataRoot()`で解決し、会話、AIアシスト、ワークスペーステンプレートから直接参照します。このmoduleはサーバー専用です。
 
-依存ルールは`src/features/featureDependencies.test.ts`で自動検査します。許可表とmodule単位の例外は、この節と検査コードを同時に更新してください。上記の順序で各featureはすべての下位featureを参照できます。同一feature内と`shared`などfeature外への参照は制限しません。新規featureは許可表への追加が必要です。
+依存ルールは`src/features/featureDependencies.test.ts`で自動検査します。許可表は、この節と検査コードを同時に更新してください。上記の順序で各featureはすべての下位featureを参照できます。同一feature内と`shared`などfeature外への参照は制限しません。新規featureは許可表への追加が必要です。
 
 検査は`src/features/`内の本番TS/TSXを構文解析し、通常・型・副作用import、再export、文字列による動的import・requireを対象にします。結合テスト用の`*.test.ts(x)`、`*.spec.ts(x)`、`test-support.ts(x)`と`src/test/`は対象外です。`src/app/`、`src/routes/`、`src/shared/`からfeatureへの依存も対象外です（`shared/server/apiRouter.ts`はHTTP composition rootとしてfeatureを組み立てます）。
 
@@ -245,14 +244,15 @@ production chatは`src/features/ai-chat/modelMessages.ts`の`conversation-compac
 - `/templates`: テンプレート管理ページ。
 - `/llm-profiles`: LLMプロフィールと用途別割り当ての管理ページ。
 
-`src/app/App.tsx`が`workspace/useWorkspaceSession`と`llm/useLlmSettings`を呼び、共有stateを個別の`WorkspaceContext`、`EditorSessionContext`、`PaneLayoutContext`、`LlmSettingsContext`として提供し、`src/app/AppShell.tsx`が左端サイドバー、route outlet、ワークスペースヘッダーをまとめます。ワークスペース操作ヘッダーは`/chat`と`/editor`だけに表示します。
+`src/app/App.tsx`が`workspace/useWorkspaceSession`と`llm/useLlmSettings`を呼び、共有stateを個別の`WorkspaceContext`、`EditorSessionContext`、`PaneLayoutContext`、`UserSettingsContext`、`LlmSettingsContext`として提供し、`src/app/AppShell.tsx`が左端サイドバー、route outlet、ワークスペースヘッダーをまとめます。ワークスペース操作ヘッダーは`/chat`と`/editor`だけに表示します。
 
 共有Contextの責務:
 
 - `WorkspaceContext`: ワークスペースルートと開始ガイド。
 - `EditorSessionContext`: `useFileSession`の編集セッション、選択パス、未保存状態、再読込通知、画面間のテキスト受け渡し。
 - `PaneLayoutContext`: ペイン幅、折りたたみ、リサイズ操作。
-- `LlmSettingsContext`: UI設定、LLMプロフィール、providerとシークレットの状態・更新操作。APIキー本文を保持する境界ではありません。
+- `UserSettingsContext`: ユーザー設定全体と更新操作。モデル選択の更新をAppからLLMへ結線します。
+- `LlmSettingsContext`: LLMプロフィール、providerとシークレットの状態・更新操作。APIキー本文を保持する境界ではありません。
 
 主要コンポーネント:
 

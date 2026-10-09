@@ -2,7 +2,6 @@ import type { LlmProfileSettings } from "../llm/profiles/llmProfileStorage";
 import type { LlmProfileRoleAssignments } from "../llm/profiles/llmProfiles";
 import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
-import type { UserSettings } from "../settings/settingsStorage";
 import { chatModelSelection, updateMainLlmModelSelection, updateMainLlmProfileId } from "../llm/llmMainRoleAssignment";
 
 export type BuildMainLlmChatPanePropsInput = {
@@ -16,7 +15,7 @@ export type BuildMainLlmChatPanePropsInput = {
       | ((current: LlmProfileSettings | null) => LlmProfileSettings | null),
   ) => void;
   setSettingsModelSelection: (modelSelection: SelectedModel | null) => void;
-  settingsModelSelection: UserSettings["modelSelection"];
+  settingsModelSelection: SelectedModel | null;
 };
 
 export type MainLlmChatPaneProps = {

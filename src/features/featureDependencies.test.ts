@@ -22,12 +22,6 @@ const allowedDependencies: Readonly<Record<string, readonly string[]>> = {
   ],
 };
 
-// User settings remain owned by settings; this exception never permits its UI.
-const allowedModules: Readonly<Record<string, readonly string[]>> = {
-  llm: ["settings/settingsStorage"],
-  "ai-chat": ["settings/settingsStorage"],
-};
-
 const featuresRoot = fileURLToPath(new URL("./", import.meta.url));
 const projectRoot = path.resolve(featuresRoot, "../..");
 const configPath = path.join(projectRoot, "tsconfig.json");
@@ -74,7 +68,6 @@ async function dependencyViolations(file: string): Promise<string[]> {
   const source = ts.createSourceFile(file, await readFile(file, "utf8"), ts.ScriptTarget.Latest, true);
   const owner = path.relative(featuresRoot, file).split(path.sep)[0];
   const allowed = allowedDependencies[owner] ?? [];
-  const exceptions = allowedModules[owner] ?? [];
   return moduleReferences(source).flatMap((reference) => {
     const resolved = ts.resolveModuleName(
       reference.text, file, parsedConfig.options, ts.sys, resolutionCache,
@@ -87,9 +80,9 @@ async function dependencyViolations(file: string): Promise<string[]> {
     if (relativeTarget.startsWith(`..${path.sep}`) || path.isAbsolute(relativeTarget)) return [];
     const target = relativeTarget.split(path.sep)[0];
     const targetModule = relativeTarget.split(path.sep).join("/").replace(/\.tsx?$/, "");
-    if (target === owner || allowed.includes(target) || exceptions.includes(targetModule)) return [];
+    if (target === owner || allowed.includes(target)) return [];
     const line = source.getLineAndCharacterOfPosition(reference.getStart(source)).line + 1;
-    const allowedTargets = [...allowed, ...exceptions].join(", ") || "(none)";
+    const allowedTargets = allowed.join(", ") || "(none)";
     return [`${path.relative(projectRoot, file).split(path.sep).join("/")}:${line}: ${owner} -> ${targetModule} (${reference.text}); allowed: ${allowedTargets}`];
   });
 }

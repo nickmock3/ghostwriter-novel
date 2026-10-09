@@ -6,8 +6,9 @@ import {
   type LlmProfileSettings,
 } from "./profiles/llmProfileStorage";
 import type { LlmProfile } from "./profiles/llmProfiles";
-import { normalizeUserSettings, type UserSettings } from "../settings/settingsStorage";
 import {
+  resolveModelSelection,
+  type SelectedModel,
   llmSecretListResponseSchema,
   llmProviderListResponseSchema,
   type LlmSecretStatus,
@@ -17,8 +18,7 @@ import { apiFetch } from "../../shared/client/apiTransport";
 
 export function useLlmSettings(
   workspaceRoot: string | null,
-  settings: UserSettings,
-  setSettings: Dispatch<SetStateAction<UserSettings>>,
+  onModelSelectionChange: Dispatch<SetStateAction<SelectedModel | null>>,
 ) {
   const [llmProviders, setLlmProviders] = useState<LlmProviderChoice[]>([]);
   const [llmProfiles, setLlmProfiles] = useState<
@@ -42,9 +42,9 @@ export function useLlmSettings(
     }
     const providers = llmProviderListResponseSchema.parse(await response.json()).providers;
     setLlmProviders(providers);
-    setSettings((current) => normalizeUserSettings(current, providers));
+    onModelSelectionChange((current) => resolveModelSelection(current, providers));
     return providers;
-  }, [setSettings]);
+  }, [onModelSelectionChange]);
 
   const refreshLlmProfiles = useCallback(async (providers: LlmProviderChoice[]) => {
     const response = await apiFetch("/api/llm/profiles");
@@ -78,7 +78,7 @@ export function useLlmSettings(
     setSettingsError(null);
 
     if (!workspaceRoot) {
-      setSettings((current) => normalizeUserSettings(current, []));
+      onModelSelectionChange((current) => resolveModelSelection(current, []));
       return;
     }
 
@@ -97,7 +97,7 @@ export function useLlmSettings(
     return () => {
       cancelled = true;
     };
-  }, [refreshLlmSettings, setSettings, workspaceRoot]);
+  }, [refreshLlmSettings, onModelSelectionChange, workspaceRoot]);
 
   const handleSaveLlmSecret = useCallback(
     async (providerId: string, apiKey: string) => {

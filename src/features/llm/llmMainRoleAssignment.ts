@@ -4,7 +4,6 @@ import type {
   LlmProfileRoleAssignment,
 } from "./profiles/llmProfiles";
 import type { LlmProviderId } from "./modelProvider";
-import type { UserSettings } from "../settings/settingsStorage";
 import type { SelectedModel } from "./selection/llmSelection";
 
 function selectedModelFromRoleAssignment(
@@ -32,7 +31,7 @@ function selectedModelFromRoleAssignment(
 }
 
 export function chatModelSelection(
-  settingsModelSelection: UserSettings["modelSelection"],
+  settingsModelSelection: SelectedModel | null,
   mainAssignment: LlmProfileRoleAssignment | undefined,
   profiles: Array<LlmProfile & { available: boolean; unavailableReason?: string }>,
 ) {

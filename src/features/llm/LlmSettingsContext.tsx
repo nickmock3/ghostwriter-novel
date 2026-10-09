@@ -1,7 +1,6 @@
 import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
 import type { LlmProfileSettings } from "./profiles/llmProfileStorage";
 import type { LlmProfile } from "./profiles/llmProfiles";
-import type { UserSettings } from "../settings/settingsStorage";
 import type { LlmProviderChoice, LlmSecretStatus } from "./selection/llmSelection";
 
 export type LlmSettingsContextValue = {
@@ -15,8 +14,6 @@ export type LlmSettingsContextValue = {
   refreshLlmSecrets: () => Promise<void>;
   refreshLlmSettings: () => Promise<void>;
   setLlmProfileSettings: Dispatch<SetStateAction<LlmProfileSettings | null>>;
-  setSettings: Dispatch<SetStateAction<UserSettings>>;
-  settings: UserSettings;
   settingsError: string | null;
 };
 

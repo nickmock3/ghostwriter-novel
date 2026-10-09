@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import type { AppliedEditProposal } from "../features/ai-chat/ChatPane";
 import { IDEA_CONSULT_PROMPT } from "../features/workspace/StartGuideModal";
 import { useFileSession } from "../features/editor/useFileSession";
@@ -12,6 +12,8 @@ import {
   type EditorSelectionJumpRequest,
   type NewEditorSelectionJumpRequest,
 } from "./EditorSessionContext";
+import { UserSettingsContext } from "./UserSettingsContext";
+import type { SelectedModel } from "../features/llm/selection/llmSelection";
 import { LlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { PaneLayoutContext } from "./PaneLayoutContext";
 import { WorkspaceContext } from "./WorkspaceContext";
@@ -45,6 +47,14 @@ export function App() {
   const chatAppendRequestIdRef = useRef(0);
   const editorSelectionJumpRequestIdRef = useRef(0);
 
+  const onModelSelectionChange: Dispatch<SetStateAction<SelectedModel | null>> = useCallback(
+    (update) => setSettings((current) => ({
+      ...current,
+      modelSelection: typeof update === "function" ? update(current.modelSelection) : update,
+    })),
+    [],
+  );
+
   const {
     handleDeleteLlmSecret,
     handleSaveLlmSecret,
@@ -57,7 +67,7 @@ export function App() {
     refreshLlmSettings,
     setLlmProfileSettings,
     settingsError,
-  } = useLlmSettings(workspaceRoot, settings, setSettings);
+  } = useLlmSettings(workspaceRoot, onModelSelectionChange);
 
   const {
     handleCollapseLeftPane,
@@ -158,86 +168,86 @@ export function App() {
   );
 
   return (
-    <LlmSettingsContext.Provider
-      value={{
-        handleDeleteLlmSecret,
-        handleSaveLlmSecret,
-        llmProfileSettings,
-        llmProfiles,
-        llmProviders,
-        llmSecretErrors,
-        llmSecrets,
-        refreshLlmSecrets,
-        refreshLlmSettings,
-        setLlmProfileSettings,
-        setSettings,
-        settings,
-        settingsError,
-      }}
-    >
-      <WorkspaceContext.Provider
+    <UserSettingsContext.Provider value={{ settings, setSettings }}>
+      <LlmSettingsContext.Provider
         value={{
-          dismissStartGuide,
-          handleStartGuideIdeaConsult,
-          showStartGuide,
-          workspaceRoot,
+          handleDeleteLlmSecret,
+          handleSaveLlmSecret,
+          llmProfileSettings,
+          llmProfiles,
+          llmProviders,
+          llmSecretErrors,
+          llmSecrets,
+          refreshLlmSecrets,
+          refreshLlmSettings,
+          setLlmProfileSettings,
+          settingsError,
         }}
       >
-        <EditorSessionContext.Provider
+        <WorkspaceContext.Provider
           value={{
-            chatAppendRequest,
-            consumeEditorSelectionJumpRequest,
-            dirtyPaths,
-            editorSelectionJumpRequest,
-            editorRefreshKey,
-            fileSession,
-            fileTreeRefreshKey,
-            handleAppliedEdit,
-            handleDirtyStateChange,
-            handleFileOperation,
-            handleSendEditorSelectionToChat,
-            requestEditorSelectionJump,
-            selectedPath,
-            setDirtyPaths,
-            setSelectedPath,
+            dismissStartGuide,
+            handleStartGuideIdeaConsult,
+            showStartGuide,
+            workspaceRoot,
           }}
         >
-          <PaneLayoutContext.Provider
+          <EditorSessionContext.Provider
             value={{
-              handleCollapseLeftPane,
-              handleCollapseRightPane,
-              handleResetPaneWidths,
-              handleResizeStart,
-              handleRestoreLeftPane,
-              handleRestoreRightPane,
-              isLeftPaneCollapsed,
-              isPaneResizeDragging,
-              isRightPaneCollapsed,
-              layoutRef,
-              paneWidths,
-              threePaneLayoutStyle,
+              chatAppendRequest,
+              consumeEditorSelectionJumpRequest,
+              dirtyPaths,
+              editorSelectionJumpRequest,
+              editorRefreshKey,
+              fileSession,
+              fileTreeRefreshKey,
+              handleAppliedEdit,
+              handleDirtyStateChange,
+              handleFileOperation,
+              handleSendEditorSelectionToChat,
+              requestEditorSelectionJump,
+              selectedPath,
+              setDirtyPaths,
+              setSelectedPath,
             }}
           >
-            <ChatSessionProvider key={workspaceRoot ?? "no-workspace"}>
-              <AppShell
-                workspaceRoot={workspaceRoot}
-                workspaceRestoreState={workspaceRestoreState}
-                onTemplateApplied={() => {
-                  setFileTreeRefreshKey((current) => current + 1);
-                }}
-                onWorkspaceSelected={(nextWorkspaceRoot, options) => {
-                  selectWorkspace(nextWorkspaceRoot, options);
-                  setSelectedPath(null);
-                  setDirtyPaths([]);
-                  setEditorSelectionJumpRequest(null);
-                  setEditorRefreshKey(0);
-                  setFileTreeRefreshKey(0);
-                }}
-              />
-            </ChatSessionProvider>
-          </PaneLayoutContext.Provider>
-        </EditorSessionContext.Provider>
-      </WorkspaceContext.Provider>
-    </LlmSettingsContext.Provider>
+            <PaneLayoutContext.Provider
+              value={{
+                handleCollapseLeftPane,
+                handleCollapseRightPane,
+                handleResetPaneWidths,
+                handleResizeStart,
+                handleRestoreLeftPane,
+                handleRestoreRightPane,
+                isLeftPaneCollapsed,
+                isPaneResizeDragging,
+                isRightPaneCollapsed,
+                layoutRef,
+                paneWidths,
+                threePaneLayoutStyle,
+              }}
+            >
+              <ChatSessionProvider key={workspaceRoot ?? "no-workspace"}>
+                <AppShell
+                  workspaceRoot={workspaceRoot}
+                  workspaceRestoreState={workspaceRestoreState}
+                  onTemplateApplied={() => {
+                    setFileTreeRefreshKey((current) => current + 1);
+                  }}
+                  onWorkspaceSelected={(nextWorkspaceRoot, options) => {
+                    selectWorkspace(nextWorkspaceRoot, options);
+                    setSelectedPath(null);
+                    setDirtyPaths([]);
+                    setEditorSelectionJumpRequest(null);
+                    setEditorRefreshKey(0);
+                    setFileTreeRefreshKey(0);
+                  }}
+                />
+              </ChatSessionProvider>
+            </PaneLayoutContext.Provider>
+          </EditorSessionContext.Provider>
+        </WorkspaceContext.Provider>
+      </LlmSettingsContext.Provider>
+    </UserSettingsContext.Provider>
   );
 }

@@ -16,11 +16,13 @@ import { EditorPane } from "../features/editor/EditorPane";
 import { FileTreePane } from "../features/file-tree/FileTreePane";
 import { StartGuideModal } from "../features/workspace/StartGuideModal";
 import { useEditorSessionContext } from "./EditorSessionContext";
+import { useUserSettingsContext } from "./UserSettingsContext";
 import { useLlmSettingsContext } from "../features/llm/LlmSettingsContext";
 import { usePaneLayoutContext } from "./PaneLayoutContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 
 export function EditorRoutePage() {
+  const { settings } = useUserSettingsContext();
   const navigate = useNavigate();
   const {
     dismissStartGuide,
@@ -56,7 +58,7 @@ export function EditorRoutePage() {
     paneWidths,
     threePaneLayoutStyle,
   } = usePaneLayoutContext();
-  const { llmProfileSettings, llmProfiles, llmProviders, settings } = useLlmSettingsContext();
+  const { llmProfileSettings, llmProfiles, llmProviders } = useLlmSettingsContext();
   const [aiAssistTarget, setAiAssistTarget] = useState<EditorTarget | null>(null);
   const { executionOptions, isLoading: isExecutionOptionsLoading } = useAiAssistExecutionOptions({
     llmProfileSettings,

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import {
-  firstAvailableModel,
+  resolveModelSelection,
   selectedModelSchema,
   type LlmProviderChoice,
   type SelectedModel,
@@ -61,11 +61,11 @@ export function normalizeUserSettings(
   if (!parsed.success) {
     return {
       ...defaultUserSettings,
-      modelSelection: firstAvailableModel(providers),
+      modelSelection: resolveModelSelection(null, providers),
     };
   }
 
-  const modelSelection = parsed.data.modelSelection ?? firstAvailableModel(providers);
+  const modelSelection = resolveModelSelection(parsed.data.modelSelection ?? null, providers);
 
   return {
     autoCompactEnabled: parsed.data.autoCompactEnabled ?? defaultUserSettings.autoCompactEnabled,
