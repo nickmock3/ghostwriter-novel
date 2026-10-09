@@ -655,3 +655,15 @@
   color: #697386;
   font-size: 0.82rem;
 }
+
+.settings-range-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.settings-range-label output {
+  font: inherit;
+  white-space: nowrap;
+}

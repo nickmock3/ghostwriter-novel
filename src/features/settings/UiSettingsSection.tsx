@@ -35,6 +35,7 @@ export function UiSettingsSection({
       <label className="settings-check">
         <input
           type="checkbox"
+          aria-describedby="noisy-directories-help"
           checked={settings.showNoisyDirectories}
           onChange={(event) =>
             onSettingsChange({ ...settings, showNoisyDirectories: event.target.checked })
@@ -42,6 +43,9 @@ export function UiSettingsSection({
         />
         <span>ノイズディレクトリを表示する</span>
       </label>
+      <p className="settings-help" id="noisy-directories-help">
+        .git、node_modulesなどの作業用フォルダもファイルツリーに表示します。
+      </p>
       <label className="settings-check">
         <input
           type="checkbox"

@@ -2,8 +2,10 @@ import type { AiConnectionState } from "./useAiConnection";
 export function ChatGptModelControls({ state, disabled = false, fixed = false, label = "ChatGPTモデル" }: {
   state: AiConnectionState; disabled?: boolean; fixed?: boolean; label?: string;
 }) {
+  const selectedLabel = state.models.find(model => model.slug === state.selection?.modelId)?.displayName
+    ?? state.selection?.modelId ?? "モデル未選択";
   return <div className="chatgpt-model-controls">
-    <select aria-label={label} disabled={disabled || fixed || state.loading} value={state.selection?.modelId ?? ""} onChange={event => state.chooseModel(event.target.value)}>
+    <select title={selectedLabel} aria-label={label} disabled={disabled || fixed || state.loading} value={state.selection?.modelId ?? ""} onChange={event => state.chooseModel(event.target.value)}>
       {!state.models.some(model => model.slug === state.selection?.modelId) ? <option value={state.selection?.modelId ?? ""}>{state.selection?.modelId ?? "モデル未選択"}</option> : null}
       {state.models.map(model => <option key={model.slug} value={model.slug}>{model.displayName}</option>)}
     </select>

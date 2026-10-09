@@ -166,7 +166,7 @@ describe("SettingsPage", () => {
       ...settings,
       autoCompactThresholdRatio: 0.8,
     });
-    expect(screen.getByText("コンテキスト使用率 70%")).toBeInTheDocument();
+    expect(screen.getByText("70%")).toBeInTheDocument();
   });
 
   it("keeps API key inputs collapsed until the user expands them", () => {

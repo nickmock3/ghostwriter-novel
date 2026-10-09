@@ -124,7 +124,7 @@
 
 .ai-assist-composer-footer {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   gap: 6px;
   margin-top: 8px;
   min-width: 0;
@@ -142,6 +142,9 @@
 }
 
 .ai-assist-composer-footer select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   width: 100%;
   min-width: 0;
   max-width: 100%;

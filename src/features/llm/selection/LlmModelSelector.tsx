@@ -24,13 +24,21 @@ export function LlmModelSelector({
   resolvedMainSelection,
   userDefinedProfiles,
 }: LlmModelSelectorProps) {
-  const hasSelectedOption = userDefinedProfiles.some(profile => `profile:${profile.id}` === chatModelValue)
-    || llmProviders.some(provider => provider.models.some(model => `${provider.id}:${model.id}` === chatModelValue));
+  const selectedProfile = userDefinedProfiles.find(profile => `profile:${profile.id}` === chatModelValue);
+  const selectedProviderModel = llmProviders.flatMap(provider =>
+    provider.models.map(model => ({ ...model, value: `${provider.id}:${model.id}` })),
+  ).find(model => model.value === chatModelValue);
+  const selectedOption = selectedProfile ?? selectedProviderModel;
+  const selectedLabel = selectedProfile?.name ?? selectedProviderModel?.displayName
+    ?? selectedModelLabel(resolvedMainSelection, llmProviders);
+  const selectedTitle = `${selectedLabel}${selectedOption && !selectedOption.available ? " (利用不可)" : ""}`;
+  const hasSelectedOption = Boolean(selectedOption);
   return (
     <label className="chat-model-selector">
       <select
         aria-label={ariaLabel}
         disabled={disabled}
+        title={selectedTitle}
         onChange={(event) => onChange(event.target.value)}
         value={chatModelValue}
       >

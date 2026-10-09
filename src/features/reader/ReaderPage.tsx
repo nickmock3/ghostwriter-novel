@@ -280,7 +280,7 @@ export function ReaderPage({ onOpenEditorSelection, workspaceRoot }: ReaderPageP
           {selectedChapter ? (
             <>
               <header className="reader-mode-content-header">
-                <h2 className="reader-mode-content-title">{selectedChapter.title}</h2>
+                <h2 className="reader-mode-content-title">第{selectedIndex + 1}章 / 全{chapters.length}章</h2>
                 <div className="reader-mode-content-actions">
                   <div className="reader-mode-header-pager" aria-label="章送り">
                     <button

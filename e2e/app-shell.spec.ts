@@ -219,7 +219,8 @@ test("replaces the editor chat pane with AI assists and follows the CodeMirror s
   });
   expect(compactLayout.cardAlignItems).toBe("center");
   expect(compactLayout.modelHeight).toBeLessThanOrEqual(30);
-  expect(compactLayout.modelWidth).toBeLessThan(compactLayout.composerWidth * 0.9);
+  // Model controls use the full pane width to keep names readable.
+  expect(compactLayout.modelWidth).toBeLessThanOrEqual(compactLayout.composerWidth);
   await polishAssist.hover();
   await expect(
     assistPane.getByRole("tooltip", { name: /文章表現を改善する編集案を作成します。/ }),

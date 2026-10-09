@@ -37,10 +37,21 @@ function selectText(node: Node, start: number, end: number) {
   selection?.addRange(range);
 }
 
-describe("ReaderPage selection jump", () => {
+describe("ReaderPage", () => {
   afterEach(() => {
     window.getSelection()?.removeAllRanges();
     vi.unstubAllGlobals();
+  });
+
+  it("shows the current chapter position and updates it when paging", async () => {
+    vi.stubGlobal("fetch", mockReaderFetch());
+    render(<ReaderPage onOpenEditorSelection={vi.fn()} workspaceRoot="/workspace" />);
+    expect(await screen.findByRole("heading", { name: "第1章 / 全2章" })).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: "第一章" })).not.toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "次の章" })[0]);
+    expect(screen.getByRole("heading", { name: "第2章 / 全2章" })).toBeInTheDocument();
+    fireEvent.click(screen.getAllByRole("button", { name: "前の章" })[0]);
+    expect(screen.getByRole("heading", { name: "第1章 / 全2章" })).toBeInTheDocument();
   });
 
   it("opens a focused menu and reports the selected ruby base source range", async () => {

@@ -26,10 +26,13 @@ export function ConversationCompactSettingsSection({
         />
         <span>会話を自動圧縮する</span>
       </label>
-      <label className="settings-field">
-        <span>自動圧縮のコンテキスト使用率</span>
+      <div className="settings-field">
+        <span className="settings-range-label">
+          <label htmlFor="auto-compact-threshold">自動圧縮のコンテキスト使用率</label>
+          <output htmlFor="auto-compact-threshold">{Math.round(settings.autoCompactThresholdRatio * 100)}%</output>
+        </span>
         <input
-          aria-label="自動圧縮のコンテキスト使用率"
+          id="auto-compact-threshold"
           disabled={!settings.autoCompactEnabled}
           max={Math.round(AUTO_COMPACT_THRESHOLD_MAX * 100)}
           min={Math.round(AUTO_COMPACT_THRESHOLD_MIN * 100)}
@@ -47,8 +50,7 @@ export function ConversationCompactSettingsSection({
           type="range"
           value={Math.round(settings.autoCompactThresholdRatio * 100)}
         />
-      </label>
-      <p>コンテキスト使用率 {Math.round(settings.autoCompactThresholdRatio * 100)}%</p>
+      </div>
     </section>
   );
 }
