@@ -48,3 +48,7 @@ desktopは`bun run build:desktop:web`の後、`SDKROOT=/Library/Developer/Comman
 ## 未実施
 
 実APIキー接続・実OAuth、配布アプリ起動・配布build、Windows実機。認証や配布の確認を今回の自動検証成功で代用しない。
+
+## 環境変数移行後の確認
+
+ユーザーが移行元の`.env`を追加した後、初期化時の空の`.env.local`がAPIキーと既定設定を上書きすることを確認した。`.env.example`と同一で利用者の変更がないことを確認し、Git除外対象の`.env.local.initialization-backup`へ退避して開発サーバーを再起動した。実LLMを呼ばずprovider APIの利用可否で確認する。ローカル設定のみの変更のため新規テスト・全体回帰の再実行は行わない。再利用可能な知見はField Guideへ記録した。

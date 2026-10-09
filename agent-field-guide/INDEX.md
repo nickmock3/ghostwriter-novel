@@ -4,6 +4,8 @@
 
 ## Entries
 
+- [空の.env.local雛形は移行した.envを上書きする](entries/local-env-template-shadowing.md): 初期セットアップ後に既存環境変数を移行するとき。
+
 | Area | When this matters | Field note | Entry |
 | --- | --- | --- | --- |
 | Testing / performance | Vitest全体の遅延やNode/DOM分類を調べるとき | jsdom準備と実ACLの待ち時間を別計測し、I/O並行化ではケース専用fixtureを使う | [Vitestの環境準備と実I/Oの待ち時間を分けて調べる](entries/vitest-environment-and-io-cost.md) |
