@@ -338,10 +338,14 @@ describe("AiAssistPane", () => {
       target: { ...fileTarget, content: "" },
     },
   ])("explains and disables execution for $name", ({ expectedReason, executionOptions, target }) => {
-    renderPane({ executionOptions, target });
+    const { onExecute } = renderPane({ executionOptions, target });
 
     expect(screen.getByText(expectedReason)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "推敲を実行" })).toBeDisabled();
+    const button = screen.getByRole("button", { name: "推敲を実行" });
+    expect(button).toBeDisabled();
+    expect(button).toHaveAccessibleDescription(expect.stringContaining(expectedReason));
+    fireEvent.click(button);
+    expect(onExecute).not.toHaveBeenCalled();
   });
 
   it("shows execution-option loading without reporting that no model is available", () => {

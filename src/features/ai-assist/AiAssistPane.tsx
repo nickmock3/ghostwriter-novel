@@ -139,6 +139,12 @@ export function AiAssistPane({
           builtInAssists={state.builtInAssistList}
           canManageCustomAssists={state.canManageCustomAssists}
           customAssists={state.customAssistList}
+          disabledReason={state.isBusy
+            ? "処理中です。完了するまでお待ちください。"
+            : state.blockReason
+              ?? (state.connection.connection !== "chatgpt" ? state.modelBlockReason : null)
+              ?? (state.connection.blocked ? state.connection.message : null)
+              ?? (state.isExecutionBlocked ? "選択した実行方式を利用できません。" : null)}
           executingAssistId={state.executingAssistId}
           isBusy={state.isBusy}
           isExecutionBlocked={state.isExecutionBlocked}

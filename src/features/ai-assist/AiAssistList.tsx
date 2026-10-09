@@ -18,6 +18,7 @@ export type AiAssistListProps = {
   builtInAssists: readonly AiAssistDefinition[];
   canManageCustomAssists: boolean;
   customAssists: readonly AiAssistDefinition[];
+  disabledReason: string | null;
   executingAssistId: string | null;
   isBusy: boolean;
   isExecutionBlocked: boolean;
@@ -30,6 +31,7 @@ export type AiAssistListProps = {
 
 function AssistItem(input: {
   assist: AiAssistDefinition;
+  disabledReason: string | null;
   executingAssistId: string | null;
   isBusy: boolean;
   isExecutionBlocked: boolean;
@@ -42,6 +44,7 @@ function AssistItem(input: {
 }) {
   const {
     assist,
+    disabledReason,
     executingAssistId,
     isBusy,
     isExecutionBlocked,
@@ -62,6 +65,7 @@ function AssistItem(input: {
         aria-label={isThisExecuting ? `${assist.name}を実行中…` : `${assist.name}を実行`}
         className={`ai-assist-item ${variantClass}${isThisExecuting ? " is-executing" : ""}`}
         disabled={isBusy || isExecutionBlocked}
+        title={disabledReason ?? assist.description}
         onBlur={(event) => {
           onPreviewAssistEnd(assist.id, event.currentTarget);
         }}
@@ -93,7 +97,7 @@ function AssistItem(input: {
         </span>
       </button>
       <span className="ai-assist-item-tooltip" id={tooltipId} role="tooltip">
-        {assist.description}
+        {disabledReason ? `${disabledReason} ${assist.description}` : assist.description}
       </span>
     </div>
   );
@@ -103,6 +107,7 @@ export function AiAssistList({
   builtInAssists,
   canManageCustomAssists,
   customAssists,
+  disabledReason,
   executingAssistId,
   isBusy,
   isExecutionBlocked,
@@ -120,6 +125,7 @@ export function AiAssistList({
             key={assist.id}
             AssistIcon={assistIconById[assist.id] ?? FiEdit3}
             assist={assist}
+            disabledReason={disabledReason}
             executingAssistId={executingAssistId}
             isBusy={isBusy}
             isExecutionBlocked={isExecutionBlocked}
@@ -139,6 +145,7 @@ export function AiAssistList({
               key={assist.id}
               AssistIcon={FiStar}
               assist={assist}
+              disabledReason={disabledReason}
               executingAssistId={executingAssistId}
               isBusy={isBusy}
               isExecutionBlocked={isExecutionBlocked}

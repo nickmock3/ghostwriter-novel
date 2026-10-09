@@ -222,7 +222,7 @@ test("replaces the editor chat pane with AI assists and follows the CodeMirror s
   expect(compactLayout.modelWidth).toBeLessThan(compactLayout.composerWidth * 0.9);
   await polishAssist.hover();
   await expect(
-    assistPane.getByRole("tooltip", { name: "文章表現を改善する編集案を作成します。" }),
+    assistPane.getByRole("tooltip", { name: /文章表現を改善する編集案を作成します。/ }),
   ).toBeVisible();
 
   await page.getByRole("treeitem", { name: "本文.txt" }).click();

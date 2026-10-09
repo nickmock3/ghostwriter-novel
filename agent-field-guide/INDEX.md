@@ -37,3 +37,5 @@
 - [hydrateRootの戻りは画面操作の準備完了を保証しない](entries/react-hydration-readiness.md): ルートimport変更後に、完了フラグを待っても初回クリックが効かなくなるとき。
 
 - [SPAシェルはlocalStorageなしの初期stateとpending表示で描画される](entries/spa-shell-initial-state-and-pending.md): 再読み込み直後に初回モーダルや空白画面が一瞬見えるとき。
+
+- [ペイン専用ボタンのCSSは共通buttonルールの詳細度を確認する](entries/shared-button-css-specificity.md): 補助ボタンや無効状態のCSSが部分的にしか効かないとき。
