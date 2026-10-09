@@ -18,6 +18,13 @@ import { useChatConversationController } from "./useChatConversationController";
 import { useChatDroppedTextFiles } from "./useChatDroppedTextFiles";
 import { useChatModeBottomFollow } from "./useChatModeBottomFollow";
 
+const starterPrompts = [
+  "物語のアイデアを一緒に考えて",
+  "登場人物と世界観を整理して",
+  "第1章の本文を書き始めたい",
+  "書いた本文を推敲して",
+] as const;
+
 export type AppliedEditProposal = Pick<EditProposal, "operation" | "path">;
 
 export type ChatPaneLlmProps = {
@@ -223,11 +230,26 @@ function ChatPaneView({
     !isWorkspaceUnavailable &&
     (isCodexRuntime ? sessionUsage !== null : mainContextSnapshot !== null);
   const emptyConversationCopy =
-    isWorkspaceUnavailable || agentRunState !== "idle" ? null : (
+    isWorkspaceUnavailable || isLoading || agentRunState !== "idle" ? null : (
       <>
         <p>小説づくりをチャットで進めましょう。</p>
         <p>アイデア出し、設定やプロットの整理、本文の執筆・推敲を頼めます。</p>
         <p>まずは、いま書きたいことや困っていることを教えてください。</p>
+        <div className="chat-starter-prompts" role="group" aria-label="依頼文の候補">
+          {starterPrompts.map((prompt) => (
+            <button
+              className="chat-starter-prompt"
+              key={prompt}
+              onClick={() => {
+                setDraft((current) => current ? `${current}\n${prompt}` : prompt);
+                composerRef.current?.focus();
+              }}
+              type="button"
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
       </>
     );
 

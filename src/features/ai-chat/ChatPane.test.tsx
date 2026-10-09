@@ -532,6 +532,32 @@ describe("ChatPane", () => {
     expect(scrollArea.scrollTop).toBe(120);
   });
 
+  it.each(["", "舞台は海辺の街にしたい"])("adds a starter prompt without sending or replacing draft %j", async (draft) => {
+    const fetchMock = vi.spyOn(globalThis, "fetch").mockResolvedValueOnce(
+      Response.json({ activeConversation: null, conversations: [], errors: [] }),
+    );
+    render(<TestChatPane mode="chat" workspaceRoot="/tmp/workspace" />);
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
+    fireEvent.change(input, { target: { value: draft } });
+    const file = new File(["設定メモ"], "memo.txt", { type: "text/plain" });
+    Object.defineProperty(file, "arrayBuffer", {
+      value: async () => new TextEncoder().encode("設定メモ").buffer,
+    });
+    fireEvent.drop(input, { dataTransfer: { files: [file], types: ["Files"] } });
+    await screen.findByRole("button", { name: "memo.txt を添付から削除" });
+
+    fireEvent.click(screen.getByRole("button", { name: "物語のアイデアを一緒に考えて" }));
+    expect(input).toHaveValue(draft ? `${draft}\n物語のアイデアを一緒に考えて` : "物語のアイデアを一緒に考えて");
+    expect(input).toHaveFocus();
+    expect(screen.getByRole("button", { name: "memo.txt を添付から削除" })).toBeInTheDocument();
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not offer starter prompts without a workspace", () => {
+    render(<TestChatPane mode="chat" workspaceRoot={null} />);
+    expect(screen.queryByRole("group", { name: "依頼文の候補" })).not.toBeInTheDocument();
+  });
+
   it("hides the new chat guidance as soon as the first turn starts", async () => {
     const pendingResponse = new Promise<Response>(() => {});
     vi.spyOn(globalThis, "fetch")
@@ -551,6 +577,7 @@ describe("ChatPane", () => {
     );
 
     expect(await screen.findByText("小説づくりをチャットで進めましょう。")).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "依頼文の候補" })).toBeInTheDocument();
 
     fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "物語の続きを考えて" },
@@ -559,6 +586,7 @@ describe("ChatPane", () => {
 
     expect(await screen.findByRole("status", { name: "AI応答生成中" })).toBeInTheDocument();
     expect(screen.queryByText("小説づくりをチャットで進めましょう。")).not.toBeInTheDocument();
+    expect(screen.queryByRole("group", { name: "依頼文の候補" })).not.toBeInTheDocument();
   });
 
   it("creates a new conversation from the chat pane", async () => {

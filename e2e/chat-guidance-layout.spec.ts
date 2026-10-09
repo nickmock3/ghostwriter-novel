@@ -48,4 +48,13 @@ test("aligns empty chat guidance inside its message column", async ({ page }) =>
   expect(layout.textAlign).toBe("left");
   expect(layout.width).toBeLessThanOrEqual(560);
   expect(layout.centerOffset).toBeLessThanOrEqual(1);
+
+  const input = page.getByPlaceholder("書きたいこと、相談したいことを入力");
+  await page.getByRole("button", { name: "物語のアイデアを一緒に考えて" }).click();
+  await expect(input).toHaveValue("物語のアイデアを一緒に考えて");
+  await expect(input).toBeFocused();
+  await page.getByRole("button", { name: "登場人物と世界観を整理して" }).click();
+  await expect(input).toHaveValue("物語のアイデアを一緒に考えて\n登場人物と世界観を整理して");
+  await expect(guidanceText).toBeVisible();
 });
+

@@ -1156,3 +1156,27 @@
     display: none;
   }
 }
+
+.chat-starter-prompts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.chat-pane .chat-starter-prompt {
+  padding: 8px 12px;
+  border: 1px solid #d8dee8;
+  border-radius: 16px;
+  background: #f8fafc;
+  color: #344154;
+  font-size: 0.8rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: left;
+}
+
+.chat-pane .chat-starter-prompt:hover {
+  background: #eef2f7;
+  border-color: #aeb8c7;
+}
