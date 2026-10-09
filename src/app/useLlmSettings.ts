@@ -5,15 +5,15 @@ import {
   readLlmProfileSettings,
   writeLlmProfileSettings,
   type LlmProfileSettings,
-} from "../features/ai-agent/llmProfileStorage";
-import type { LlmProfile } from "../features/ai-agent/llmProfiles";
+} from "../features/llm/profiles/llmProfileStorage";
+import type { LlmProfile } from "../features/llm/profiles/llmProfiles";
 import { normalizeUserSettings, type UserSettings } from "../features/settings/settingsStorage";
 import {
   llmSecretListResponseSchema,
   llmProviderListResponseSchema,
   type LlmSecretStatus,
   type LlmProviderChoice,
-} from "../features/ai-agent/llmSelection";
+} from "../features/llm/selection/llmSelection";
 import { apiFetch } from "../shared/client/apiTransport";
 
 export function useLlmSettings(

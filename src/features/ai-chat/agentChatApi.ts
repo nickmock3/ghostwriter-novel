@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { llmProfileSchema } from "../ai-agent/llmProfiles";
+import { llmProfileSchema } from "../llm/profiles/llmProfiles";
 import {
   APPLICATION_DATA_STORAGE_UNAVAILABLE,
   applicationStorageUnavailableBody,

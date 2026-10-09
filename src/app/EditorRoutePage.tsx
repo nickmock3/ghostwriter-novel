@@ -10,7 +10,7 @@ import {
   rejectAiAssistProposal,
 } from "../features/ai-assist/aiAssistClient";
 import { useAiAssistDefinitions } from "../features/ai-assist/useAiAssistDefinitions";
-import type { AvailableLlmProvider } from "../features/ai-agent/modelProvider";
+import type { AvailableLlmProvider } from "../features/llm/modelProvider";
 import { useAiAssistExecutionOptions } from "../features/ai-assist/useAiAssistExecutionOptions";
 import { EditorPane } from "../features/editor/EditorPane";
 import { FileTreePane } from "../features/file-tree/FileTreePane";

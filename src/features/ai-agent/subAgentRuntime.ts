@@ -1,7 +1,7 @@
 import type { ModelMessage } from "ai";
 import type { AgentProfile } from "./agentProfiles";
-import type { SpawnSubAgentToolInput, SpawnSubAgentToolOutput } from "./agentTools";
-import type { LlmProfileRole, ResolvedLlmProfile } from "./llmProfiles";
+import type { SpawnSubAgentToolInput, SpawnSubAgentToolOutput } from "./tools/agentTools";
+import type { LlmProfileRole, ResolvedLlmProfile } from "../llm/profiles/llmProfiles";
 import { addTokenUsage, tokenUsageFromUnknown, type AgentTokenUsage } from "./agentTokenUsage";
 
 export type SubAgentLoopEvent =

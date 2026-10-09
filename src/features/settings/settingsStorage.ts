@@ -4,7 +4,7 @@ import {
   selectedModelSchema,
   type LlmProviderChoice,
   type SelectedModel,
-} from "../ai-agent/llmSelection";
+} from "../llm/selection/llmSelection";
 
 export const USER_SETTINGS_STORAGE_KEY = "ghostwriter:user-settings:v1";
 export const LEGACY_USER_SETTINGS_STORAGE_KEY = "simple-ai-agent:user-settings:v1";

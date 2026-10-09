@@ -1,4 +1,4 @@
-import { createSiwcModelProvider, createSiwcProviderPlugin } from "../ai-agent/llm-providers/siwcResponses";
+import { createSiwcModelProvider, createSiwcProviderPlugin } from "../siwc/siwcResponses";
 import type { SiwcService } from "../siwc/service";
 import { BoundaryError } from "../siwc/result";
 import { bindConversationSiwc, createConversation, getConversation } from "./conversationHistory";

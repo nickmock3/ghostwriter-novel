@@ -7,8 +7,8 @@ import {
   type SetStateAction,
 } from "react";
 import { apiFetch } from "../../shared/client/apiTransport";
-import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
+import type { LlmProfileRoleAssignments } from "../llm/profiles/llmProfiles";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
 import {
   compactActiveConversation,
   type DroppedTextFileStatus,
@@ -16,14 +16,14 @@ import {
 } from "./chatConversationClient";
 import type { WorkspaceOperationGeneration } from "./chatConversationControllerHelpers";
 import type { ChatConversationDispatch } from "./useChatConversationState";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import {
   llmModelSelectValue,
   profileIdFromRoleAssignment,
   requiresApiKeySetup,
   selectedModelFromRoleAssignment,
   unavailableReasonForCurrentModelSelection,
-} from "../ai-agent/llmModelSelection";
+} from "../llm/selection/llmModelSelection";
 import type {
   AgentPlan,
   Conversation,

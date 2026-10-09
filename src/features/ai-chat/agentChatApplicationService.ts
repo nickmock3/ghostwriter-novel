@@ -8,8 +8,8 @@ import {
   resolveLlmProfileForRole,
   type LlmProfile,
   type LlmProfileRoleAssignments,
-} from "../ai-agent/llmProfiles";
-import { createLlmRuntime } from "../ai-agent/llmRuntime";
+} from "../llm/profiles/llmProfiles";
+import { createLlmRuntime } from "../llm/llmRuntime";
 import {
   createLlmPluginModelProvider,
   listAvailableLlmProviders,
@@ -17,7 +17,7 @@ import {
   type LlmProviderId,
   type ModelProvider,
   type ResolvedChatModelSelection,
-} from "../ai-agent/modelProvider";
+} from "../llm/modelProvider";
 import { runAgentLoop as defaultRunAgentLoop } from "../ai-agent/runAgentLoop";
 import {
   createTrustedAgentExtensionCatalog,

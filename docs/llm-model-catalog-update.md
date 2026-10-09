@@ -8,10 +8,10 @@ OpenAI、Anthropic、Gemini、DeepSeekが新しいAPIモデルを公開したと
 
 | Provider ID | 公式API | AI SDK package | モデル定義 |
 |---|---|---|---|
-| `openai` | OpenAI API | `@ai-sdk/openai` | `src/features/ai-agent/llm-providers/openai.ts` |
-| `anthropic` | Claude API | `@ai-sdk/anthropic` | `src/features/ai-agent/llm-providers/anthropic.ts` |
-| `gemini` | Gemini API | `@ai-sdk/google` | `src/features/ai-agent/llm-providers/gemini.ts` |
-| `deepseek` | DeepSeek API | `@ai-sdk/deepseek` | `src/features/ai-agent/llm-providers/deepseek.ts` |
+| `openai` | OpenAI API | `@ai-sdk/openai` | `src/features/llm/providers/openai.ts` |
+| `anthropic` | Claude API | `@ai-sdk/anthropic` | `src/features/llm/providers/anthropic.ts` |
+| `gemini` | Gemini API | `@ai-sdk/google` | `src/features/llm/providers/gemini.ts` |
+| `deepseek` | DeepSeek API | `@ai-sdk/deepseek` | `src/features/llm/providers/deepseek.ts` |
 
 次は対象外です。
 
@@ -86,11 +86,11 @@ No-Goなら実装せず、blockerと次の確認方法をタスクへ残しま�
 
 | 目的 | ファイル |
 |---|---|
-| providerの許可済みモデル | `src/features/ai-agent/llm-providers/<provider>.ts` |
-| `main`/`writing`/`simple`/`search`の既定値 | `src/features/ai-agent/llmProfiles.ts` |
-| providerとプロフィールの契約テスト | `src/features/ai-agent/modelProvider.test.ts`、`src/features/ai-agent/llmProfiles.test.ts` |
-| APIレスポンスとsecret非露出 | `src/features/ai-agent/modelProviderApi.test.ts` |
-| provider生成・sampling制約 | 対象provider近傍のテスト、`src/features/ai-agent/llmRuntime.test.ts`、`src/features/ai-agent/runAgentLoop.test.ts` |
+| providerの許可済みモデル | `src/features/llm/providers/<provider>.ts` |
+| `main`/`writing`/`simple`/`search`の既定値 | `src/features/llm/profiles/llmProfiles.ts` |
+| providerとプロフィールの契約テスト | `src/features/llm/modelProvider.test.ts`、`src/features/llm/profiles/llmProfiles.test.ts` |
+| APIレスポンスとsecret非露出 | `src/features/llm/modelProviderApi.test.ts` |
+| provider生成・sampling制約 | 対象provider近傍のテスト、`src/features/llm/llmRuntime.test.ts`、`src/features/ai-agent/runAgentLoop.test.ts` |
 | 製品仕様のモデル一覧・プリセット | `specs/novel-editor-mvp.md` |
 | 利用者向け一覧 | `README.md` |
 | SDK version | `package.json`、`bun.lock` |
@@ -112,7 +112,7 @@ No-Goなら実装せず、blockerと次の確認方法をタスクへ残しま�
 対象テストを実行し、新しい期待値によって失敗することを確認します。テストを先に書けない場合は、理由と代替検証をタスクへ記録します。
 
 ```sh
-bun run test src/features/ai-agent/modelProvider.test.ts src/features/ai-agent/modelProviderApi.test.ts src/features/ai-agent/llmProfiles.test.ts
+bun run test src/features/llm/modelProvider.test.ts src/features/llm/modelProviderApi.test.ts src/features/llm/profiles/llmProfiles.test.ts
 ```
 
 ## 5. 実装する

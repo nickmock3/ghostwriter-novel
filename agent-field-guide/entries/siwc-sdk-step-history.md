@@ -27,5 +27,5 @@ SDKのバージョン、履歴保存、tool namespace、正常終端判定を変
 
 ## Related work
 
-- `src/features/ai-agent/llm-providers/siwcSdkCompatibility.test.ts`
+- `src/features/siwc/siwcSdkCompatibility.test.ts`
 - `specs/siwc-responses-migration.md`

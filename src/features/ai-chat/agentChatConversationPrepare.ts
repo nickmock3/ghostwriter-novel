@@ -1,4 +1,4 @@
-import type { RunAgentLoopToolServiceOverrides } from "../ai-agent/agentTools";
+import type { RunAgentLoopToolServiceOverrides } from "../ai-agent/tools/agentTools";
 import { createChatModeProposalToolServices } from "./editProposalAutoApply";
 import {
   cleanupDroppedTextFiles,

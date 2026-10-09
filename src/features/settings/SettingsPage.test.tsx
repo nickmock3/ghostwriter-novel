@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { APP_DISPLAY_VERSION } from "../../shared/appVersion";
 import { SettingsPage } from "./SettingsPage";
 import type { UserSettings } from "./settingsStorage";
-import type { LlmProviderChoice, LlmSecretStatus } from "../ai-agent/llmSelection";
+import type { LlmProviderChoice, LlmSecretStatus } from "../llm/selection/llmSelection";
 
 const providers: LlmProviderChoice[] = [
   {

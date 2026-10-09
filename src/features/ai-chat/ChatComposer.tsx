@@ -10,14 +10,14 @@ import {
   type RefObject,
 } from "react";
 import { FaArrowUp } from "react-icons/fa";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
 import type { DroppedTextFileStatus } from "./chatConversationClient";
 import {
   LlmModelSelector,
   LlmModelUnavailableReasons,
   handleLlmModelSelectorChange,
-} from "../ai-agent/LlmModelSelector";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+} from "../llm/selection/LlmModelSelector";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import { ChatTokenUsageIndicator } from "./ChatTokenUsageIndicator";
 import type { Conversation, MainContextSnapshot, TokenUsage } from "./conversationSchemas";
 import { slashCommandSuggestions, type SlashCommandDefinition } from "./slashCommands";

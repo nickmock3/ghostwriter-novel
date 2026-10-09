@@ -1,6 +1,6 @@
-import { listLlmProfiles, type LlmProfile } from "../features/ai-agent/llmProfiles";
-import type { AvailableLlmProvider, LlmProviderId } from "../features/ai-agent/modelProvider";
-import type { LlmProviderChoice } from "../features/ai-agent/llmSelection";
+import { listLlmProfiles, type LlmProfile } from "../features/llm/profiles/llmProfiles";
+import type { AvailableLlmProvider, LlmProviderId } from "../features/llm/modelProvider";
+import type { LlmProviderChoice } from "../features/llm/selection/llmSelection";
 
 const knownLlmProviderIds = new Set<string>([
   "anthropic",

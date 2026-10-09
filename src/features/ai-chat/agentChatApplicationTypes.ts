@@ -1,13 +1,13 @@
 import type { SiwcService } from "../siwc/service";
 import type { AgentProfile } from "../ai-agent/agentProfiles";
-import type { LlmProfile, LlmProfileRole, ResolvedLlmProfile } from "../ai-agent/llmProfiles";
-import type { LlmSecretStore } from "../ai-agent/llmSecretStore";
+import type { LlmProfile, LlmProfileRole, ResolvedLlmProfile } from "../llm/profiles/llmProfiles";
+import type { LlmSecretStore } from "../llm/secrets/llmSecretStore";
 import type {
   LlmProviderPlugin,
   ModelProvider,
   ResolvedChatModelSelection,
-} from "../ai-agent/modelProvider";
-import type { LlmProviderConfig } from "../ai-agent/runtimeEnv";
+} from "../llm/modelProvider";
+import type { LlmProviderConfig } from "../llm/runtimeEnv";
 import type {
   AgentLoopEvent,
   RunAgentLoopOptions,

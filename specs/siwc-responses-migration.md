@@ -55,7 +55,7 @@ SDK 7はNode.js 22以上・ESMを前提とする。Bun sidecarとNode/Vitestの�
 
 ## SDK契約テスト
 
-`src/features/ai-agent/llm-providers/siwcSdkCompatibility.test.ts`に、OSS検証から移植した14件の偽HTTP/SSEテストを置く。MIT noticeを保持する。資格情報・実応答は使用しない。
+`src/features/siwc/siwcSdkCompatibility.test.ts`に、OSS検証から移植した14件の偽HTTP/SSEテストを置く。MIT noticeを保持する。資格情報・実応答は使用しない。
 
 - 公開Responses URL、POST、Bearer、developer、store/stream、禁止フィールド省略。
 - namespace function実行、schema不適合時の非実行、call IDに対応する結果返送。

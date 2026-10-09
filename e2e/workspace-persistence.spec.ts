@@ -2,8 +2,8 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { createDefaultRoleAssignments } from "../src/features/ai-agent/llmProfiles";
-import { llmProfilesResponseSchema } from "../src/features/ai-agent/llmProfileStorage";
+import { createDefaultRoleAssignments } from "../src/features/llm/profiles/llmProfiles";
+import { llmProfilesResponseSchema } from "../src/features/llm/profiles/llmProfileStorage";
 import { conversationListResponseSchema, conversationSchema } from "../src/features/ai-chat/conversationSchemas";
 
 // Real API and filesystem E2E coverage. Only unrelated LLM inventory/health endpoints are mocked;

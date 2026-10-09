@@ -1,10 +1,10 @@
 import { useAiConnection, type AiConnection } from "../siwc/useAiConnection";
-import { selectedModelFromRoleAssignment } from "../ai-agent/llmModelSelection";
+import { selectedModelFromRoleAssignment } from "../llm/selection/llmModelSelection";
 import { useRef, useState } from "react";
 import { useChatConversationState } from "./useChatConversationState";
-import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { LlmProfileRoleAssignments } from "../llm/profiles/llmProfiles";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import type { Conversation, EditProposal } from "./conversationSchemas";
 import { useChatConversationHistory } from "./useChatConversationHistory";
 import { useChatConversationSubmit } from "./useChatConversationSubmit";

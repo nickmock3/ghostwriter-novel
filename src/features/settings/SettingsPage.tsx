@@ -4,7 +4,7 @@ import type {
   LlmProviderChoice,
   LlmSecretProviderId,
   LlmSecretStatus,
-} from "../ai-agent/llmSelection";
+} from "../llm/selection/llmSelection";
 import { AppInfoSettingsSection } from "./AppInfoSettingsSection";
 import { ConversationCompactSettingsSection } from "./ConversationCompactSettingsSection";
 import { LlmSecretSettingsSection } from "./LlmSecretSettingsSection";

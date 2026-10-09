@@ -1,13 +1,13 @@
-import type { LlmProfileSettings } from "../features/ai-agent/llmProfileStorage";
+import type { LlmProfileSettings } from "../features/llm/profiles/llmProfileStorage";
 import type {
   LlmProfile,
   LlmProfileRoleAssignment,
   LlmProfileRoleAssignments,
-} from "../features/ai-agent/llmProfiles";
-import type { LlmProviderId } from "../features/ai-agent/modelProvider";
-import type { LlmProfileWithAvailability } from "../features/ai-agent/llmModelSelection";
+} from "../features/llm/profiles/llmProfiles";
+import type { LlmProviderId } from "../features/llm/modelProvider";
+import type { LlmProfileWithAvailability } from "../features/llm/selection/llmModelSelection";
 import type { UserSettings } from "../features/settings/settingsStorage";
-import type { LlmProviderChoice, SelectedModel } from "../features/ai-agent/llmSelection";
+import type { LlmProviderChoice, SelectedModel } from "../features/llm/selection/llmSelection";
 
 export type BuildMainLlmChatPanePropsInput = {
   llmProfileSettings: LlmProfileSettings | null | undefined;

@@ -1,12 +1,12 @@
 import { ChatGptModelControls } from "../siwc/ChatGptModelControls";
 import type { AiConnectionState } from "../siwc/useAiConnection";
-import type { AvailableLlmProvider } from "../ai-agent/modelProvider";
+import type { AvailableLlmProvider } from "../llm/modelProvider";
 import {
   LlmModelSelector,
   LlmModelUnavailableReasons,
-} from "../ai-agent/LlmModelSelector";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
-import type { SelectedModel } from "../ai-agent/llmSelection";
+} from "../llm/selection/LlmModelSelector";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
+import type { SelectedModel } from "../llm/selection/llmSelection";
 import type { AiAssistExecutionOption } from "./aiAssistContracts";
 
 export type AiAssistModelControlsProps = {

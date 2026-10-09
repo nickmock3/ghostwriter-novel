@@ -1,6 +1,6 @@
 import type { EditorTarget } from "../editor/editorTarget";
 import { z } from "zod";
-import { llmProfileRoleAssignmentsSchema, llmProfileSchema } from "../ai-agent/llmProfiles";
+import { llmProfileRoleAssignmentsSchema, llmProfileSchema } from "../llm/profiles/llmProfiles";
 import { apiFetch } from "../../shared/client/apiTransport";
 import { editProposalSchema, type EditProposal } from "../edit-proposals/editProposalSchemas";
 import {

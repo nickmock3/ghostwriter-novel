@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { getSubAgentProfile } from "./agentProfiles";
-import type { SpawnSubAgentToolInput } from "./agentTools";
-import type { LlmProfileRole, ResolvedLlmProfile } from "./llmProfiles";
+import type { SpawnSubAgentToolInput } from "./tools/agentTools";
+import type { LlmProfileRole, ResolvedLlmProfile } from "../llm/profiles/llmProfiles";
 import { createSubAgentRuntime } from "./subAgentRuntime";
 
 function resolvedProfile(role: LlmProfileRole): ResolvedLlmProfile {

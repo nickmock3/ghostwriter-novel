@@ -4,7 +4,7 @@ import {
   type LlmProviderChoice,
   type LlmSecretProviderId,
   type LlmSecretStatus,
-} from "../ai-agent/llmSelection";
+} from "../llm/selection/llmSelection";
 
 export type LlmSecretSettingsSectionProps = {
   llmProviders: LlmProviderChoice[];

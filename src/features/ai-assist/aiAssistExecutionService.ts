@@ -1,5 +1,5 @@
 import type { SiwcService } from "../siwc/service";
-import { withSiwcRuntime } from "../ai-agent/llm-providers/siwcRuntime";
+import { withSiwcRuntime } from "../siwc/siwcRuntime";
 import { generateObject as defaultGenerateObject } from "ai";
 import { z } from "zod";
 
@@ -14,15 +14,15 @@ import {
   type LlmProfile,
   type LlmProfileRole,
   type ResolvedLlmProfile,
-} from "../ai-agent/llmProfiles";
-import { createLlmRuntime } from "../ai-agent/llmRuntime";
+} from "../llm/profiles/llmProfiles";
+import { createLlmRuntime } from "../llm/llmRuntime";
 import {
   createLlmPluginModelProvider,
   listAvailableLlmProviders,
   type LlmProviderPlugin,
-} from "../ai-agent/modelProvider";
-import type { LlmSecretStore } from "../ai-agent/llmSecretStore";
-import type { LlmProviderConfig } from "../ai-agent/runtimeEnv";
+} from "../llm/modelProvider";
+import type { LlmSecretStore } from "../llm/secrets/llmSecretStore";
+import type { LlmProviderConfig } from "../llm/runtimeEnv";
 import { createEditProposalForWorkspace } from "../edit-proposals/editProposalService";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
 import type { CreateEditProposalInput } from "../edit-proposals/editProposalService";

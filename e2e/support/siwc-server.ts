@@ -8,7 +8,7 @@ import { createApiRouter, createProductionApiHandlers } from "../../src/shared/s
 import { createSiwcService } from "../../src/features/siwc/service";
 import { createCredentialStore } from "../../src/features/siwc/store";
 import { createSiwcApiHandler } from "../../src/features/siwc/api";
-import { createModelProviderApiHandler } from "../../src/features/ai-agent/modelProviderApi";
+import { createModelProviderApiHandler } from "../../src/features/llm/modelProviderApi";
 import { createAgentChatApiHandler } from "../../src/features/ai-chat/agentChatApi";
 import { createProductionAiAssistApiHandler } from "../../src/features/ai-assist/aiAssistApi";
 import { createConversationApiHandler } from "../../src/features/ai-chat/conversationApi";

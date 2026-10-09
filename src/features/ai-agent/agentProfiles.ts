@@ -1,5 +1,5 @@
 import { stepCountIs, type StopCondition, type ToolSet } from "ai";
-import type { LlmProfileRole } from "./llmProfiles";
+import type { LlmProfileRole } from "../llm/profiles/llmProfiles";
 
 export type CoreAgentToolName =
   | "Read"

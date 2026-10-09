@@ -1,6 +1,6 @@
 import { getAgentProfile } from "./agentProfiles";
 import type { AgentSkillPlugin } from "./agentSkills";
-import type { AgentToolPlugin } from "./agentTools";
+import type { AgentToolPlugin } from "./tools/agentTools";
 
 export type TrustedAgentExtensionCatalog = {
   profileToolGrants: Readonly<Record<string, readonly string[]>>;

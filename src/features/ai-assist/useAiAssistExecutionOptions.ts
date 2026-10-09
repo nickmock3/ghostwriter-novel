@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { LlmProfileSettings } from "../ai-agent/llmProfileStorage";
-import { resolveLlmProfileForRole } from "../ai-agent/llmProfiles";
-import type { AvailableLlmProvider } from "../ai-agent/modelProvider";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { LlmProfileSettings } from "../llm/profiles/llmProfileStorage";
+import { resolveLlmProfileForRole } from "../llm/profiles/llmProfiles";
+import type { AvailableLlmProvider } from "../llm/modelProvider";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import type { AiAssistExecutionOption } from "./aiAssistContracts";
 
 export type UseAiAssistExecutionOptionsInput = {

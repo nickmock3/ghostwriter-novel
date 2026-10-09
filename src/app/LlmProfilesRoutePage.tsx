@@ -1,6 +1,6 @@
 import { useEffect } from "react";
-import { LlmProfilesPage } from "../features/ai-agent/LlmProfilesPage";
-import { createDefaultRoleAssignments } from "../features/ai-agent/llmProfiles";
+import { LlmProfilesPage } from "../features/llm/profiles/LlmProfilesPage";
+import { createDefaultRoleAssignments } from "../features/llm/profiles/llmProfiles";
 import { useLlmSettingsContext } from "./LlmSettingsContext";
 import { useWorkspaceContext } from "./WorkspaceContext";
 import { availableProvidersFromChoices, displayLlmProfiles } from "./llmDisplay";

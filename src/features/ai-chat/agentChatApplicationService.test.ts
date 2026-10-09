@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import type { LlmProviderConfig } from "../ai-agent/runtimeEnv";
+import type { LlmProviderConfig } from "../llm/runtimeEnv";
 import type { RunAgentLoopOptions } from "../ai-agent/runAgentLoop";
 import {
   appendConversationEditProposal,

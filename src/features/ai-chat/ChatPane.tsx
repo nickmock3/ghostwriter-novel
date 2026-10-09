@@ -2,16 +2,16 @@ import { siwcExecutionMessage } from "../siwc/useAiConnection";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { FaExclamationTriangle, FaHistory, FaPlus } from "react-icons/fa";
 import type { EditProposal } from "./conversationSchemas";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
-import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
+import type { LlmProfileRoleAssignments } from "../llm/profiles/llmProfiles";
 import { ChatComposer } from "./ChatComposer";
 import { ChatMessageList } from "./ChatMessageList";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
 import {
   llmModelSelectValue,
   selectedModelFromRoleAssignment,
   unavailableReasonForCurrentModelSelection,
-} from "../ai-agent/llmModelSelection";
+} from "../llm/selection/llmModelSelection";
 import { ConversationHistoryDialog } from "./ConversationHistoryDialog";
 import { latestMainContextSnapshot, sessionTokenUsage } from "./tokenUsageDisplay";
 import { useChatConversationController } from "./useChatConversationController";

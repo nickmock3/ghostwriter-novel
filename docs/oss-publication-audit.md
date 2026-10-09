@@ -71,8 +71,8 @@ OSS公開用の初回コミットを作り直す際に、移行元の`tasks/done
 ## 残してよい検索ヒット
 
 - `/Users/example/…`、`C:\Users\example\…`はテスト用の例示パス。ホームパス形式は59行・9ファイルにヒットしたが、個人パス4行以外は例示fixtureまたは検査用文字列だった。パス処理テストを削除しない。
-- メール形式のヒットは3件。`src-tauri/tauri.conf.json:40`の画像ファイル名、`src/features/ai-agent/LlmProfilesPage.test.tsx:163`と`src/features/siwc/browser.test.ts:33`のURL userinfo拒否用fixtureであり、個人メールアドレスではない。
-- 既知のAPIキー/JWT/秘密鍵ヘッダー形式のヒットは0件。credential代入の候補はテスト用ダミー値や`src/features/ai-agent/llm-providers/siwcResponses.ts:109`の固定プレースホルダーだった。実tokenは別経路から供給される。
+- メール形式のヒットは3件。`src-tauri/tauri.conf.json:40`の画像ファイル名、`src/features/llm/profiles/LlmProfilesPage.test.tsx:163`と`src/features/siwc/browser.test.ts:33`のURL userinfo拒否用fixtureであり、個人メールアドレスではない。
+- 既知のAPIキー/JWT/秘密鍵ヘッダー形式のヒットは0件。credential代入の候補はテスト用ダミー値や`src/features/siwc/siwcResponses.ts:109`の固定プレースホルダーだった。実tokenは別経路から供給される。
 - GitHub Actionsは`${{ secrets.… }}`による参照で、実値の直書きは見つからなかった。`wrangler.toml`のbucket名はコメント上placeholderで、アカウントIDや秘密キーは記載されていない。新repoの配布先やSecretsは別途設定する。
 - PNGのテキスト/EXIF系チャンクは`src-tauri/icons/icon-source.png`の作成ソフト名だけで、個人パスやメールは見つからなかった。Storeの大型画像3件にも目視範囲で個人情報はなかった。
 

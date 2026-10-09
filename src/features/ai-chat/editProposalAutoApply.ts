@@ -1,5 +1,5 @@
 import { appendConversationEditProposal, applyConversationEditProposal, type ConversationHistoryOptions } from "./conversationHistory";
-import type { RunAgentLoopToolServiceOverrides } from "../ai-agent/agentTools";
+import type { RunAgentLoopToolServiceOverrides } from "../ai-agent/tools/agentTools";
 import type { EditProposal } from "./conversationSchemas";
 import {
   applyEditProposal,

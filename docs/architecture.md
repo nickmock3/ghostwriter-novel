@@ -11,8 +11,10 @@
 - エディター: `src/features/editor/` がCodeMirror表示、読み込み、保存APIを担当します。
 - AIチャット: `src/features/ai-chat/` が会話API、履歴JSON、会話圧縮、チャットのツール活動表示、編集案と会話履歴の紐付け・自動適用を担当します。
 - AIアシスト: `src/features/ai-assist/` がエディット画面の単発実行、ChatGPTプラン・APIキー接続の実行、アシスト定義、編集案のApply/Rejectを担当します。共通の編集案契約とApply/Rejectは`src/features/edit-proposals/`を使います。
-- AIエージェント: `src/features/ai-agent/` がLLM provider、AgentProfile、AgentSkillPlugin、AgentToolPlugin、`runAgentLoop`、system prompt合成、APIキー解決を担当します。
-- AI検索ツール入力: `src/features/ai-tools/ripgrepTools.ts` がRead/Glob/Grep/SearchのZod schemaとRead実装を持ちます。
+- AIエージェント: `src/features/ai-agent/` がAgentProfile、AgentSkillPlugin、AgentToolPlugin、`runAgentLoop`、system prompt合成、執筆委譲を担当します。
+- LLM接続・設定: `src/features/llm/` がModelProvider、provider生成、APIキー解決・保存、LLMプロフィール、モデル選択を担当します。
+- ChatGPT接続: `src/features/siwc/` が認証・モデルinventoryとSIWC用ModelProviderアダプタを担当します。
+- AI検索ツール入力: `src/features/ai-agent/tools/ripgrepTools.ts` がRead/Glob/Grep/SearchのZod schemaとRead実装を持ちます。
 - リーダー: `src/features/reader/`が章一覧導出、本文の読み取り専用表示、ルビ・傍点表示を担当します。
 
 チャットとエディット画面のAI実行は別の入口を持ちます。チャットは`POST /api/chat/messages`から共通の`runAgentLoop`（Vercel AI SDK）を実行し、会話履歴へ保存します。エディット画面は`POST /api/ai-assists/execute`から構造化出力を生成し、会話履歴を作らず編集案を返します。ChatGPTプランは`openai-chatgpt` providerで直接接続します。旧Codex CLI連携は撤去し、保存履歴の互換だけを維持します。旧会話への送信・圧縮は拒否し、接続変更は新規会話から行います。
@@ -60,19 +62,17 @@ flowchart TD
 下位featureは上位featureの実装を参照しません。次の順序は左側が下位で、importは上位から下位へ向けます。
 
 ```text
-shared → workspace → edit-proposals → ai-tools → ai-agent → ai-chat / ai-assist
-                                                  ↑
-                                          siwc（LLM接続の実装）
+shared → workspace → edit-proposals → llm → siwc → ai-agent → ai-chat / ai-assist
 ```
 
-- `ai-chat`と`ai-assist`は互いに依存しません。共通のLLM選択契約・選択ロジック・UIは`ai-agent/llmSelection.ts`、`llmModelSelection.ts`、`LlmModelSelector.tsx`に置きます。これらはブラウザから利用でき、サーバー専用moduleを参照しません。
+- `ai-chat`と`ai-assist`は互いに依存しません。共通のLLM選択契約・選択ロジック・UIは`llm/selection/llmSelection.ts`、`llmModelSelection.ts`、`LlmModelSelector.tsx`に置きます。これらはブラウザから利用でき、サーバー専用moduleを参照しません。
 - `UpdatePlan`の項目schemaと型は`ai-agent/agentPlan.ts`が所有し、会話履歴schemaが参照します。
-- 検索ストアの入出力型は`workspace/workspaceSearchStore.ts`が所有し、`ai-tools/ripgrepTools.ts`のZod schemaをその契約に適合させます。
+- 検索ストアの入出力型は`workspace/workspaceSearchStore.ts`が所有し、`ai-agent/tools/ripgrepTools.ts`のZod schemaをその契約に適合させます。
 - `editor`、`file-tree`、`reader`は`workspace`と`edit-proposals`を参照できます。エディター本文・選択範囲のsnapshot型は`editor/editorTarget.ts`が公開し、`ai-assist`が参照します。
-- `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`ai-agent`から直接参照します。localStorageのキーと保存JSONの形は維持します。
+- `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`llm`から直接参照します。localStorageのキーと保存JSONの形は維持します。
 - 既定のアプリデータ保存先は`shared/server/applicationStorage.ts`の`defaultServerDataRoot()`で解決し、会話、AIアシスト、ワークスペーステンプレートから直接参照します。このmoduleはサーバー専用です。
 
-結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査、LLM featureの分離、`src/app/`の責務整理は別タスクで扱います。
+結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査と`src/app/`の責務整理は別タスクで扱います。
 
 ## HTTP API composition
 
@@ -109,17 +109,19 @@ shared → workspace → edit-proposals → ai-tools → ai-agent → ai-chat / 
 - `Glob`、`Grep`、`Search`は最大10件まで返します。
 - シンボリックリンクなどでワークスペース外へ出る結果は除外します。
 
-AI toolのschemaは`src/features/ai-tools/ripgrepTools.ts`、エージェントへ渡すtool定義は`src/features/ai-agent/agentTools.ts`にあります。検索エンジンを置き換える場合は、AI toolの返却shapeと件数制限を変えずに`WorkspaceSearchStore`を差し替えるのが基本です。
+AI toolのschemaは`src/features/ai-agent/tools/ripgrepTools.ts`、エージェントへ渡すtool定義は`src/features/ai-agent/tools/agentTools.ts`にあります。検索エンジンを置き換える場合は、AI toolの返却shapeと件数制限を変えずに`WorkspaceSearchStore`を差し替えるのが基本です。
 
 ## LLM providerとAPIキー管理
 
-LLM provider境界は`src/features/ai-agent/modelProvider.ts`です。`LlmProviderPlugin`がprovider ID、表示名、環境変数名、model候補、`createModel(modelId)`を定義します。現在はDeepSeek、OpenAI、Gemini、Anthropic、OpenAI互換APIを扱います。
+LLM provider境界は`src/features/llm/modelProvider.ts`です。`LlmProviderPlugin`がprovider ID、表示名、環境変数名、model候補、`createModel(modelId)`を定義します。現在はDeepSeek、OpenAI、Gemini、Anthropic、OpenAI互換APIを扱います。
 
-APIキー解決はサーバー側だけで行います。
+`llm`は`siwc`や`ai-agent`を参照しません。`modelProviderApi.ts`は必要なモデルinventoryだけを表す`ConnectedModelInventory`を受け取り、`shared/server/apiRouter.ts`がSIWC serviceを注入します。SIWCのHTTP/SSE検証は`siwc/siwcResponses.ts`に置き、OpenAI SDK生成は`llm/providers/openaiResponses.ts`へ委譲します。`@ai-sdk/*` provider packageのimportは`llm`内に限定します（テスト・evalを除く）。
 
-- 環境変数とbase URLの読み込みは`src/features/ai-agent/runtimeEnv.ts`に集約されています。
-- OSシークレットストアは`src/features/ai-agent/llmSecretStore.ts`です。macOS Keychain、Windows Credential Managerを使い、Linux保存はMVP対象外です。
-- `src/features/ai-agent/llmRuntime.ts`が環境変数を優先し、OSシークレットストアからproviderごとのAPIキーを補完します。チャットでは`agentChatApplicationService.ts`がこの境界を利用します。
+`ai-agent`は`ModelProvider`からモデルを取得し、`llm/secrets`を直接参照しません。APIキー解決はサーバー側だけで行います。
+
+- 環境変数とbase URLの読み込みは`src/features/llm/runtimeEnv.ts`に集約されています。
+- OSシークレットストアは`src/features/llm/secrets/llmSecretStore.ts`です。macOS Keychain、Windows Credential Managerを使い、Linux保存はMVP対象外です。
+- `src/features/llm/llmRuntime.ts`が環境変数を優先し、OSシークレットストアからproviderごとのAPIキーを補完します。チャットでは`agentChatApplicationService.ts`がこの境界を利用します。
 - クライアントから送れるのはサーバーが許可した`providerId`/`modelId`です。任意のmodel文字列やAPIキー本文を信頼しません。
 
 APIキー本文をクライアント、localStorage、会話履歴、ワークスペース内ファイルへ保存しません。派生プロジェクトでもREADME、サンプル、テンプレート、テストfixtureへ実APIキーを書かないでください。
@@ -137,7 +139,7 @@ AgentProfileは`src/features/ai-agent/agentProfiles.ts`で定義します。prof
 
 `selectProfileTools`はprofileの`activeTools`だけをVercel AI SDKへ渡します。未知tool名はエラーにします。サブエージェントprofileは`SpawnSubAgent`を持たないため、サブエージェントからさらにサブエージェントを起動できません。
 
-system promptは`src/features/ai-agent/workspaceInstructions.ts`の`composeAgentSystemPrompt`で次の優先順に合成されます。
+system promptは`src/features/ai-agent/context/workspaceInstructions.ts`の`composeAgentSystemPrompt`で次の優先順に合成されます。
 
 1. アプリ固定の安全・操作ルール
 2. AgentProfileのsystem prompt
@@ -160,7 +162,7 @@ plugin Skillは`ListSkills`と`UseSkill`から組み込みSkillと同じ一覧�
 
 ## AgentToolPlugin
 
-AgentToolPluginは`src/features/ai-agent/agentTools.ts`で定義されています。`AgentToolPlugin`は`kind: "agent-tool"`、`id`、`displayName`、`createTools(context)`を持ち、`createAgentTools`でcore toolに追加されます。
+AgentToolPluginは`src/features/ai-agent/tools/agentTools.ts`で定義されています。`AgentToolPlugin`は`kind: "agent-tool"`、`id`、`displayName`、`createTools(context)`を持ち、`createAgentTools`でcore toolに追加されます。
 
 core tool:
 
@@ -255,7 +257,7 @@ production chatは`src/features/ai-chat/modelMessages.ts`の`conversation-compac
 - `src/features/ai-assist/AiAssistPane.tsx`: アシスト定義の選択・管理、単発実行、今回の編集案のApply/Reject。
 - `src/features/reader/ReaderPage.tsx`: 章一覧、章送り、本文表示、コピー。
 - `src/features/settings/SettingsPage.tsx`: LLM APIキー状態とUI設定。
-- `src/features/ai-agent/LlmProfilesPage.tsx`: LLMプロフィールと用途別割り当て。
+- `src/features/llm/profiles/LlmProfilesPage.tsx`: LLMプロフィールと用途別割り当て。
 - `src/features/workspace/TemplatesPage.tsx`: ユーザー定義ワークスペーステンプレート管理。
 - `src/features/workspace/WorkspaceBar.tsx`: ワークスペースを開く、新規ワークスペース作成、テンプレート選択。
 
@@ -268,12 +270,12 @@ production chatは`src/features/ai-chat/modelMessages.ts`の`conversation-compac
 - 内蔵テンプレートと初期`AGENTS.md`: `src/features/workspace/workspaceTemplateStore.ts`。
 - ファイルストア差し替え: `src/features/workspace/workspaceFileStore.ts`と呼び出し元API。
 - 検索ストア差し替え: `src/features/workspace/workspaceSearchStore.ts`。
-- LLM provider/model候補: `src/features/ai-agent/modelProvider.ts`。
-- 環境変数名と読み込み: `src/features/ai-agent/runtimeEnv.ts`。
-- APIキー保存先やservice/account名: `src/features/ai-agent/llmSecretStore.ts`。
+- LLM provider/model候補: `src/features/llm/modelProvider.ts`。
+- 環境変数名と読み込み: `src/features/llm/runtimeEnv.ts`。
+- APIキー保存先やservice/account名: `src/features/llm/secrets/llmSecretStore.ts`。
 - AgentProfile、system prompt、許可tool、サブエージェント構成: `src/features/ai-agent/agentProfiles.ts`。
 - AgentSkillPluginとSkill構成: `src/features/ai-agent/agentSkills.ts`。
-- AgentToolPluginとcore tool構成: `src/features/ai-agent/agentTools.ts`。
+- AgentToolPluginとcore tool構成: `src/features/ai-agent/tools/agentTools.ts`。
 - 編集案のdiff、衝突判定、Apply/Reject: `src/features/edit-proposals/editProposalService.ts`。
 
 仕様を変える場合は`specs/novel-editor-mvp.md`と関連タスクも更新してください。検証は`bun run test`を使います。`bun test`はこのリポジトリのVitest設定を通らないため使いません。

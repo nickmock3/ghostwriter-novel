@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { apiFetch } from "../../shared/client/apiTransport";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
 
 export type AiConnection = "chatgpt" | "api" | "codex";
 const preferenceSchema = z.object({ connection: z.enum(["chatgpt", "api", "codex"]).optional(), modelId: z.string().optional(), legacy: z.boolean() });

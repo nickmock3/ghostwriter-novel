@@ -4,6 +4,8 @@
 
 ## Entries
 
+- [モジュール移動ではimportとワークスペースのパス文字列を分ける](entries/module-moves-preserve-path-literals.md): 多数のファイル移動で相対参照を一括更新するとき。
+
 - [空の.env.local雛形は移行した.envを上書きする](entries/local-env-template-shadowing.md): 初期セットアップ後に既存環境変数を移行するとき。
 
 | Area | When this matters | Field note | Entry |

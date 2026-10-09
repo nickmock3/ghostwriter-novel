@@ -378,13 +378,13 @@ OSシークレットストアのservice/accountは `ghostwriter` / `ghostwriter/
   - ここで `agentProfileConfig` の `defaultProfileId` や `subAgentProfileIds`、各 profile の `systemPrompt` と `activeTools` を調整します。
   - 追加したいツール権限やプロンプト差分は、このファイルの profile 定義に閉じ込めてください。
   - `AGENTS.md` は追加の作業指示として使えますが、ファイル境界、承認制編集、tool 権限などの安全ルールは profile や `AGENTS.md` で緩和できません。
-- AgentToolPluginとツール構成: `src/features/ai-agent/agentTools.ts`。
+- AgentToolPluginとツール構成: `src/features/ai-agent/tools/agentTools.ts`。
 - AgentSkillPluginとSkill構成: `src/features/ai-agent/agentSkills.ts`。
   - 派生プロジェクト固有の作業手順やドメイン知識は、`kind: "agent-skill"`、`id`、`displayName`、`createSkills({ workspaceRoot })` を持つ信頼済みローカルpluginとして定義し、`runAgentLoop`の`skillPlugins`へ明示的に渡します。
   - plugin Skillは`ListSkills`と`UseSkill`から組み込みSkillと同じ一覧・有効化経路で扱われますが、tool権限追加や任意コード実行には使われません。`instruction`全文は一覧や会話履歴へ保存しません。
-- LLM providerとmodel候補: `src/features/ai-agent/modelProvider.ts`。
-- 環境変数読み込み境界: `src/features/ai-agent/runtimeEnv.ts`。
-- LLMシークレット保存のservice名とprovider account: `src/features/ai-agent/llmSecretStore.ts`。
+- LLM providerとmodel候補: `src/features/llm/modelProvider.ts`。
+- 環境変数読み込み境界: `src/features/llm/runtimeEnv.ts`。
+- LLMシークレット保存のservice名とprovider account: `src/features/llm/secrets/llmSecretStore.ts`。
 - ワークスペースファイル境界と検索境界: `src/features/workspace/workspaceFileStore.ts`、`src/features/workspace/workspaceSearchStore.ts`。
 - UI文言と画面フロー: `src/app/`、`src/features/`、`src/routes/`。
 - 挙動変更に対応するテスト: 近くの `*.test.ts` / `*.test.tsx` と `e2e/`。

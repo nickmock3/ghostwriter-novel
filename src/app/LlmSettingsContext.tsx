@@ -1,8 +1,8 @@
 import { createContext, useContext, type Dispatch, type SetStateAction } from "react";
-import type { LlmProfileSettings } from "../features/ai-agent/llmProfileStorage";
-import type { LlmProfile } from "../features/ai-agent/llmProfiles";
+import type { LlmProfileSettings } from "../features/llm/profiles/llmProfileStorage";
+import type { LlmProfile } from "../features/llm/profiles/llmProfiles";
 import type { UserSettings } from "../features/settings/settingsStorage";
-import type { LlmProviderChoice, LlmSecretStatus } from "../features/ai-agent/llmSelection";
+import type { LlmProviderChoice, LlmSecretStatus } from "../features/llm/selection/llmSelection";
 
 export type LlmSettingsContextValue = {
   handleDeleteLlmSecret: (providerId: string) => Promise<void>;

@@ -15,10 +15,10 @@ import { MockLanguageModelV4 } from "ai/test";
 import { chatModeAgentProfile, mainAgentProfile } from "./agentProfiles";
 import { builtInAgentSkills } from "./agentSkills";
 import { createTrustedAgentExtensionCatalog } from "./trustedAgentExtensions";
-import type { LlmProfileRole } from "./llmProfiles";
+import type { LlmProfileRole } from "../llm/profiles/llmProfiles";
 import { runAgentLoop, type RunAgentLoopOptions } from "./runAgentLoop";
 import { normalizeWorkspaceRelativePath } from "../workspace/workspaceFilePaths";
-import type { ResolvedWritingDelegationTarget } from "./writingDelegationTarget";
+import type { ResolvedWritingDelegationTarget } from "./writing/writingDelegationTarget";
 
 const readableWritingTargetResolver: NonNullable<
   RunAgentLoopOptions["resolveWritingDelegationTarget"]

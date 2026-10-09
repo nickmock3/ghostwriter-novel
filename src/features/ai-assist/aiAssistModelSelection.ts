@@ -1,17 +1,17 @@
 import { z } from "zod";
-import type { LlmProfile, LlmProfileRoleAssignment } from "../ai-agent/llmProfiles";
-import type { LlmProviderId } from "../ai-agent/modelProvider";
+import type { LlmProfile, LlmProfileRoleAssignment } from "../llm/profiles/llmProfiles";
+import type { LlmProviderId } from "../llm/modelProvider";
 import {
   profileIdFromRoleAssignment,
   selectedModelFromRoleAssignment,
   type LlmProfileWithAvailability,
-} from "../ai-agent/llmModelSelection";
+} from "../llm/selection/llmModelSelection";
 import {
   modelSelectionFromValue,
   modelSelectionValue,
   type LlmProviderChoice,
   type SelectedModel,
-} from "../ai-agent/llmSelection";
+} from "../llm/selection/llmSelection";
 
 export const aiAssistStandardModelSelectionSchema = z.discriminatedUnion("kind", [
   z.object({ kind: z.literal("default-writing") }),

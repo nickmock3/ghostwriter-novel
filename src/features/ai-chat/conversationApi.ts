@@ -1,21 +1,21 @@
 import { defaultServerDataRoot } from "../../shared/server/applicationStorage";
 import { cleanupDroppedTextFilesForConversation } from "./droppedTextFiles";
 import type { SiwcService } from "../siwc/service";
-import { withSiwcRuntime } from "../ai-agent/llm-providers/siwcRuntime";
+import { withSiwcRuntime } from "../siwc/siwcRuntime";
 import { z } from "zod";
 import {
   createLlmPluginModelProvider,
   listAvailableLlmProviders,
   type LlmProviderPlugin,
   type ModelProvider,
-} from "../ai-agent/modelProvider";
+} from "../llm/modelProvider";
 import {
   createDefaultRoleAssignments,
   resolveLlmProfileForRole,
-} from "../ai-agent/llmProfiles";
-import { createLlmRuntime } from "../ai-agent/llmRuntime";
-import type { LlmSecretStore } from "../ai-agent/llmSecretStore";
-import type { LlmProviderConfig } from "../ai-agent/runtimeEnv";
+} from "../llm/profiles/llmProfiles";
+import { createLlmRuntime } from "../llm/llmRuntime";
+import type { LlmSecretStore } from "../llm/secrets/llmSecretStore";
+import type { LlmProviderConfig } from "../llm/runtimeEnv";
 import {
   applicationStorageUnavailableBody,
   isApplicationStorageError,

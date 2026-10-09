@@ -15,8 +15,8 @@ import {
 } from "./conversationHistory";
 import { chatModeAgentProfile, mainAgentProfile } from "../ai-agent/agentProfiles";
 import { createTrustedAgentExtensionCatalog } from "../ai-agent/trustedAgentExtensions";
-import type { LlmProviderConfig } from "../ai-agent/runtimeEnv";
-import { createLlmSecretStore, type SystemCredentialAdapter } from "../ai-agent/llmSecretStore";
+import type { LlmProviderConfig } from "../llm/runtimeEnv";
+import { createLlmSecretStore, type SystemCredentialAdapter } from "../llm/secrets/llmSecretStore";
 import type {
   DelegateWritingDiagnostic,
   RunAgentLoopOptions,

@@ -2,7 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import type { ModelProvider } from "../ai-agent/modelProvider";
+import type { ModelProvider } from "../llm/modelProvider";
 import { createConversation, appendConversationMessage } from "./conversationHistory";
 import { compactConversation } from "./conversationCompaction";
 

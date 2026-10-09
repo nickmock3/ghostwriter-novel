@@ -3,8 +3,8 @@ import { tmpdir } from "node:os";
 import path from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-import type { LlmProviderPlugin } from "../ai-agent/modelProvider";
-import type { LlmSecretStore } from "../ai-agent/llmSecretStore";
+import type { LlmProviderPlugin } from "../llm/modelProvider";
+import type { LlmSecretStore } from "../llm/secrets/llmSecretStore";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
 import {
   createAiAssistExecutionService,

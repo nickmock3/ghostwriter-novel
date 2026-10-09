@@ -1,6 +1,6 @@
 import { generateObject as defaultGenerateObject } from "ai";
 import { z } from "zod";
-import type { ChatModelSelection, ModelProvider } from "../ai-agent/modelProvider";
+import type { ChatModelSelection, ModelProvider } from "../llm/modelProvider";
 import { appendConversationCompaction, getConversation } from "./conversationHistory";
 import {
   conversationCompactionSchema,

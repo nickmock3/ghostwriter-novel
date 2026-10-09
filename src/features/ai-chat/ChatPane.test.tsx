@@ -9,8 +9,8 @@ import {
 } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { beforeEach, afterEach, describe, expect, it, vi } from "vitest";
-import type { LlmProfileRoleAssignments } from "../ai-agent/llmProfiles";
-import type { LlmProviderChoice, SelectedModel } from "../ai-agent/llmSelection";
+import type { LlmProfileRoleAssignments } from "../llm/profiles/llmProfiles";
+import type { LlmProviderChoice, SelectedModel } from "../llm/selection/llmSelection";
 import { ChatPane, type AppliedEditProposal, type ChatPaneProps } from "./ChatPane";
 import { useChatConversationController } from "./useChatConversationController";
 

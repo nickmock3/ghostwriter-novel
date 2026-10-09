@@ -12,15 +12,15 @@ import {
   type DelegateWritingToolInput,
   type DelegateWritingToolOutput,
   type RunAgentLoopToolServiceOverrides,
-} from "./agentTools";
-import { resolveWritingDelegationTarget as defaultResolveWritingDelegationTarget } from "./writingDelegationTarget";
-import type { ResolvedWritingDelegationTarget } from "./writingDelegationTarget";
+} from "./tools/agentTools";
+import { resolveWritingDelegationTarget as defaultResolveWritingDelegationTarget } from "./writing/writingDelegationTarget";
+import type { ResolvedWritingDelegationTarget } from "./writing/writingDelegationTarget";
 import {
   createWritingArtifactRegistry,
   normalizeWritingTargetPath,
   toPublicDelegateWritingOutput,
-} from "./writingArtifactRegistry";
-import { createWritingDelegationService } from "./writingDelegationService";
+} from "./writing/writingArtifactRegistry";
+import { createWritingDelegationService } from "./writing/writingDelegationService";
 import {
   createAgentSkillRegistry,
   type AgentSkill,
@@ -33,20 +33,20 @@ import {
   type AgentProfile,
 } from "./agentProfiles";
 import { createSubAgentRuntime } from "./subAgentRuntime";
-import type { DelegateWritingDiagnosticObserver } from "./delegateWritingDiagnostics";
+import type { DelegateWritingDiagnosticObserver } from "./writing/delegateWritingDiagnostics";
 import {
   getDefaultMaxOutputTokens,
   getLlmProfileTemperature,
   type LlmProfileRole,
   type ResolvedLlmProfile,
-} from "./llmProfiles";
-import type { ModelProvider } from "./modelProvider";
+} from "../llm/profiles/llmProfiles";
+import type { ModelProvider } from "../llm/modelProvider";
 import {
   emptyTrustedAgentExtensionCatalog,
   type TrustedAgentExtensionCatalog,
 } from "./trustedAgentExtensions";
-import type { LoadRecentTextFilesContextOptions, RecentTextFilesContext } from "./recentTextFilesContext";
-import type { LoadWorkspaceStructureContextOptions, WorkspaceStructureContext } from "./workspaceStructureContext";
+import type { LoadRecentTextFilesContextOptions, RecentTextFilesContext } from "./context/recentTextFilesContext";
+import type { LoadWorkspaceStructureContextOptions, WorkspaceStructureContext } from "./context/workspaceStructureContext";
 import {
   composeAgentSystemPrompt,
   type AgentRuntimeContext,
@@ -54,11 +54,11 @@ import {
   type ChapterReferenceContext,
   type LoadWorkspaceAgentsInstructionsOptions,
   type WorkspaceInstructions,
-} from "./workspaceInstructions";
-import { createAgentContextLoader } from "./agentContextLoader";
+} from "./context/workspaceInstructions";
+import { createAgentContextLoader } from "./context/agentContextLoader";
 import { mapAgentStreamPart, type AgentLoopEvent } from "./agentStreamEvents";
 
-import { streamWritingObject, type GenerateWritingObject } from "./streamWritingObject";
+import { streamWritingObject, type GenerateWritingObject } from "./writing/streamWritingObject";
 
 export type { AgentLoopEvent } from "./agentStreamEvents";
 
@@ -134,7 +134,7 @@ export type RunAgentLoopOptions = {
   workspaceRoot: string;
 };
 
-export type { DelegateWritingDiagnostic, DelegateWritingDiagnosticObserver } from "./delegateWritingDiagnostics";
+export type { DelegateWritingDiagnostic, DelegateWritingDiagnosticObserver } from "./writing/delegateWritingDiagnostics";
 
 
 const DEFAULT_MAX_SUB_AGENT_SPAWNS = 2;

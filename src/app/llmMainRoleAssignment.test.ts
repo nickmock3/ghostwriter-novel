@@ -5,8 +5,8 @@ import {
   updateMainLlmModelSelection,
   updateMainLlmProfileId,
 } from "./llmMainRoleAssignment";
-import type { LlmProfileSettings } from "../features/ai-agent/llmProfileStorage";
-import type { LlmProfile } from "../features/ai-agent/llmProfiles";
+import type { LlmProfileSettings } from "../features/llm/profiles/llmProfileStorage";
+import type { LlmProfile } from "../features/llm/profiles/llmProfiles";
 
 function settings(): LlmProfileSettings {
   return {

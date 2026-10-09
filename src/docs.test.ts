@@ -1,6 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { describe, expect, it } from "vitest";
-import { createLlmProviderPlugins } from "./features/ai-agent/modelProvider";
+import { createLlmProviderPlugins } from "./features/llm/modelProvider";
 
 async function readText(path: string): Promise<string> {
   return readFile(path, "utf8");
@@ -109,9 +109,9 @@ describe("repository documentation", () => {
     for (const requiredReference of [
       "src/features/workspace/workspaceFileStore.ts",
       "src/features/workspace/workspaceSearchStore.ts",
-      "src/features/ai-agent/modelProvider.ts",
+      "src/features/llm/modelProvider.ts",
       "src/features/ai-agent/agentProfiles.ts",
-      "src/features/ai-agent/agentTools.ts",
+      "src/features/ai-agent/tools/agentTools.ts",
       "src/features/edit-proposals/editProposalService.ts",
       "bun run test",
     ]) {

@@ -9,13 +9,13 @@ export {
   type DelegateWritingToolOutput,
   type WritingDelegationOperation,
   type RunAgentLoopToolServiceOverrides,
-} from "../features/ai-agent/agentTools";
+} from "../features/ai-agent/tools/agentTools";
 export {
   createLlmPluginModelProvider,
   createLlmProviderPlugins,
   listAvailableLlmProviders,
   resolveChatModelSelection,
-} from "../features/ai-agent/modelProvider";
+} from "../features/llm/modelProvider";
 export {
   runAgentLoop,
   type AgentLoopEvent,
@@ -27,7 +27,7 @@ export {
   resolveWritingDelegationTarget,
   type ResolvedWritingDelegationTarget,
   type WritingDelegationTargetState,
-} from "../features/ai-agent/writingDelegationTarget";
+} from "../features/ai-agent/writing/writingDelegationTarget";
 export {
   COMPACT_TOOL_HISTORY_CONVERSATION_MAX_CHARS,
   COMPACT_TOOL_HISTORY_TURN_MAX_CHARS,

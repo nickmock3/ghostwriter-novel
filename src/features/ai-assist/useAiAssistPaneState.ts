@@ -3,10 +3,10 @@ import { z } from "zod";
 import { aiAssistStandardModelSelectionSchema } from "./aiAssistModelSelection";
 import { useAiConnection } from "../siwc/useAiConnection";
 import { useEffect, useMemo, useState } from "react";
-import type { LlmProfileRoleAssignment } from "../ai-agent/llmProfiles";
+import type { LlmProfileRoleAssignment } from "../llm/profiles/llmProfiles";
 import type { EditProposal } from "../edit-proposals/editProposalSchemas";
-import type { LlmProfileWithAvailability } from "../ai-agent/llmModelSelection";
-import type { LlmProviderChoice } from "../ai-agent/llmSelection";
+import type { LlmProfileWithAvailability } from "../llm/selection/llmModelSelection";
+import type { LlmProviderChoice } from "../llm/selection/llmSelection";
 import {
   builtInAiAssists,
   type AiAssistDefinition,

@@ -2,7 +2,7 @@ import { z } from "zod";
 import {
   llmProfileRoleAssignmentsSchema,
   llmProfileSchema,
-} from "../ai-agent/llmProfiles";
+} from "../llm/profiles/llmProfiles";
 import { aiAssistStandardModelSelectionSchema } from "./aiAssistModelSelection";
 
 export const AI_ASSIST_NAME_MAX_LENGTH = 80;
