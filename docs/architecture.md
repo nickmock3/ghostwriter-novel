@@ -70,9 +70,14 @@ shared → workspace → edit-proposals → llm → siwc → ai-agent → ai-cha
 - 検索ストアの入出力型は`workspace/workspaceSearchStore.ts`が所有し、`ai-agent/tools/ripgrepTools.ts`のZod schemaをその契約に適合させます。
 - `editor`、`file-tree`、`reader`は`workspace`と`edit-proposals`を参照できます。エディター本文・選択範囲のsnapshot型は`editor/editorTarget.ts`が公開し、`ai-assist`が参照します。
 - `settings`の画面は各featureのUIを組み立てる上位です。`settingsStorage.ts`にはユーザー設定の保存・復元を残し、LLM型・schemaは`llm`から直接参照します。localStorageのキーと保存JSONの形は維持します。
+- ユーザー設定契約の例外として、`llm`と`ai-chat`から`settings/settingsStorage.ts`への参照だけは許可します。`settings`の画面など他のmoduleへの逆依存は許可しません。
 - 既定のアプリデータ保存先は`shared/server/applicationStorage.ts`の`defaultServerDataRoot()`で解決し、会話、AIアシスト、ワークスペーステンプレートから直接参照します。このmoduleはサーバー専用です。
 
-結合テストに必要なテストファイルからの横断importは、この依存方向の制約対象外です。依存ルールの自動検査は別タスクで扱います。
+依存ルールは`src/features/featureDependencies.test.ts`で自動検査します。許可表とmodule単位の例外は、この節と検査コードを同時に更新してください。上記の順序で各featureはすべての下位featureを参照できます。同一feature内と`shared`などfeature外への参照は制限しません。新規featureは許可表への追加が必要です。
+
+検査は`src/features/`内の本番TS/TSXを構文解析し、通常・型・副作用import、再export、文字列による動的import・requireを対象にします。結合テスト用の`*.test.ts(x)`、`*.spec.ts(x)`、`test-support.ts(x)`と`src/test/`は対象外です。`src/app/`、`src/routes/`、`src/shared/`からfeatureへの依存も対象外です（`shared/server/apiRouter.ts`はHTTP composition rootとしてfeatureを組み立てます）。
+
+`bun run test`に含まれ、既存CIの`.github/workflows/desktop-preview.yml`でも実行されます。違反時はファイル・行、参照先、許可されている依存先を表示します。
 
 ## HTTP API composition
 

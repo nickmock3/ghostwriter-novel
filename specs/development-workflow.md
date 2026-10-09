@@ -118,7 +118,7 @@ Vitestのテストは対象実装の近くに配置する。Reactコンポーネ
 - ワークスペース外アクセスなどの安全性を壊していないか。
 - AI編集が承認制を守っているか。
 - Vercel AI SDKの型と設計に沿っているか。
-- vertical slice構成を崩していないか。
+- vertical slice構成を崩していないか。feature間の依存方向は`src/features/featureDependencies.test.ts`が`bun run test`と既存CIで検査する。ルールを変える場合は検査コードの許可表・module単位の例外と`docs/architecture.md`を同時に更新する。
 - 不要な抽象化や広すぎる変更がないか。
 
 ## 完了条件
