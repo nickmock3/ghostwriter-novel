@@ -466,7 +466,7 @@ describe("FileTreePane", () => {
     fireEvent.click(createNameInput);
     expect(createNameInput).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("heading", { name: "EXPLORER" }));
+    fireEvent.click(screen.getByRole("heading", { name: "ファイル" }));
     expect(screen.queryByLabelText("作成する名前")).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "ファイルを作成" }));

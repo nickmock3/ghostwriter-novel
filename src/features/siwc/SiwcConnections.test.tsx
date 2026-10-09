@@ -19,7 +19,7 @@ beforeEach(() => {
 it("guides a new user to ChatGPT, refreshes after login and sends the selected billing path", async () => {
   render(<ChatPane mode="chat" fileContext={{ workspaceRoot: "/tmp/test" }} llm={{ providers }} />);
   await screen.findByText("ChatGPTでログインしてください。");
-  fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), { target: { value: "test" } });
+  fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), { target: { value: "test" } });
   expect(screen.getByRole("button", { name: "送信" })).toBeDisabled();
   expect(screen.queryByRole("link", { name: "APIキーを設定" })).not.toBeInTheDocument();
   signedIn = true;
@@ -61,7 +61,7 @@ it("does not send a legacy SIWC model through a newly selected API connection", 
   localStorage.setItem("ghostwriter:ai-connection:chat", JSON.stringify({ legacy: true, connection: "api" }));
   render(<ChatPane mode="chat" fileContext={{ workspaceRoot: "/tmp/test" }} llm={{ providers, modelSelection: { providerId: "openai-chatgpt", modelId: "old" } }} />);
   await screen.findByText("APIキー接続のモデルを選択してください。");
-  fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), { target: { value: "test" } });
+  fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), { target: { value: "test" } });
   expect(screen.getByRole("button", { name: "送信" })).toBeDisabled();
   expect(requests).toHaveLength(0);
 });

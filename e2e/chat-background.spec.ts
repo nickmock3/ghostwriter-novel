@@ -92,7 +92,7 @@ for (const outcome of ["success", "failure", "return-while-running", "workspace-
     const badge = page.getByRole("status", { name: /チャットの応答/ });
     await expect(badge).toHaveCount(0);
     if (outcome === "workspace-change") {
-      await page.getByRole("link", { name: "エディット画面", exact: true }).click();
+      await page.getByRole("link", { name: "エディットモード", exact: true }).click();
       await page.getByRole("button", { name: "ワークスペースを開く", exact: true }).click();
       await expect.poll(() => page.evaluate(() => localStorage.getItem("ghostwriter:last-workspace-root"))).toBe(`${workspaceRoot}-other`);
       const response = page.waitForResponse("**/api/chat/messages");

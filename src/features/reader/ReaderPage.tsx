@@ -235,7 +235,7 @@ export function ReaderPage({ onOpenEditorSelection, workspaceRoot }: ReaderPageP
               チャットモードへ移動
             </Link>
             <Link className="secondary-action" to="/editor">
-              エディット画面へ移動
+              エディットモードへ移動
             </Link>
           </div>
         </div>

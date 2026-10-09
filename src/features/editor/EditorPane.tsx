@@ -73,6 +73,7 @@ function EditorPaneContent({
   selectionRequest,
   showLineNumbers = false,
   wrapLines = true,
+  workspaceRoot,
 }: EditorPaneContentProps) {
   const codeMirrorRef = useRef<ReactCodeMirrorRef | null>(null);
   const editorSurfaceRef = useRef<HTMLDivElement | null>(null);
@@ -393,7 +394,7 @@ function EditorPaneContent({
         </div>
       )}
       <div className="editor-toolbar">
-        <span className="opened-path">Plain Text</span>
+        <span className="opened-path">プレーンテキスト</span>
         <button
           type="button"
           className="secondary-action"
@@ -457,12 +458,14 @@ function EditorPaneContent({
           onDragOver={handleEditorFileDragOver}
           onDrop={(event) => void handleEditorFileDrop(event)}
         >
-          ワークスペースを選択し、テキストファイルを開くとここで編集できます。
+          {workspaceRoot
+            ? "左のツリーからファイルを選ぶと、ここで編集できます。"
+            : "ワークスペースを選択し、テキストファイルを開くとここで編集できます。"}
         </div>
       )}
       <div className="editor-status-bar">
         <span aria-label="文字数">{characterCount}文字</span>
-        <span>{isDirty ? "Unsaved" : "Saved"}</span>
+        <span role="status" aria-label="保存状態">{isDirty ? "未保存" : "保存済み"}</span>
       </div>
     </section>
   );

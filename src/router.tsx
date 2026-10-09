@@ -26,7 +26,7 @@ function NotFoundComponent() {
         <h1>ページが見つかりません</h1>
         <p>指定された画面はこのアプリに存在しません。</p>
         <Link className="primary-action" to="/editor">
-          エディット画面へ戻る
+          エディットモードへ戻る
         </Link>
       </div>
     </section>

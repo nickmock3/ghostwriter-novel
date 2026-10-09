@@ -246,7 +246,7 @@ test("replaces the editor chat pane with AI assists and follows the CodeMirror s
 test("routes between editor and settings as full pages", async ({ page }) => {
   await page.goto("/editor");
 
-  await expect(page.getByRole("link", { name: "エディット画面" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "エディットモード" })).toHaveAttribute(
     "aria-current",
     "page",
   );
@@ -267,10 +267,10 @@ test("routes between editor and settings as full pages", async ({ page }) => {
   await expect(page.getByRole("region", { name: "テキストエディター" })).toHaveCount(0);
   await expect(page.getByRole("complementary", { name: "AIチャット" })).toHaveCount(0);
 
-  await page.getByRole("link", { name: "エディット画面" }).click();
+  await page.getByRole("link", { name: "エディットモード" }).click();
 
   await expect(page).toHaveURL(/\/editor$/);
-  await expect(page.getByRole("link", { name: "エディット画面" })).toHaveAttribute(
+  await expect(page.getByRole("link", { name: "エディットモード" })).toHaveAttribute(
     "aria-current",
     "page",
   );

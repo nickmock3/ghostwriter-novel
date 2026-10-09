@@ -301,7 +301,7 @@ export function WorkspaceBar({
             ? "読み込み中..."
             : chatMode
               ? "新しい小説を始める"
-              : "新規ワークスペース"}
+              : "テンプレートから新しい小説を作る"}
         </button>
         <button
           type="button"

@@ -39,7 +39,7 @@ export function FileTreePane({ collapseControl, dirtyPaths = [], footer, onFileO
     }
   };
   return <aside className="pane file-tree-pane" aria-label="ファイルツリー" onDragOver={blockUnhandledFileDrop} onDrop={blockUnhandledFileDrop}>
-    <div className="pane-heading">{collapseControl ? <div className="pane-heading-leading">{collapseControl}</div> : null}<h2>EXPLORER</h2><div className="pane-heading-actions">
+    <div className="pane-heading">{collapseControl ? <div className="pane-heading-leading">{collapseControl}</div> : null}<h2>ファイル</h2><div className="pane-heading-actions">
       <button type="button" className="icon-action file-tree-toolbar-action" disabled={!workspaceRoot} aria-label="ファイルを作成" onClick={() => controller.openOperationForm("create-file")}>+</button>
       <button type="button" className="icon-action file-tree-toolbar-action" disabled={!workspaceRoot} aria-label="フォルダを作成" onClick={() => controller.openOperationForm("create-directory")}><FiFolderPlus aria-hidden="true" focusable="false" /></button>
       <button type="button" className="icon-action file-tree-toolbar-action file-tree-rename-action" disabled={!workspaceRoot} aria-label="選択中の項目名を変更" onClick={() => controller.openOperationForm("rename")}><FiEdit2 aria-hidden="true" focusable="false" /></button>

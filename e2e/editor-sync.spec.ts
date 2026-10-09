@@ -54,7 +54,7 @@ for (const dirty of [false, true]) {
     await page.getByRole("complementary", { name: "AIチャット", exact: true }).getByRole("textbox").fill("原稿を更新して");
     await page.getByRole("button", { name: "送信", exact: true }).click();
     await expect(page.getByText("更新しました", { exact: true })).toBeVisible();
-    await page.getByRole("link", { name: "エディット画面", exact: true }).click();
+    await page.getByRole("link", { name: "エディットモード", exact: true }).click();
     await expect(page.getByRole("tab", { name: "notes.txt", exact: true })).toHaveAttribute("aria-selected", "true");
     await page.getByRole("tab", { name: /^manuscript.txt/ }).click();
     await expect(editor).toHaveText(dirty ? "my unsaved draft" : "updated by chat");
@@ -73,7 +73,7 @@ for (const dirty of [false, true]) {
     await page.getByRole("link", { name: "チャットモード", exact: true }).click();
     await expect(page).toHaveURL(/\/chat$/);
     await page.getByRole("button", { name: "Undo", exact: true }).click();
-    await page.getByRole("link", { name: "エディット画面", exact: true }).click();
+    await page.getByRole("link", { name: "エディットモード", exact: true }).click();
     await expect(editor).toHaveText("original manuscript");
   });
 }

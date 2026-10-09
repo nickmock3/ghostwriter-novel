@@ -170,7 +170,7 @@ test("drops a text file into CodeMirror as an unsaved edit", async ({ page }) =>
   });
 
   await expect(editorContent).toContainText("DROP");
-  await expect(page.getByText("Unsaved", { exact: true })).toBeVisible();
+  await expect(page.getByRole("status", { name: "保存状態" })).toHaveText("未保存");
   expect(state.saveRequests).toBe(0);
 });
 
@@ -212,7 +212,7 @@ test("keeps a dropped tree file between siblings after refresh, mode changes, an
   await expect(
     page.getByRole("region", { exact: true, name: "チャットモード" }),
   ).toBeVisible();
-  await page.getByRole("link", { name: "エディット画面" }).click();
+  await page.getByRole("link", { name: "エディットモード" }).click();
   await expect.poll(() => visibleFileOrder(page)).toEqual([
     "A.txt",
     "C.txt",

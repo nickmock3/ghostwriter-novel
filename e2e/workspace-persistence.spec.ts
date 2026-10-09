@@ -53,9 +53,9 @@ test("opens, edits, saves, and reloads a real workspace file", async ({ page }) 
     await editor.click();
     await page.keyboard.press("ControlOrMeta+A");
     await page.keyboard.type("after");
-    await expect(page.getByText("Unsaved", { exact: true })).toBeVisible();
+    await expect(page.getByRole("status", { name: "保存状態" })).toHaveText("未保存");
     await page.getByRole("button", { name: "保存", exact: true }).click();
-    await expect(page.getByText("Saved", { exact: true })).toBeVisible();
+    await expect(page.getByText("保存済み", { exact: true })).toBeVisible();
     await expect.poll(() => readFile(path.join(root, filePath), "utf8")).toBe("after");
 
     const persisted = await page.request.get(`/api/files/content?workspaceRoot=${encodeURIComponent(root)}&path=${encodeURIComponent(filePath)}`);
@@ -64,7 +64,7 @@ test("opens, edits, saves, and reloads a real workspace file", async ({ page }) 
 
     await page.getByRole("link", { name: "チャットモード" }).click();
     await expect(page.getByRole("region", { exact: true, name: "チャットモード" })).toBeVisible();
-    await page.getByRole("link", { name: "エディット画面" }).click();
+    await page.getByRole("link", { name: "エディットモード" }).click();
     await page.reload();
     await page.waitForFunction(() => window.__GHOSTWRITER_HYDRATED__ === true);
     await page.getByRole("treeitem", { name: filePath }).click();

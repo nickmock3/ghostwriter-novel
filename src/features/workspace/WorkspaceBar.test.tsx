@@ -83,12 +83,12 @@ describe("WorkspaceBar", () => {
   });
 
   it("keeps only meaningful header actions available", async () => {
-    await renderApp();
+    const { container } = await renderApp();
 
-    expect(screen.getByRole("button", { name: "新規ワークスペース" })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "テンプレートから新しい小説を作る" })).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "ワークスペースを開く" })).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "テンプレートを適用" })).not.toBeInTheDocument();
-    expect(screen.queryByLabelText("保存状態")).not.toBeInTheDocument();
+    expect(within(container.querySelector<HTMLElement>(".workspace-bar")!).queryByLabelText("保存状態")).not.toBeInTheDocument();
     expect(
       screen.queryByRole("button", { name: "ペイン表示を切り替え" }),
     ).not.toBeInTheDocument();
@@ -237,7 +237,7 @@ describe("WorkspaceBar", () => {
     await renderApp();
 
     await screen.findByRole("heading", { name: "current" });
-    fireEvent.click(screen.getByRole("button", { name: "新規ワークスペース" }));
+    fireEvent.click(screen.getByRole("button", { name: "テンプレートから新しい小説を作る" }));
 
     const dialog = await screen.findByRole("dialog", { name: "新しい小説ワークスペースを作成" });
     expect(dialog).toHaveTextContent("テンプレートを選択してから");
@@ -306,7 +306,7 @@ describe("WorkspaceBar", () => {
     await renderApp("/chat");
 
     expect(screen.getByRole("button", { name: "新しい小説を始める" })).toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: "新規ワークスペース" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "テンプレートから新しい小説を作る" })).not.toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("button", { name: "新しい小説を始める" }));
 

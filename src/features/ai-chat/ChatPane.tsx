@@ -217,7 +217,7 @@ function ChatPaneView({
   const isWorkspaceUnavailable = workspaceRoot === null;
   const composerPlaceholder = isWorkspaceUnavailable
     ? "ワークスペースを開くと利用できます"
-    : "ワークスペースについて質問";
+    : "書きたいこと、相談したいことを入力";
   const isCodexRuntime = activeConversation?.agentRuntime === "codex-app-server";
   const showTokenUsageIndicator =
     !isWorkspaceUnavailable &&
@@ -239,7 +239,7 @@ function ChatPaneView({
       aria-label="AIチャット"
     >
       <div className="pane-heading">
-        <h2>AI Chat</h2>
+        <h2>AIチャット</h2>
         <div className="pane-heading-actions">
           {paneLayoutResetControl}
           <button

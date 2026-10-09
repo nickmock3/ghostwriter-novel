@@ -74,13 +74,13 @@ export function AppShell({
         </Link>
         <Link
           className="app-sidebar-button"
-          aria-label="エディット画面"
-          title="エディット画面"
+          aria-label="エディットモード"
+          title="エディットモード"
           to="/editor"
           activeProps={{ "aria-current": "page" }}
         >
           <FiEdit3 aria-hidden="true" focusable="false" />
-          <span>エディット画面</span>
+          <span>エディットモード</span>
         </Link>
         <Link
           className="app-sidebar-button"

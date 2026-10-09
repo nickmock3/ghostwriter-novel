@@ -186,8 +186,14 @@ describe("EditorPane", () => {
     expect(screen.queryByRole("heading", { name: "何から始めますか？" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "アイディアをAIに相談する" })).not.toBeInTheDocument();
     expect(
-      screen.getByText("ワークスペースを選択し、テキストファイルを開くとここで編集できます。"),
+      screen.getByText("左のツリーからファイルを選ぶと、ここで編集できます。"),
     ).toBeInTheDocument();
+  });
+
+  it("guides workspace selection when no workspace is open", () => {
+    render(<EditorPane workspaceRoot={null} selectedPath={null} />);
+    expect(screen.getByText("ワークスペースを選択し、テキストファイルを開くとここで編集できます。")).toBeInTheDocument();
+    expect(screen.queryByText("左のツリーからファイルを選ぶと、ここで編集できます。")).not.toBeInTheDocument();
   });
 
   it("hides the empty editor guide after a file is selected", async () => {
@@ -490,7 +496,7 @@ describe("EditorPane", () => {
       target: { value: "unsaved route change" },
     });
     expect(screen.getByLabelText("エディター本文")).toHaveValue("unsaved route change");
-    expect(screen.getByText("Unsaved")).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "保存状態" })).toHaveTextContent("未保存");
 
     rerender(<PersistentEditorSession show={false} />);
     expect(screen.queryByLabelText("エディター本文")).not.toBeInTheDocument();
@@ -499,7 +505,7 @@ describe("EditorPane", () => {
     expect(await screen.findByLabelText("エディター本文")).toHaveValue(
       "unsaved route change",
     );
-    expect(screen.getByText("Unsaved")).toBeInTheDocument();
+    expect(screen.getByRole("status", { name: "保存状態" })).toHaveTextContent("未保存");
   });
 
   it("inserts a dropped UTF-8 text file at the CodeMirror drop coordinates as an unsaved edit", async () => {
@@ -523,7 +529,7 @@ describe("EditorPane", () => {
         selection: { anchor: 8 },
       });
       expect(screen.getByLabelText("エディター本文")).toHaveValue("app DROPv1");
-      expect(screen.getByText("Unsaved")).toBeInTheDocument();
+      expect(screen.getByRole("status", { name: "保存状態" })).toHaveTextContent("未保存");
     });
   });
 

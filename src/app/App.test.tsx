@@ -215,7 +215,7 @@ vi.mock("../features/ai-chat/ChatPane", () => ({
   }) => (
     <aside aria-label="AIチャット" className="chat-pane">
       <div className="pane-heading">
-        <h2>AI Chat</h2>
+        <h2>AIチャット</h2>
         <div className="pane-heading-actions">
           {paneLayoutResetControl}
           {paneCollapseControl}
@@ -558,12 +558,12 @@ describe("App", () => {
     });
     expect(screen.getByText("chat workspace /tmp/workspace")).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole("link", { name: "エディット画面" }));
+    fireEvent.click(screen.getByRole("link", { name: "エディットモード" }));
 
     await waitFor(() => {
       expect(screen.getByRole("region", { name: "エディターワークスペース" })).toBeInTheDocument();
     });
-    expect(screen.getByRole("link", { name: "エディット画面" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "エディットモード" })).toHaveAttribute(
       "aria-current",
       "page",
     );
@@ -675,7 +675,7 @@ describe("App", () => {
       "ワークスペースが開かれていません。",
     );
     expect(screen.getByRole("link", { name: "チャットモードへ移動" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "エディット画面へ移動" })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "エディットモードへ移動" })).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole("link", { name: "チャットモードへ移動" }));
     await waitFor(() => {
@@ -717,7 +717,7 @@ describe("App", () => {
     await renderApp("/");
 
     await waitFor(() => {
-      expect(screen.getByRole("link", { name: "エディット画面" })).toHaveAttribute(
+      expect(screen.getByRole("link", { name: "エディットモード" })).toHaveAttribute(
         "aria-current",
         "page",
       );
@@ -1350,7 +1350,7 @@ describe("App", () => {
     await renderApp("/editor");
 
     expect(screen.getByRole("navigation", { name: "画面切り替え" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "エディット画面" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "エディットモード" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "設定ページ" })).not.toHaveAttribute("aria-current");
     expect(screen.getByRole("link", { name: "設定ページ" })).toHaveAttribute(
       "data-sidebar-placement",
@@ -1371,7 +1371,7 @@ describe("App", () => {
 
     const settingsPage = await screen.findByRole("region", { name: "設定" });
     expect(screen.getByRole("link", { name: "設定ページ" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: "エディット画面" })).not.toHaveAttribute("aria-current");
+    expect(screen.getByRole("link", { name: "エディットモード" })).not.toHaveAttribute("aria-current");
     expect(screen.queryByRole("region", { name: "エディターワークスペース" })).not.toBeInTheDocument();
     expect(screen.queryByRole("dialog", { name: "設定" })).not.toBeInTheDocument();
     fireEvent.click(screen.getByLabelText("エディターの行を折り返す"));
@@ -1398,7 +1398,7 @@ describe("App", () => {
       '"providerId":"openai"',
     );
 
-    fireEvent.click(screen.getByRole("link", { name: "エディット画面" }));
+    fireEvent.click(screen.getByRole("link", { name: "エディットモード" }));
     await waitFor(() => {
       expect(screen.getByRole("region", { name: "エディターワークスペース" })).toBeInTheDocument();
     });
@@ -1517,7 +1517,7 @@ describe("App", () => {
 
     expect(screen.getByRole("region", { name: "ページが見つかりません" })).toBeInTheDocument();
     expect(screen.getByRole("heading", { name: "ページが見つかりません" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "エディット画面へ戻る" })).toHaveAttribute("href", "/editor");
+    expect(screen.getByRole("link", { name: "エディットモードへ戻る" })).toHaveAttribute("href", "/editor");
   });
 
   it("routes to the templates page and manages user workspace templates", async () => {

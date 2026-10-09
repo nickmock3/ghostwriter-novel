@@ -32,7 +32,7 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await page.getByRole("link", { name: "チャットモード" }).click();
     await expect(page.getByLabel("会話の実行方式")).toHaveValue("chatgpt");
     await expect(page.getByLabel("ChatGPTモデル", { exact: true })).toHaveValue("test-model");
-    await page.getByPlaceholder("ワークスペースについて質問").fill("draft.txtのbeforeをafterへ変更してください");
+    await page.getByPlaceholder("書きたいこと、相談したいことを入力").fill("draft.txtのbeforeをafterへ変更してください");
     await page.getByRole("button", { name: "送信", exact: true }).click();
     await expect(page.getByText("編集しました", { exact: true })).toBeVisible();
     await expect.poll(() => readFile(join(root, "draft.txt"), "utf8")).toBe("after");
@@ -40,10 +40,10 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await expect.poll(() => readFile(join(root, "draft.txt"), "utf8")).toBe("before");
     await page.reload();
     await expect(page.getByLabel("会話の実行方式")).toHaveValue("chatgpt");
-    await page.getByPlaceholder("ワークスペースについて質問").fill("続けてください");
+    await page.getByPlaceholder("書きたいこと、相談したいことを入力").fill("続けてください");
     await page.getByRole("button", { name: "送信", exact: true }).click();
     await expect(page.getByText("履歴を引き継ぎました", { exact: true })).toBeVisible();
-    await page.getByRole("link", { name: "エディット画面" }).click();
+    await page.getByRole("link", { name: "エディットモード" }).click();
     await page.getByRole("treeitem", { name: "draft.txt" }).click();
     await expect(page.getByLabel("実行方式", { exact: true })).toHaveValue("chatgpt");
     await expect(page.getByLabel("AIアシストChatGPTモデル")).toHaveValue("test-model");

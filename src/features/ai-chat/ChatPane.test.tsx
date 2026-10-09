@@ -290,7 +290,7 @@ describe("ChatPane", () => {
         workspaceRoot="/tmp/workspace-old"
       />,
     );
-    const composer = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const composer = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(composer, { target: { value: "旧workspaceへの質問" } });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
     await screen.findByLabelText("AI応答生成中");
@@ -448,7 +448,7 @@ describe("ChatPane", () => {
     scrollArea.scrollTop = 120;
     fireEvent.scroll(scrollArea);
 
-    fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "続きを書いて" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -552,7 +552,7 @@ describe("ChatPane", () => {
 
     expect(await screen.findByText("小説づくりをチャットで進めましょう。")).toBeInTheDocument();
 
-    fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "物語の続きを考えて" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -775,7 +775,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "質問です" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -820,7 +820,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const composer = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const composer = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(composer, { target: { value: "失敗しても戻す本文" } });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
 
@@ -858,7 +858,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const composer = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const composer = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(composer, { target: { value: "本文を推敲して" } });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
 
@@ -981,7 +981,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "モデル指定" },
     });
     const sendButton = screen.getByRole("button", { name: "送信" });
@@ -1058,7 +1058,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "続きを書いて" },
     });
     const sendButton = screen.getByRole("button", { name: "送信" });
@@ -1139,7 +1139,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: " /compact " },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1167,7 +1167,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "/" } });
 
     const palette = screen.getByRole("listbox", { name: "スラッシュコマンド" });
@@ -1194,7 +1194,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "/" } });
     fireEvent.keyDown(input, { key: "ArrowDown" });
     expect(screen.getByRole("option", { name: /\/compact/ })).toHaveAttribute(
@@ -1222,7 +1222,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "/" } });
     fireEvent.click(screen.getByRole("option", { name: /\/compact/ }));
 
@@ -1269,7 +1269,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "/compact" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1327,7 +1327,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "/圧縮" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1352,7 +1352,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "/help" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1377,7 +1377,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "/compact" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1420,7 +1420,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "続きを書いて" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1561,7 +1561,7 @@ describe("ChatPane", () => {
         workspaceRoot="/tmp/workspace"
       />,
     );
-    fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "モデルを変えて送信" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1673,7 +1673,7 @@ describe("ChatPane", () => {
     expect(onMainLlmProfileIdChange).toHaveBeenCalledWith("user:lm-studio");
     expect(onModelSelectionChange).toHaveBeenCalledWith(null);
 
-    fireEvent.change(screen.getByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(screen.getByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "プロフィール指定" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -1736,7 +1736,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "キーボード送信" } });
     fireEvent.keyDown(input, { key: "Enter", metaKey: true });
 
@@ -1804,7 +1804,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "Enterで送信" } });
     fireEvent.keyDown(input, { key: "Enter" });
 
@@ -1843,7 +1843,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "1行目" } });
     const defaultWasNotPrevented = fireEvent.keyDown(input, { key: "Enter", shiftKey: true });
 
@@ -1866,7 +1866,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "変換中" } });
     const defaultWasNotPrevented = fireEvent.keyDown(input, { isComposing: true, key: "Enter" });
 
@@ -1889,7 +1889,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     fireEvent.change(input, { target: { value: "変換中" } });
     const defaultWasNotPrevented = fireEvent.keyDown(input, { key: "Enter", keyCode: 229 });
 
@@ -1909,7 +1909,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問") as HTMLTextAreaElement;
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力") as HTMLTextAreaElement;
     fireEvent.change(input, { target: { value: "このコードを説明:\n" } });
     input.setSelectionRange("このコードを説明:\n".length, "このコードを説明:\n".length);
 
@@ -1931,7 +1931,7 @@ describe("ChatPane", () => {
       ),
     );
     render(<TestChatPane mode="chat" workspaceRoot="/tmp/workspace" />);
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     const droppedFile = new File(["本文"], "memo.txt", { type: "text/plain" });
     Object.defineProperty(droppedFile, "arrayBuffer", {
       value: async () => new TextEncoder().encode("本文").buffer,
@@ -1961,7 +1961,7 @@ describe("ChatPane", () => {
       ),
     );
     render(<TestChatPane mode="chat" workspaceRoot="/tmp/workspace" />);
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     const droppedFile = new File(["memo"], "memo.txt");
     Object.defineProperty(droppedFile, "arrayBuffer", {
       value: async () => new TextEncoder().encode("memo").buffer,
@@ -2009,7 +2009,7 @@ describe("ChatPane", () => {
         workspaceRoot="/tmp/workspace"
       />,
     );
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     const droppedFile = new File(["本文\r\n二行目"], "memo.txt");
     Object.defineProperty(droppedFile, "arrayBuffer", {
       value: async () => new TextEncoder().encode("本文\r\n二行目").buffer,
@@ -2088,7 +2088,7 @@ describe("ChatPane", () => {
         workspaceRoot="/tmp/workspace"
       />,
     );
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     const placedFile = new File(["placed"], "placed.txt");
     const unplacedFile = new File(["unused"], "unplaced.txt");
     Object.defineProperty(placedFile, "arrayBuffer", {
@@ -2127,7 +2127,7 @@ describe("ChatPane", () => {
       />,
     );
 
-    const input = await screen.findByPlaceholderText("ワークスペースについて質問");
+    const input = await screen.findByPlaceholderText("書きたいこと、相談したいことを入力");
     expect(input).toHaveValue("const value = 1;");
 
     rerender(
@@ -2246,7 +2246,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "検索して" },
     });
     fireEvent.click(screen.getByRole("button", { name: "送信" }));
@@ -2315,7 +2315,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "待機表示" },
     });
     const sendButton = screen.getByRole("button", { name: "送信" });
@@ -2401,7 +2401,7 @@ describe("ChatPane", () => {
 
     render(<TestChatPane workspaceRoot="/tmp/workspace" />);
 
-    fireEvent.change(await screen.findByPlaceholderText("ワークスペースについて質問"), {
+    fireEvent.change(await screen.findByPlaceholderText("書きたいこと、相談したいことを入力"), {
       target: { value: "検索して" },
     });
     const sendButton = screen.getByRole("button", { name: "送信" });
