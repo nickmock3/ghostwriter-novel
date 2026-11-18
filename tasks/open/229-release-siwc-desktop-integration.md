@@ -42,13 +42,14 @@ SIWC認証と直接推論を設定画面・会話・AIアシストへ接続し�
 
 以下を現在の残作業とする。後半の日付別記録にある「未完了」は、その時点の状態であり、後日の成功記録を優先する。230の利用導線と231の旧CLI撤去は完了済み。
 
-- 次の配布ビルドへ最新のログインUI（操作統一・追加/切替削除）を反映し、変更した設定画面の表示を軽く確認する。両OSでの認証・refresh・保存の再検証は要求しない。
 - GhostwriterのOSS公開・配布形態に対するSIWC提供条件を確認し、利用案内・レビュー・公開判断を完了する。それまではpreview既定OFFを維持する。
 - 全完了条件を満たした段階でdoneへ移動し、関連変更をcommitする。
 
 ### 2026-11-18 Microsoft Store更新に向けた分担
 
-MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostwriter-novel)への移行は完了。現行の公式ガイドに合わせた利用導線、Store掲載文、Windows配布候補の利用フロー確認は[248](248-prepare-siwc-for-windows-store.md)で進める。248の結果を受けた既定有効化と公開の判断は229で扱う。
+MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostwriter-novel)への移行は完了。[248](../done/248-prepare-siwc-for-windows-store.md)で公式ガイドに合わせた利用導線とStore掲載文を更新し、Windows配布候補1.0.7.0で利用フローを確認した。既定有効化と公開の判断は229で扱う。
+
+248では現行の公式ガイドに従って設定から登録の追加・切替を提供する。229本文にある単一接続UIは2026-10-05時点の記録。現在の要件と公開前の確認範囲は[SIWC仕様](../../specs/siwc-responses-migration.md)と[検証状況](../../docs/siwc-validation-status.md)を参照する。
 
 ### 検証済み項目と再検証の範囲
 

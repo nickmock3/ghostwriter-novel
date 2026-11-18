@@ -30,6 +30,7 @@ export const tokenResponseSchema = z
 export const identitySchema = z.object({
   issuer: z.literal(issuer),
   subject: z.string().min(1).max(2048),
+  email: z.email().max(320).optional(),
 });
 export const sessionSchema = z.object({
   accessToken: secret,

@@ -4,7 +4,7 @@
 
 Ghostwriterは[MITライセンスで公開済み](https://github.com/nickmock3/ghostwriter-novel)で、Windows版はMicrosoft Storeで無料配布している。OpenAIの[OSS・ローカルアプリ向け案内](https://developers.openai.com/siwc/token-sharing-open-source)を前提に、ChatGPT直接ログイン（SIWC）を次のStore更新で一般利用に提供するための画面と案内を整える。
 
-[229](229-release-siwc-desktop-integration.md)から、現行ガイドとの差分対応、Store掲載文の更新、Windows配布候補の利用フロー確認を切り出す。既定で有効にする判断と一般公開は229で扱う。
+[229](../open/229-release-siwc-desktop-integration.md)から、現行ガイドとの差分対応、Store掲載文の更新、Windows配布候補の利用フロー確認を切り出す。既定で有効にする判断と一般公開は229で扱う。
 
 ## 難易度
 
@@ -20,6 +20,8 @@ Ghostwriterは[MITライセンスで公開済み](https://github.com/nickmock3/g
 
 ## 検証方針
 
+- 着手時に難易度「高」を再確認した。公式のAccounts and sessionsは複数登録の管理を要求しており、現行の単一接続UIと差がある。既存の登録・選択・会話bindingを使って設定に追加と切替を戻す。初回案内の表示と再表示防止、登録の選択と追加、プラン表示の条件と上限時の操作を先行テストする。
+
 - 実装前に、初回案内の欠落・再表示、利用中表示の誤表示、上限到達時に使用状況を開けない問題を検出するテストを優先する。設定と利用中・エラー時の分岐は近接のVitest、代表的な画面操作は既存のSIWC Playwrightで確認する。上限・対象外・権限不足はテスト応答で再現する。認証・アカウント管理の契約を変更する場合は、該当する層に回帰確認を追加する。
 - `bun run test`、`bun run typecheck`、関連する`bun run test:e2e -- e2e/siwc-settings.spec.ts e2e/siwc-workflow.spec.ts`を実行する。desktop起動・通信・外部ブラウザーを開く処理のネイティブ境界を変更した場合は`bun run test:desktop`も実行する。
 - SIWCを有効にしたWindows x64配布候補で、初回ログイン、システムブラウザーからの復帰、チャットとAIアシストの実リクエスト各1回、利用状況リンク、ログアウトを確認する。Windowsのトークン更新・保存は[実機検証済み](../../docs/siwc-validation-status.md)のため、その境界に変更がある場合に再検証する。
@@ -29,3 +31,10 @@ Ghostwriterは[MITライセンスで公開済み](https://github.com/nickmock3/g
 - 初回ログイン前後と利用中・上限到達時の案内が確認でき、アカウントの表示・切替方針が記録されている。
 - 日本語のStore掲載文と機能仕様が配布候補の挙動に合っている。
 - 自動テストとWindows配布候補の確認結果が記録され、229で公開可否を判断できる。
+
+## 実装と判断
+
+- 「Continue with ChatGPT」に公式ボタン素材を同梱し、プラン利用の許可後に一度だけ案内を表示する。チャットとAIアシストでは利用可能なChatGPT接続とモデルが選択されている場合に利用中表示を出し、利用上限時はChatGPTの利用状況を案内する。
+- 公式ガイドでは複数の登録を管理するため、設定で現在の登録と保存済み登録を選べるようにした。登録・資格情報は分離したまま、アプリ内で有効な登録を1つに保つ。変更前に保存した会話の登録とモデルは引き継ぐ。[アカウントとセッション](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions)
+- Windows x64の1.0.7.0へ更新し、実サインインとブラウザーからの復帰、初回案内、チャットとAIアシストの実応答、利用状況ページ、ログアウト・再ログイン後の案内再表示防止を確認した。[検証状況](../../docs/siwc-validation-status.md)
+- 型チェック、Vitest全体、関連Playwright、MSIX検証・署名検証は成功。別登録への切替、許可不足からの再同意、利用上限等の分岐は自動テストで確認した。公開判断は229で継続する。

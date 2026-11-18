@@ -27,6 +27,7 @@ Store提出用のMSIXは未署名で生成し、ローカル検証用にだけ�
 - `Get-Command signtool.exe`が失敗する場合は、SDK未導入ではなくPATH未設定のこともある。Windows Kits配下を検索する。
 - `Add-AppxPackage`の`0x800B0109`は証明書チェーンの信頼不足であり、管理者権限でLocalMachineストアへ証明書を登録する。
 - `0x80073CFB`で同じID・異なる内容と出る場合、出力フォルダーに古いMSIXが残っていることではなく、同じversionのアプリがインストール済みであることが原因。versionを上げて再build・pack・署名する。`-local.msix`という名前だけでは署名済みとは限らないので、`Get-AuthenticodeSignature`でも確認する。
+- 更新済みのMSIXでChatGPTプランだけが利用不可の場合、SIWCプレビューが有効なプロセスとして起動したかを確認する。アプリ終了後、通常ユーザーのPowerShellで `$env:GHOSTWRITER_ENABLE_SIWC_PREVIEW = '1'` を設定し、同じセッションから `Get-AppxPackage` の `InstallLocation` にある `ghostwriter.exe` を `Start-Process` で起動する。
 - Partner CenterのSaveがdisabledなら、submissionが読み取り専用、検証中、必須項目未完了、または同一architecture/languageの重複である可能性が高い。
 
 ## Recheck when

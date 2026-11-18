@@ -31,8 +31,9 @@ export function siwcConnectionMessage(code: string): string {
   switch (code) {
     case "not_signed_in": case "not_authenticated": case "no_account": case "signed_out": return "ChatGPTでログインしてください。";
     case "reauth_required": case "token_expired": case "refresh_uncertain": case "authorization_failed": return "ChatGPTへの再ログインが必要です。";
-    case "missing_scope": case "denied": return "このアカウントには推論の許可がありません。設定から認証を確認してください。";
-    case "usage_limit": return "ChatGPTプランの利用上限に達しました。時間をおいて再度お試しください。";
+    case "missing_scope": return "このアカウントには推論の許可がありません。設定からプラン利用を許可してください。";
+    case "denied": return "ChatGPTプランへのアクセスが制限されています。";
+    case "usage_limit": return "ChatGPTプランの利用上限に達しました。ChatGPTの設定で適用された上限を確認できます。";
     case "unsupported_platform": return "このOSではChatGPT接続をまだ利用できません。";
     case "ineligible": return "このアカウントはChatGPTプラン共有の対象ではありません。";
     case "invalid_model": return "選択したChatGPTモデルは利用できません。新規会話でモデルを選び直してください。";
@@ -96,6 +97,7 @@ export function useAiConnection(input: {
     try { localStorage.setItem(key(input.scope), JSON.stringify(next)); } catch { /* storage optional */ }
   }
   return { enabled, connection, selection, blocked, message, models, loading, refresh, hasExplicitConnection: preference.connection !== undefined,
+    inventoryError: inventory?.ok === false ? inventory.error : null,
     chooseConnection: (next: AiConnection) => save({ ...preference, connection: next }),
     chooseModel: (id: string) => save({ ...preference, connection: "chatgpt", modelId: id }),
   };

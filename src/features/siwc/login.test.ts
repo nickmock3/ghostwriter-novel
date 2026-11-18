@@ -47,6 +47,7 @@ const harness = (
     callbackError?: ErrorCode;
     invalidGrant?: boolean;
     abortAfterJwks?: boolean;
+    emailVerified?: boolean;
   }> = {},
 ) => {
   const store = createCredentialStore(directory);
@@ -76,6 +77,8 @@ const harness = (
       const token = await new SignJWT({
         sub: options.subject ?? "subject-test",
         nonce: options.nonce ?? attempt.nonce,
+        email: "reader@example.com",
+        email_verified: options.emailVerified ?? false,
       })
         .setProtectedHeader({ alg: "RS256" })
         .setIssuer(issuer)
@@ -188,6 +191,16 @@ describe("認証と保存の結合", () => {
       setup.requests.some((request) => request.url.includes("/responses")),
     ).toBe(false);
   });
+  it("プラン利用許可のない登録で再ログインした場合だけ、同じclientで同意を求める", async () => {
+    const first = await login(harness({ scope: "openid" }).dependencies);
+    if (!first.ok) throw new Error("Login failed");
+    const retry = harness();
+    expect(await login(retry.dependencies, first.value)).toEqual(first);
+    expect(retry.authorizations[0]?.searchParams.get("prompt")).toBe("consent");
+    expect(retry.authorizations[0]?.searchParams.get("client_id")).toBe("oaiapp_test");
+    expect(await login(retry.dependencies, first.value)).toEqual(first);
+    expect(retry.authorizations[1]?.searchParams.has("prompt")).toBe(false);
+  });
   it.each(["denied", "timeout", "cancelled", "invalid_callback"] as const)(
     "%sではtoken交換しない",
     async (callbackError) => {
@@ -217,7 +230,7 @@ describe("認証と保存の結合", () => {
     expect(await setup.store.read()).toEqual(before);
   });
   it("同じidentityでも別client IDは別登録として切り替える", async () => {
-    const setup = harness();
+    const setup = harness({ emailVerified: true });
     const first = await login(setup.dependencies);
     const second = await login(
       harness({ clientId: "oaiapp_second" }).dependencies,
@@ -229,6 +242,11 @@ describe("認証と保存の結合", () => {
     if (!read.ok || !read.value) throw new Error("Missing state");
     expect(read.value.accounts).toHaveLength(2);
     expect(read.value.activeAccountId).toBe(first.value);
+    expect(listAccounts(read.value, now).map(account => account.email)).toEqual(["reader@example.com", undefined]);
+    await login(setup.dependencies, first.value);
+    const afterReauth = await setup.store.read();
+    if (!afterReauth.ok || !afterReauth.value) throw new Error("Missing state");
+    expect(afterReauth.value.accounts.map(account => account.id)).toEqual([first.value, second.value]);
   });
   it("invalid_grantの次の試行で発行済みIDを使い、PKCEを作り直す", async () => {
     const setup = harness({ invalidGrant: true });

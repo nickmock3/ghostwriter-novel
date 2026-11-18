@@ -1,3 +1,4 @@
+import { ChatGptUsageLink } from "./ChatGptUsage";
 import type { AiConnectionState } from "./useAiConnection";
 export function ChatGptModelControls({ state, disabled = false, fixed = false, label = "ChatGPTモデル" }: {
   state: AiConnectionState; disabled?: boolean; fixed?: boolean; label?: string;
@@ -9,8 +10,10 @@ export function ChatGptModelControls({ state, disabled = false, fixed = false, l
       {!state.models.some(model => model.slug === state.selection?.modelId) ? <option value={state.selection?.modelId ?? ""}>{state.selection?.modelId ?? "モデル未選択"}</option> : null}
       {state.models.map(model => <option key={model.slug} value={model.slug}>{model.displayName}</option>)}
     </select>
+    {!state.blocked ? <p className="chatgpt-plan-usage"><span>ChatGPTプラン利用中</span> <ChatGptUsageLink /></p> : null}
     {fixed ? <p>この会話のモデルは固定されています。接続・モデルの変更は新規会話から行えます。</p> : null}
     {state.message ? <p role="status">{state.message}</p> : null}
-    {state.blocked && state.enabled ? <><a href="/settings">ChatGPTでログイン・接続設定</a><button type="button" disabled={disabled || state.loading} onClick={() => { void state.refresh(); }}>モデルを再取得</button></> : null}
+    {state.inventoryError === "usage_limit" ? <ChatGptUsageLink /> :
+      state.blocked && state.enabled && state.inventoryError !== "ineligible" ? <><a href="/settings">ChatGPTでログイン・接続設定</a><button type="button" disabled={disabled || state.loading} onClick={() => { void state.refresh(); }}>モデルを再取得</button></> : null}
   </div>;
 }

@@ -1,7 +1,7 @@
 // Adapted from ChatGPT Plan Playground (MIT); see LICENSE.
 import { randomUUID } from "node:crypto";
 import { type Listen, listenForCallback } from "./callback";
-import { type Account, sameIdentity, toSession } from "./credentials";
+import { type Account, directScope, sameIdentity, toSession } from "./credentials";
 import { authorizationUrl, createAttempt } from "./oauth";
 import { discover, exchangeCode, type Fetch, verifyIdentity } from "./oidc";
 import { BoundaryError } from "./result";
@@ -24,6 +24,7 @@ export const login = (dependencies: LoginDependencies, accountId?: string) =>
     const { fetch: fetcher, signal } = dependencies;
     const now = dependencies.now ?? Date.now;
     const discovery = await discover(fetcher, signal);
+    const requestConsent = !!account?.session && !account.session.scopes.includes(directScope);
     let registration: Pick<Account, "clientId"> | undefined = account;
     // コードを再利用せず、発行済みclient IDで1度だけ認可をやり直す。
     for (let pass = 0; pass < 2; pass++) {
@@ -42,6 +43,7 @@ export const login = (dependencies: LoginDependencies, accountId?: string) =>
             listener.redirectUri,
             attempt,
             registration,
+            requestConsent,
           ),
         );
         const callback = await listener.result;
@@ -83,10 +85,9 @@ export const login = (dependencies: LoginDependencies, accountId?: string) =>
           state: {
             ...state,
             activeAccountId: saved.id,
-            accounts: [
-              ...state.accounts.filter((item) => item.id !== saved.id),
-              saved,
-            ],
+            accounts: existing
+              ? state.accounts.map((item) => item.id === existing.id ? saved : item)
+              : [...state.accounts, saved],
           },
           value: saved.id,
         };

@@ -141,7 +141,12 @@ export const verifyIdentity = async (
         payload.azp !== clientId)
     )
       throw new Error("invalid claims");
-    return { issuer, subject: payload.sub };
+    const email = z.email().max(320).safeParse(payload.email);
+    return {
+      issuer,
+      subject: payload.sub,
+      ...(payload.email_verified === true && email.success ? { email: email.data } : {}),
+    };
   } catch {
     throw new BoundaryError("invalid_identity");
   }

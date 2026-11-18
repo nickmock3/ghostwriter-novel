@@ -1,4 +1,4 @@
-import { siwcExecutionMessage } from "../siwc/useAiConnection";
+import { ChatGptExecutionError } from "../siwc/ChatGptUsage";
 import { useEffect, useMemo, useRef, type ReactNode } from "react";
 import { FaExclamationTriangle, FaHistory, FaPlus } from "react-icons/fa";
 import type { EditProposal } from "./conversationSchemas";
@@ -320,7 +320,7 @@ function ChatPaneView({
       {error ? (
         <p className="pane-error" role="alert">
           <FaExclamationTriangle aria-hidden="true" />
-          {controller.connection.connection === "chatgpt" ? <>{siwcExecutionMessage(error)} <a href="/settings">ChatGPT接続設定</a></> : error}
+          {controller.connection.connection === "chatgpt" ? <ChatGptExecutionError code={error} /> : error}
         </p>
       ) : null}
       <div

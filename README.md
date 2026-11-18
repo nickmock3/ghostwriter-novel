@@ -28,7 +28,7 @@ cp .env.example .env.local
 
 ## ChatGPTプランでの接続（実験版）
 
-SIWC previewを有効にした環境では、設定の「ChatGPTでログイン」が最初の接続方法です。APIキーやCodexの導入は不要です。有効化・対応環境は[SIWC検証手順](specs/siwc-responses-migration.md#ローカル確認手順macos)を参照してください。macOS・Windowsの確認済み結果と公開前の残作業は[SIWC検証と公開状況](docs/siwc-validation-status.md)を参照してください。通常配布での既定有効化は未実施です。
+SIWC previewを有効にした環境では、設定の「Continue with ChatGPT」から接続できます。APIキーやCodexの導入は不要です。有効化・対応環境は[SIWC検証手順](specs/siwc-responses-migration.md#ローカル確認手順macos)を参照してください。macOS・Windowsの確認済み結果と公開前の残作業は[SIWC検証と公開状況](docs/siwc-validation-status.md)を参照してください。通常配布での既定有効化は未実施です。
 
 新規利用者はチャット・AIアシストで「ChatGPTプラン」が選ばれ、ログイン後に取得したモデルで利用できます。既存の接続設定は維持します。接続・モデルを変更したい保存済みChatGPT会話では、新規会話を開始してください。認証・利用枠エラーでもAPIキー接続へ自動変更しません。APIキー接続も設定できます。旧Codex CLI連携は撤去しました。過去の会話は閲覧できますが、続行するには新しい会話で接続を選択してください。
 

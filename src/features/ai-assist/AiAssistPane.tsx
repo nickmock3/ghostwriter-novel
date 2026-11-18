@@ -1,5 +1,5 @@
 import type { EditorTarget } from "../editor/editorTarget";
-import { siwcExecutionMessage } from "../siwc/useAiConnection";
+import { ChatGptExecutionError } from "../siwc/ChatGptUsage";
 import { useId, type ReactNode } from "react";
 import { FiCpu } from "react-icons/fi";
 import type { LlmProfileRoleAssignment } from "../llm/profiles/llmProfiles";
@@ -159,7 +159,7 @@ export function AiAssistPane({
 
         {state.errorMessage ? (
           <div className="pane-error" role="alert">
-            {state.connection.connection === "chatgpt" ? <>{siwcExecutionMessage(state.errorMessage)} <a href="/settings">ChatGPT接続設定</a></> : state.errorMessage}
+            {state.connection.connection === "chatgpt" ? <ChatGptExecutionError code={state.errorMessage} /> : state.errorMessage}
           </div>
         ) : null}
 

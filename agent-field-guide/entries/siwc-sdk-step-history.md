@@ -17,6 +17,7 @@ SIWCはHTTP側の保存済みresponse IDによる継続を使わないため、�
 - tool応答→tool結果付き推論→追質問の3要求を偽fetchで観測し、最後のinputにもfunction_call、function_call_output、reasoningがあることを確認する。
 - モデルID判定に依存せずreasoning.encrypted_contentを明示する。
 - completed、incomplete、failed、終端なしEOFを別々に送る。理由欠落incompleteがfinishReason:stopになる合成ケースがあるため、成功判定をfinishReasonだけにしない。
+- EOFが予期せず`other`になったら、テストの期待値を変える前に`node_modules`に入っている`@ai-sdk/openai`と`ai`の実バージョンを`bun.lock`と照合する。古い作業ツリーを再利用した場合は`bun install --frozen-lockfile`でそろえてから再検証する。
 - Ghostwriterの永続履歴・圧縮は別境界なので、OSSのメモリ履歴をコピーしただけで再開を保証しない。
 
 ## Failure signals

@@ -3,7 +3,7 @@ import { type Account, type Credentials, directScope } from "./credentials";
 import { BoundaryError } from "./result";
 import type { CredentialStore } from "./store";
 
-// UIへ渡す情報を絞り、token/identityを表示層へ渡さない。
+// UIには識別用の確認済みメールだけを渡す。subjectや資格情報は内部に留める。
 export const accountSummary = (
   account: Account,
   activeId: string | null,
@@ -11,6 +11,7 @@ export const accountSummary = (
 ) => ({
   id: account.id,
   active: account.id === activeId,
+  ...(account.identity.email ? { email: account.identity.email } : {}),
   status: !account.session
     ? "signed-out"
     : account.session.refreshUncertain

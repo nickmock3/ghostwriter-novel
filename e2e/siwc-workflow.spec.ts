@@ -1,4 +1,4 @@
-import { expect, test } from "@playwright/test";
+import { expect as baseExpect, test } from "@playwright/test";
 import { spawn } from "node:child_process";
 import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
@@ -7,6 +7,7 @@ import { join } from "node:path";
 test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAuth/LLM)", async ({ page }, testInfo) => {
   // Windowsは各資格情報アクセスで実ACLを確認する。保存・複数turn・画面往復を含む全行程の予算。
   if (process.platform === "win32") test.setTimeout(90_000);
+  const expect = baseExpect.configure({ timeout: process.platform === "win32" ? 20_000 : 5_000 });
   const root = await realpath(await mkdtemp(join(tmpdir(), "siwc-e2e-workspace-")));
   await writeFile(join(root, "draft.txt"), "before");
   const child = spawn("bun", ["e2e/support/siwc-server.ts"], { stdio: ["ignore", "pipe", "pipe"] });
@@ -32,6 +33,8 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await page.getByRole("link", { name: "チャットモード" }).click();
     await expect(page.getByLabel("会話の実行方式")).toHaveValue("chatgpt");
     await expect(page.getByLabel("ChatGPTモデル", { exact: true })).toHaveValue("test-model");
+    await expect(page.getByText("ChatGPTプラン利用中")).toBeVisible();
+    await expect(page.getByRole("link", { name: "利用状況を管理" })).toHaveAttribute("href", "https://chatgpt.com/settings/usage");
     await page.getByPlaceholder("書きたいこと、相談したいことを入力").fill("draft.txtのbeforeをafterへ変更してください");
     await page.getByRole("button", { name: "送信", exact: true }).click();
     await expect(page.getByText("編集しました", { exact: true })).toBeVisible();
@@ -47,6 +50,8 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await page.getByRole("treeitem", { name: "draft.txt" }).click();
     await expect(page.getByLabel("実行方式", { exact: true })).toHaveValue("chatgpt");
     await expect(page.getByLabel("AIアシストChatGPTモデル")).toHaveValue("test-model");
+    await expect(page.getByText("ChatGPTプラン利用中")).toBeVisible();
+    await expect(page.getByRole("link", { name: "利用状況を管理" })).toHaveAttribute("href", "https://chatgpt.com/settings/usage");
     await page.getByRole("button", { name: "推敲を実行", exact: true }).click();
     await expect(page.getByRole("button", { name: "Apply", exact: true })).toBeVisible();
     expect(await readFile(join(root, "draft.txt"), "utf8")).toBe("before");

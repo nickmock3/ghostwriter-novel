@@ -30,6 +30,7 @@ export const authorizationUrl = (
   redirectUri: string,
   attempt: Attempt,
   account?: Pick<Account, "clientId">,
+  requestConsent = false,
 ) => {
   const url = new URL(endpoint);
   url.search = new URLSearchParams({
@@ -45,6 +46,7 @@ export const authorizationUrl = (
     code_challenge_method: "S256",
     code_challenge: attempt.challenge,
     ...(!account ? { agent_name_hint: "Ghostwriter" } : {}),
+    ...(requestConsent ? { prompt: "consent" } : {}),
     // login_hint/id_token_hintは任意。URLへの秘密情報混入を避けるため送らない。
   }).toString();
   return url.toString();

@@ -4,7 +4,7 @@
 
 認証・Responses接続・チャット・AIアシスト・圧縮・設定UIは実装済み。previewは既定OFFで、`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を指定した場合だけ利用できる。APIキー接続を維持し、旧Codex CLI接続は撤去済み。旧履歴の読取り・既存編集案のApply/Undoを維持し、旧会話への追加AI実行・圧縮は拒否する。
 
-現行UIは単一のChatGPT接続を扱う。ログインと新規利用時のChatGPTプラン既定選択は実装済みで、既存の明示設定・会話bindingを上書きしない。アカウント追加・切替UIは提供しない。保存形式と内部APIの互換性は維持する。
+ChatGPTの保存済み登録を設定で追加・切替でき、同時に使う登録は1つとする。ログインと新規利用時のChatGPTプラン既定選択は、既存の明示設定・会話bindingを上書きしない。既存の保存形式と内部APIの互換性を維持する。
 
 検証の到達点と公開前の残作業は[SIWC検証と公開状況](../docs/siwc-validation-status.md)にまとめる。macOS/Windowsの確認済み結果を採用し、最新versionという理由だけで同じ実機検証をやり直さない。[過去の移植計画と実験記録](../docs/archive/siwc-responses-migration.md)は現行要件ではない。
 
@@ -87,7 +87,7 @@ OSS `9e498f8` / refresh実装 `8771a41` の認証・OIDC・登録・logout・ref
 
 `SiwcService.withRun`はrun全体のleaseを持ち、アカウント変更・logout・loginをbusyで拒否する。複数runは並行可能で、各HTTP送信前の資格情報transactionだけ直列化する。別processの変更は次の送信前に登録IDで検出する。モデル一覧はキャッシュせず、結果に登録IDを付ける。各runを終了するとそのfetchは使用不可になる。呼出元はストリーム消費・tool実行が完了するまでwithRun内に留める。
 
-`/api/siwc/status`, `/models` はGET、`/login`, `/login/cancel`, `/select`, `/logout` はJSON POST（いずれも`/api/siwc`配下）。`/select`と複数登録を扱う保存形式は内部互換として残るが、利用画面から追加・切替は提供しない。通常は404で、開発者が`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を明示した場合だけ有効。同じ設定でUI・モデル候補・チャット・AIアシスト・圧縮を有効にする。loginはシステムブラウザを開き、完了まで応答を待つ（最大4分）。callback listenerは専用loopbackでstate/nonce/PKCEを検証する。通常APIはsidecarのBearer/Origin境界内にあり、Web版でも別origin・単純form POSTを拒否する。
+`/api/siwc/status`, `/models` はGET、`/login`, `/login/cancel`, `/select`, `/logout` はJSON POST（いずれも`/api/siwc`配下）。登録ごとの`status`にはIDトークンで確認済みのメールがある場合だけ`email`を含める。subject、OAuth client ID、トークンはクライアントへ返さない。通常は404で、開発者が`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を明示した場合だけ有効。同じ設定でUI・モデル候補・チャット・AIアシスト・圧縮を有効にする。loginはシステムブラウザを開き、完了まで応答を待つ（最大4分）。callback listenerは専用loopbackでstate/nonce/PKCEを検証する。通常APIはsidecarのBearer/Origin境界内にあり、Web版でも別origin・単純form POSTを拒否する。
 
 保存はPOSIX owner-only（directory0700/file0600）、atomic renameとprocess間lockを使用。Windowsでは新規directoryの作成時から継承を切り、実行ユーザーSIDだけのFullControl（子へ継承）を設定する。読み書き時にdirectory/fileの所有者・許可先を検証し、既存の広いACL、保存先と祖先のreparse point、資格情報のhardlinkを拒否する。既存ACLは自動修復しない。一時fileのACLを秘密情報の書込み前に確認し、file flush→close→renameで置換する。Windowsではdirectory fsyncを行わず、置換失敗時に旧fileを先に削除するfallbackは使わない。lockが残った場合はbusyとなり、自動削除・token再送はしない。
 
@@ -123,7 +123,7 @@ GHOSTWRITER_DATA_DIR="$HOME/Library/Application Support/Ghostwriter SIWC Preview
 bun run dev
 ```
 
-1. 設定の「ChatGPT プラン（おすすめ）」から「ChatGPTでログイン」を選び、システムブラウザで認証する。
+1. 設定の「ChatGPT プラン（おすすめ）」から「Continue with ChatGPT」を選び、システムブラウザで認証する。
 2. チャットで「ChatGPTプラン」と取得されたモデルを選ぶ。新規利用者はこの接続が既定となる。既存会話から接続を変更すると新しい会話になる。
 3. Read・提案・未保存時の拒否・Apply・Undo・追質問・再起動後の継続を確認する。
 4. AIアシスト・圧縮・実行中の認証変更拒否・logoutを確認する。
@@ -146,6 +146,10 @@ Windows PowerShell 5.1が実行できる環境を前提とする。設定画面�
 
 ## ログイン操作
 
-未登録・サインアウト時は「ChatGPTでログイン」、期限切れ・再認証必要・推論許可不足時は「もう一度ログイン」、有効なサインイン済み状態は「ログアウト」を表示する。選択中の登録があればloginへaccountIdを渡して再利用し、未登録時だけ新規登録する。ログイン中は追加のログイン操作を表示しない。
+未登録・サインアウト・再認証・推論許可不足時は「Continue with ChatGPT」、有効なサインイン済み状態は「ログアウト」を表示する。保存済み登録の再認証ではその`accountId`を使う。プラン利用の許可がないセッションで明示的に再ログインした場合は、既存client IDと完全なscope setで`prompt=consent`を送る。通常のサインインはこの指定を省略する。[エラーと復旧](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
 
-アカウント追加・切替・詳細設定は提供しない。別アカウントを使う場合はlogout後にloginする。認証切れ・推論許可不足でもlogoutできる。処理中・loginPending時は認証変更操作を無効にし、ログイン待ちのキャンセルは利用可能にする。保存形式を単一登録へ破壊的移行せず、会話bindingの保護を維持する。
+サインインボタンは黒地にOpenAIの公式ChatGPTロゴと承認済みの文言を表示し、`data-oai-siwc-button`を付ける。ロゴはOpenAIの商標であり、[公式ボタン素材](https://developers.openai.com/assets/siwc/sign-in-buttons/chatgpt-logo-white.svg)をアプリに同梱する。[サインインボタンの指針](https://developers.openai.com/siwc/website#1-add-the-sign-in-button)
+
+設定のアカウント選択欄に現在の登録と安定した登録番号を表示する。確認済みメールがある場合は番号と併記する。同じメールの登録も別々に扱う。有効なセッションへの切替は`/select`を使い、サインアウト・期限切れなどの登録はOAuthが成功してから有効にする。「別のアカウントを追加」は既存の`accountId`を指定せずに始める。既存会話の登録IDとモデルは保持し、異なる登録を選択したまま既存会話に送信できない。処理中・loginPending時は認証変更を抑止し、ログイン待ちのキャンセルを提供する。[アカウントとセッション](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions)
+
+初めてプラン利用を許可してサインインした直後に案内モーダルを表示する。再表示を防ぐため、同じアプリのブラウザ保存領域に表示済みのフラグを保存する。チャットとAIアシストで有効なChatGPTプランとモデルを選ぶと、「ChatGPTプラン利用中」と「利用状況を管理」をモデル選択付近に表示する。同じ[利用状況](https://chatgpt.com/settings/usage)を上限到達時の主な操作とし、対象外・認証切れ・許可不足は状態別に表示する。利用状況リンクはWebでは新規タブ、デスクトップでは既存のTauri openerでシステムブラウザに開く。[UI/UXガイド](https://developers.openai.com/siwc/ui-ux-guidelines)
