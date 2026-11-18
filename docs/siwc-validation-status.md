@@ -1,6 +1,6 @@
 # SIWC検証と公開状況
 
-SIWCのpreview既定値はOFF。MITライセンスでの公開リポジトリへの移行は完了した。Microsoft Store版への一般提供はタスク229で判断する。現行の動作は[SIWC仕様](../specs/siwc-responses-migration.md)に記載する。
+SIWCのpreview既定値はOFF。Microsoft Store版での一般提供は2026-11-18時点で見送り。現行の動作は[SIWC仕様](../specs/siwc-responses-migration.md)に記載する。
 
 ## 確認済みの動作
 
@@ -60,9 +60,18 @@ SIWCのpreview既定値はOFF。MITライセンスでの公開リポジトリへ
 
 最新versionという理由だけで両OSの認証・保存をやり直さない。UIのみの変更は関連UIテストと配布画面確認、認証・保存・OS境界を変えた場合は影響する層の再検証を行う。SDK更新だけを理由とした全provider実接続smokeは公開の必須条件にしない。APIキーproviderは既存の自動テストと型チェックを基本とする。
 
-## 公開前に残る作業
+## Microsoft Store更新の判定（2026-11-18、タスク229）
 
-タスク248のWindows実機確認を完了した。タスク229でGhostwriterの公開・配布形態に対するSIWC提供条件の適合と公開可否を確認する。日本語の掲載更新文は[Store掲載情報](../store-assets/ja-jp/microsoft-store-listing-ja-JP.md)を使う。
+**見送り。** 1.0.8.0でプレビューのWindows実機確認は成功した。判定の対象は、ChatGPTプランを設定から一般利用できるWindows Store版の更新。1.0.8.0の未署名候補はMSIX検証に成功したが、環境変数を設定しない通常起動ではSIWCが無効になる。ChatGPT直接ログインを掲載する更新に、この候補は使えない。[Microsoft Store Policies 10.1](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#101-distinct-function-value-and-accurate-representation)
+
+Ghostwriterは無料配布のローカルデスクトップアプリで、利用者の端末からOpenAIへ直接リクエストする。日本のStoreで無料と表示され、GitHub上のリポジトリが公開・MITであることを確認した。これはOpenAIが案内するオープンソース・ローカルアプリの枠に合うと判断する。公開ガイドに無料のローカルOSSをStore経由で配布する場合の追加申請は見当たらなかった。公開 `main` は確認時点で `de48e17` で、1.0.8.0の検証に用いた `5aa95fa` の変更は含まれていなかった。[Microsoft Store掲載ページ](https://apps.microsoft.com/detail/9NFPDWBQ7N82?hl=ja-JP&gl=JP)・[公開リポジトリ](https://github.com/nickmock3/ghostwriter-novel)・[OpenAIのOSS向け案内](https://developers.openai.com/siwc/token-sharing-open-source)
+
+### 次の提出候補に必要な対応
+
+1. **公開情報をそろえる。** 公開中のプライバシーポリシーと公式サイトには旧Codex接続が記載されている。SIWCで扱うアカウント情報とOAuth資格情報の保護、利用者の操作に伴う入力・履歴・参照原稿のOpenAIへの送信、ログアウトとアクセス解除を明記する。日本語Store掲載案に残るプロプライエタリのライセンス条項を、配布するバイナリの実際のライセンスに合わせる。配布候補に対応するソースを公開し、MSIXには既存のSIWC帰属表示に加えて本体のMITライセンス文を同梱する。[公開プライバシーポリシー](https://ghostwriter.mock-kobo.com/privacy)・[公式サイト](https://ghostwriter.mock-kobo.com/)・[Store掲載案](../store-assets/ja-jp/microsoft-store-listing-ja-JP.md)・[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)
+2. **Windowsの保存保護を説明できる状態にする。** 現行のSIWCは、OAuthトークンと確認済みメールを本人限定ACLで保護したJSONに保存する。対象ファイル自体はアプリ側で暗号化していない。Microsoftの10.5.4への適合を示せるよう、Windowsのユーザー単位の暗号化などで保護し、既存の登録から移行できることを確認する。10.5.4への対応は公開準備上の判断で、Microsoftの個別審査結果ではない。[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)・[OpenAIの資格情報保護](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions#credential-security)
+3. **利用中と上限到達時の案内を確認する。** 左下の利用状況アイコンを維持し、入力枠外のモデル選択付近でもChatGPTプラン利用中と利用状況への導線が分かる形にする。上限到達時の既存リンクに加え、枠が利用できない間の再送抑止と、利用者が確認後に再開できる動作を確認する。APIキーへの自動切替を防ぐ既存の動作を維持する。[OpenAIのUIガイド](https://developers.openai.com/siwc/ui-ux-guidelines#show-when-the-chatgpt-plan-is-in-use)・[上限時の復旧](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
+4. **通常起動の候補を作って再判定する。** Store版でSIWCを既定で使える構成にし、環境変数なしの通常起動と更新インストールで変更した境界を確認する。新しい未署名MSIXと掲載案を照合し、Partner Centerには対応プランが必要な機能の試験手順と、審査に必要なアクセス手段を用意する。提出・公開は再判定後に扱う。[Microsoft Store Policies 10.3](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#103-product-is-testable)
 
 ## 記録の出所
 

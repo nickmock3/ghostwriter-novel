@@ -51,6 +51,10 @@ MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostw
 
 248では現行の公式ガイドに従って設定から登録の追加・切替を提供する。229本文にある単一接続UIは2026-10-05時点の記録。現在の要件と公開前の確認範囲は[SIWC仕様](../../specs/siwc-responses-migration.md)と[検証状況](../../docs/siwc-validation-status.md)を参照する。
 
+### 2026-11-18 Microsoft Store更新の判定
+
+**見送り。** [249](../done/249-move-chatgpt-chat-composer-notices.md)のWindows 1.0.8.0の実機確認とパッケージ検証は成功。Storeの通常起動でSIWCを利用できる候補、公開ポリシーと配布ライセンス・ソースの整合、WindowsのSIWC資格情報保護、利用状況と上限時の案内が公開前に残る。無料のローカルOSSという配布形態は公開のOSS向けガイドの対象に合うと判断した。[判定根拠と再判定条件](../../docs/siwc-validation-status.md#microsoft-store更新の判定2026-11-18タスク229)
+
 ### 検証済み項目と再検証の範囲
 
 単一接続の安全性確認は完了済み。アカウント追加・切替UIの削除は認証API、refresh、保存・編集処理を変更しておらず、それらの実接続確認を最初から繰り返す必要はない。
