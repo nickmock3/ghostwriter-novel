@@ -1,5 +1,7 @@
 import { createProductionApiRouter } from "./apiRouter";
 import { createSidecarRequestHandler } from "./sidecarSecurity";
+import { isPackagedDesktopRuntime } from "../../features/llm/runtimeEnv";
+import type { RuntimeEnv } from "./runtimeConfig";
 
 export type SidecarStartupConfig =
   | {
@@ -46,8 +48,11 @@ export function parseSidecarStartupConfig(
 
 export function createStandaloneRequestHandler(
   startupConfig: SidecarStartupConfig,
+  env: RuntimeEnv = process.env,
 ): (request: Request) => Response | Promise<Response> {
-  const apiRouter = createProductionApiRouter();
+  const enableSiwcByDefault = startupConfig.mode === "desktop" &&
+    process.platform === "win32" && isPackagedDesktopRuntime(env);
+  const apiRouter = createProductionApiRouter({ env, enableSiwcByDefault });
 
   if (startupConfig.mode === "web") {
     return apiRouter;

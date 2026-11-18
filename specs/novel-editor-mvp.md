@@ -417,7 +417,7 @@ LLMプロバイダーはOpenAI、DeepSeek、Gemini、Anthropic、OpenAI互換API
 
 プラン利用を許可した初回サインイン直後に、対象のAIリクエストがChatGPTプランの利用枠を使うことを案内する。ChatGPTプランで実行できるチャットでは、サイドバー下部の利用状況アイコンから利用状況を開ける。既存会話でモデルが固定されている場合、モデル名のツールチップで変更には新規会話が必要と案内する。AIアシストでは、モデル選択付近へ「ChatGPTプラン利用中」と「利用状況を管理」を表示する。利用上限エラーでは同じ利用状況リンクを主な復旧操作として表示し、利用対象外・推論許可不足・認証切れを個別に案内する。
 
-SIWCの認証・Responses直接接続・設定UIを実験版として実装する。既定は無効とし、開発者が`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を指定した場合のみ表示・利用可能にする。詳細は[SIWC直接接続仕様](siwc-responses-migration.md)、確認済み事項と公開前の残作業は[検証と公開状況](../docs/siwc-validation-status.md)で管理する。APIキー接続を維持する。旧Codex CLI連携は撤去済み。
+SIWCの認証・Responses直接接続・設定UIを実験版として実装する。Windows配布候補1.0.9以降は通常起動で利用できる。Web・開発版・macOSでは既定無効とし、`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`で明示的に有効化できる。詳細は[SIWC直接接続仕様](siwc-responses-migration.md)、確認済み事項と公開前の残作業は[検証と公開状況](../docs/siwc-validation-status.md)で管理する。APIキー接続を維持する。旧Codex CLI連携は撤去済み。
 
 製品の接続導線はChatGPTへのサインインを主とする（タスク230）。SIWC有効時、新規利用者のチャット・AIアシストではChatGPTプランを初期選択とし、ログインから利用可能モデルの選択・送信へ進める。APIキー接続は任意の追加接続として提供する。既存利用者が明示した設定と保存済み会話の接続は優先し、ログインだけで上書きしない。未対応OS・preview flag無効時には利用可能と表示せず、一般公開の既定ONは229の公開ゲートに従う。
 

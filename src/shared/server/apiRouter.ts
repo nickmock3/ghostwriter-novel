@@ -25,6 +25,7 @@ export type ProductionApiRuntimeOptions = {
   cwd?: string;
   dataRoot?: string;
   env?: RuntimeEnv;
+  enableSiwcByDefault?: boolean;
   trustedAgentExtensions?: TrustedAgentExtensionCatalog;
 };
 
@@ -102,12 +103,14 @@ function matchHandler(pathname: string): keyof ApiRouterHandlers | null {
 export function createProductionApiHandlers(
   options: ProductionApiRuntimeOptions = {},
 ): ApiRouterHandlers {
+  const env = options.env ?? process.env;
   const dataRoot = resolveServerDataRoot({
     cwd: options.cwd ?? process.cwd(),
     dataRoot: options.dataRoot,
-    env: options.env ?? process.env,
+    env,
   });
-  const siwcService = (options.env ?? process.env).GHOSTWRITER_ENABLE_SIWC_PREVIEW === "1" ? getSiwcService(dataRoot) : undefined;
+  const siwcEnabled = options.enableSiwcByDefault || env.GHOSTWRITER_ENABLE_SIWC_PREVIEW === "1";
+  const siwcService = siwcEnabled ? getSiwcService(dataRoot) : undefined;
   if (existsSync(join(dataRoot, "siwc"))) protectPrivateDirectory(join(dataRoot, "siwc"));
   return {
     siwc: siwcService ? createSiwcApiHandler({ service: siwcService, enabled: true }) : () => new Response(null, { status: 404 }),

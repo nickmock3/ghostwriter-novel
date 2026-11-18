@@ -47,6 +47,7 @@ API呼出しはtransport境界へ集約する。
 - UI設定、LLMプロフィール、最後に開いたワークスペースは当面WebViewの`localStorage`を継続利用できるが、Tauri identifierとoriginを安定させる。
 - APIキーは既存のOS credential実装を初期段階で維持する。Tauri/Rust側へ移す場合もAPIキー本文をWebViewへ返さない専用commandにする。
 - デスクトップ配布版ではsidecarへ`GHOSTWRITER_RUNTIME_MODE=desktop-packaged`を注入し、LLM APIキー環境変数を無視してOS資格情報ストアのみを使う。Web開発版と`desktop:dev`では従来どおり環境変数を優先する。
+- Windows配布候補では`desktop-packaged`の認証付きsidecarでSIWCが既定で有効になる。利用者は起動時にpreview用環境変数を設定する必要がない。
 
 ### セキュリティ
 

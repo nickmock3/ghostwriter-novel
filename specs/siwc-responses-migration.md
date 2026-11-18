@@ -2,7 +2,7 @@
 
 ## 現在の状態
 
-認証・Responses接続・チャット・AIアシスト・圧縮・設定UIは実装済み。previewは既定OFFで、`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を指定した場合だけ利用できる。APIキー接続を維持し、旧Codex CLI接続は撤去済み。旧履歴の読取り・既存編集案のApply/Undoを維持し、旧会話への追加AI実行・圧縮は拒否する。
+認証・Responses接続・チャット・AIアシスト・圧縮・設定UIは実装済み。Windows配布候補1.0.9以降は通常起動でSIWCを利用できる。Web・開発版・macOSのpreviewは既定OFFで、`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`で有効化する。APIキー接続を維持し、旧Codex CLI接続は撤去済み。旧履歴の読取り・既存編集案のApply/Undoを維持し、旧会話への追加AI実行・圧縮は拒否する。
 
 ChatGPTの保存済み登録を設定で追加・切替でき、同時に使う登録は1つとする。ログインと新規利用時のChatGPTプラン既定選択は、既存の明示設定・会話bindingを上書きしない。既存の保存形式と内部APIの互換性を維持する。
 
@@ -70,7 +70,7 @@ SDK 7はNode.js 22以上・ESMを前提とする。Bun sidecarとNode/Vitestの�
 
 旧commit履歴を持ち越さず、コード・仕様・テストを別リポジトリでOSS公開する方針。公開者名・Store識別子・ライセンス帰属情報は保持する。個人パスとローカルファイル除外の修正は完了している。移行時の確認事項は[OSS公開前のファイル監査](../docs/oss-publication-audit.md)を参照する。
 
-公開条件の適合確認・新repoへの移行・公開判断は未完了。既定OFFは維持する。完了した実接続検証を再び必須残作業として追加しない。
+公開リポジトリへの移行は完了。Storeへの一般提供は[公開判断](../docs/siwc-validation-status.md)に従う。完了した実接続検証を再び必須残作業として追加しない。
 
 ## 参照
 
@@ -87,7 +87,7 @@ OSS `9e498f8` / refresh実装 `8771a41` の認証・OIDC・登録・logout・ref
 
 `SiwcService.withRun`はrun全体のleaseを持ち、アカウント変更・logout・loginをbusyで拒否する。複数runは並行可能で、各HTTP送信前の資格情報transactionだけ直列化する。別processの変更は次の送信前に登録IDで検出する。モデル一覧はキャッシュせず、結果に登録IDを付ける。各runを終了するとそのfetchは使用不可になる。呼出元はストリーム消費・tool実行が完了するまでwithRun内に留める。
 
-`/api/siwc/status`, `/models` はGET、`/login`, `/login/cancel`, `/select`, `/logout` はJSON POST（いずれも`/api/siwc`配下）。登録ごとの`status`にはIDトークンで確認済みのメールがある場合だけ`email`を含める。subject、OAuth client ID、トークンはクライアントへ返さない。通常は404で、開発者が`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を明示した場合だけ有効。同じ設定でUI・モデル候補・チャット・AIアシスト・圧縮を有効にする。loginはシステムブラウザを開き、完了まで応答を待つ（最大4分）。callback listenerは専用loopbackでstate/nonce/PKCEを検証する。通常APIはsidecarのBearer/Origin境界内にあり、Web版でも別origin・単純form POSTを拒否する。
+`/api/siwc/status`, `/models` はGET、`/login`, `/login/cancel`, `/select`, `/logout` はJSON POST（いずれも`/api/siwc`配下）。登録ごとの`status`にはIDトークンで確認済みのメールがある場合だけ`email`を含める。subject、OAuth client ID、トークンはクライアントへ返さない。Windowsでは、認証付きsidecar起動とTauriが設定する`desktop-packaged`の両方を満たすとき既定で有効になる。他の起動環境は`GHOSTWRITER_ENABLE_SIWC_PREVIEW=1`を指定したときだけ有効になり、無効時のSIWC APIは404を返す。同じ判定でUI・モデル候補・チャット・AIアシスト・圧縮を有効にする。loginはシステムブラウザを開き、完了まで応答を待つ（最大4分）。callback listenerは専用loopbackでstate/nonce/PKCEを検証する。通常APIはsidecarのBearer/Origin境界内にあり、Web版でも別origin・単純form POSTを拒否する。
 
 保存はPOSIX owner-only（directory0700/file0600）、atomic renameとprocess間lockを使用。Windowsでは新規directoryの作成時から継承を切り、実行ユーザーSIDだけのFullControl（子へ継承）を設定する。読み書き時にdirectory/fileの所有者・許可先を検証し、既存の広いACL、保存先と祖先のreparse point、資格情報のhardlinkを拒否する。既存ACLは自動修復しない。一時fileのACLを秘密情報の書込み前に確認し、file flush→close→renameで置換する。Windowsではdirectory fsyncを行わず、置換失敗時に旧fileを先に削除するfallbackは使わない。lockが残った場合はbusyとなり、自動削除・token再送はしない。
 
@@ -131,7 +131,9 @@ bun run dev
 
 `dataRoot/siwc`と重なるワークスペースは共通入口で拒否する。symlink aliasもrealpathで検出する。SIWCを無効にした後も保存ディレクトリが存在すれば保護する。原稿とdataRootを別ディレクトリに置く。
 
-## ローカル確認手順（Windows preview）
+## ローカル確認手順（Windows）
+
+Windows x64配布候補1.0.9以降は、MSIXのインストール後にスタートメニューから通常起動する。続く環境変数の設定は、Web開発環境で確認する場合に使う。
 
 Windowsでのpreview起動には、PowerShellで次を指定する。資格情報用の`siwc`子ディレクトリはアプリが本人限定ACLで作成するため、手動作成しない。原稿はこのdataRootとは別の場所へ置く。既存ACLが不適切なら自動で権限を書き換えず停止する。
 

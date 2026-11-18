@@ -1,7 +1,12 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
+import * as llmSecrets from "../../features/llm/secrets/llmSecretStore";
 import { createProductionApiRouter } from "./apiRouter";
 import { createSidecarRequestHandler } from "./sidecarSecurity";
 import {
+  createStandaloneRequestHandler,
   parseAllowedOrigins,
   parseSidecarStartupConfig,
 } from "./sidecarStartup";
@@ -133,6 +138,52 @@ describe("parseSidecarStartupConfig", () => {
 });
 
 describe("sidecar-protected standalone server", () => {
+  it.each([
+    { desktop: true, packaged: true, preview: undefined, enabled: process.platform === "win32" },
+    { desktop: true, packaged: false, preview: undefined, enabled: false },
+    { desktop: false, packaged: true, preview: undefined, enabled: false },
+    { desktop: false, packaged: false, preview: "1", enabled: true },
+  ])("sets SIWC availability with desktop=$desktop packaged=$packaged preview=$preview", async ({
+    desktop, packaged, preview, enabled,
+  }) => {
+    const dataRoot = await mkdtemp(join(tmpdir(), "ghostwriter-siwc-startup-"));
+    const secretStore = llmSecrets.createLlmSecretStore({
+      env: {},
+      adapter: {
+        async getPassword() { return null; },
+        async setPassword() {},
+        async deletePassword() {},
+      },
+    });
+    const secretStoreFactory = vi.spyOn(llmSecrets, "createLlmSecretStore").mockReturnValue(secretStore);
+    try {
+      const env = {
+        GHOSTWRITER_DATA_DIR: dataRoot,
+        GHOSTWRITER_ENABLE_SIWC_PREVIEW: preview,
+        GHOSTWRITER_RUNTIME_MODE: packaged ? "desktop-packaged" : undefined,
+        GHOSTWRITER_SIDECAR_TOKEN: desktop ? "desktop-secret" : undefined,
+        GHOSTWRITER_ALLOWED_ORIGINS: desktop ? "http://tauri.localhost" : undefined,
+      };
+      const handler = createStandaloneRequestHandler(parseSidecarStartupConfig(env), env);
+      const headers = desktop ? {
+        authorization: "Bearer desktop-secret",
+        origin: "http://tauri.localhost",
+        "sec-fetch-site": "cross-site",
+      } : undefined;
+      const statusUrl = "http://127.0.0.1:4317/api/siwc/status";
+      if (desktop) expect((await handler(new Request(statusUrl))).status).toBe(401);
+      const status = await handler(new Request(statusUrl, { headers }));
+      expect(status.status).toBe(enabled ? 200 : 404);
+
+      const response = await handler(new Request("http://127.0.0.1:4317/api/llm/providers", { headers }));
+      const { providers } = await response.json();
+      expect(providers.some((provider: { id: string }) => provider.id === "openai-chatgpt")).toBe(enabled);
+    } finally {
+      secretStoreFactory.mockRestore();
+      await rm(dataRoot, { recursive: true, force: true });
+    }
+  });
+
   it("streams authenticated NDJSON through a sidecar-protected handler", async () => {
     const handler = createSidecarRequestHandler({
       allowedOrigins: ["tauri://localhost"],
