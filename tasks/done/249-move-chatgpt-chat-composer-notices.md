@@ -20,4 +20,5 @@
 
 - `bun run test -- --maxWorkers=2 --testTimeout=60000` は1258件成功、既存2件スキップ。最終調整後のSIWC接続・Appテストは52件成功。`bun run typecheck` は成功。
 - `bun run test:e2e -- e2e/siwc-workflow.spec.ts --workers=1 --trace=retain-on-failure` は成功。接続時のサイドバーリンク、APIキー接続時の非表示、固定モデルのツールチップとアクセシブルな説明、AIアシストの表示を確認した。チャットのスクリーンショットで入力欄とサイドバー下部の配置を確認した。
-- デスクトップのネイティブ境界と外部API契約に変更はなく、MSIXの再ビルドと実アカウント検証は未実施。
+- Windows x64版1.0.8.0を生成し、バージョン整合、MSIXレイアウト、デスクトップruntime、ローカル用MSIXの署名（`Valid`）を確認した。バージョンとMSIXの関連テスト54件も成功。
+- 1.0.7.0から更新インストールし、SIWCプレビューを有効にして起動した。ユーザーがAIアシスト、左下アイコンからの利用状況ページ表示、ログアウトと再ログインを確認した。固定モデル名のツールチップは上記Playwrightで確認した。[SIWCの検証記録](../../docs/siwc-validation-status.md)
