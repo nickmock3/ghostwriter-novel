@@ -435,18 +435,19 @@ fn perform_health_request(
     origin: &str,
     token: &str,
 ) -> Result<bool, SidecarError> {
+    // The authenticated sidecar health check connects directly to loopback.
     let response = ureq::get(health_url.as_str())
-        .set("Authorization", &format!("Bearer {token}"))
-        .set("Origin", origin)
+        .config()
+        .proxy(None)
+        .build()
+        .header("Authorization", format!("Bearer {token}"))
+        .header("Origin", origin)
         .call();
 
     match response {
-        Ok(response) => Ok(response.status() == 200),
-        Err(ureq::Error::Status(401 | 403, _)) => Ok(false),
-        Err(ureq::Error::Status(_, _)) => Ok(false),
-        Err(ureq::Error::Transport(error)) => {
-            Err(SidecarError::Io(io::Error::other(error.to_string())))
-        }
+        Ok(response) => Ok(response.status().as_u16() == 200),
+        Err(ureq::Error::StatusCode(_)) => Ok(false),
+        Err(error) => Err(SidecarError::Io(io::Error::other(error))),
     }
 }
 

@@ -10,6 +10,8 @@ PlaywrightでAPIモックを外し、ファイル保存や会話・編集案の�
 
 また、workspace APIはrootを正規化する。macOSの一時ディレクトリにはsymlink経由の表記があり、未正規化rootでlocalStorageの開始ガイド非表示キーを作ると、APIが返すrootを含むキーと一致しない。fixture作成後の`realpath`でrootを揃えると、ガイドを「表示されるかもしれない」として例外を握りつぶす必要がなくなる。
 
+LLM一覧のモックを組み立てるために実行時のプロフィールモジュールをimportすると、Playwrightのテスト収集中にAI SDKのサーバー依存まで読み込む場合がある。Node 22.17.1とPlaywright 1.65.1の組み合わせでは、推移依存のCommonJS読み込みで`Unexpected module status 3`が出た。LLM一覧がテスト対象外なら、応答schemaへの型参照で検査した値をfixtureに使う。
+
 ## Reliable procedure
 
 1. `e2e/support/start-server.ts`で一時dataRootを持つ専用サーバーを起動する。既存サーバーは再利用しない。
@@ -21,6 +23,7 @@ PlaywrightでAPIモックを外し、ファイル保存や会話・編集案の�
 
 ## Failure signals
 
+- `playwright test --list`の段階でLLM SDKの推移依存がエラーを出す。
 - テスト用workspaceを使っているのに、通常のアプリデータに会話が残る。
 - 非表示にしたはずの開始ガイドが出て、後続のクリックを遮る。
 - 保存成功表示だけでテストが通り、ディスク本文は変わっていない。

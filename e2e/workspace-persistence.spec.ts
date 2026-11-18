@@ -2,14 +2,23 @@ import { expect, test, type Page } from "@playwright/test";
 import { mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
-import { createDefaultRoleAssignments } from "../src/features/llm/profiles/llmProfiles";
-import { llmProfilesResponseSchema } from "../src/features/llm/profiles/llmProfileStorage";
+import type { z } from "zod";
+import type { llmProfilesResponseSchema } from "../src/features/llm/profiles/llmProfileStorage";
 import { conversationListResponseSchema, conversationSchema } from "../src/features/ai-chat/conversationSchemas";
 
 // Real API and filesystem E2E coverage. Only unrelated LLM inventory/health endpoints are mocked;
 // workspace validation, file I/O, conversation history, and proposal actions stay real.
 
 const filePath = "本文.txt";
+const emptyLlmInventory = {
+  profiles: [],
+  roleAssignments: {
+    main: { kind: "profile", profileId: "builtin:deepseek:main" },
+    search: { kind: "profile", profileId: "builtin:deepseek:search" },
+    simple: { kind: "profile", profileId: "builtin:deepseek:simple" },
+    writing: { kind: "profile", profileId: "builtin:deepseek:writing" },
+  },
+} satisfies z.input<typeof llmProfilesResponseSchema>;
 
 async function createWorkspace(initialContent: string) {
   const root = await mkdtemp(path.join(tmpdir(), "ghostwriter-persistence-workspace-"));
@@ -30,7 +39,7 @@ async function mockUnrelatedRuntimeInventory(page: Page) {
     route.fulfill({ contentType: "application/json", json: { providers: [] } }),
   );
   await page.route("**/api/llm/profiles", (route) =>
-    route.fulfill({ contentType: "application/json", json: llmProfilesResponseSchema.parse({ profiles: [], roleAssignments: createDefaultRoleAssignments({ providers: [] }) }) }),
+    route.fulfill({ contentType: "application/json", json: emptyLlmInventory }),
   );
   await page.route("**/api/llm/secrets", (route) =>
     route.fulfill({ contentType: "application/json", json: { providers: [] } }),

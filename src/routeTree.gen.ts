@@ -9,37 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TemplatesRouteImport } from './routes/templates'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as ReaderRouteImport } from './routes/reader'
-import { Route as LlmProfilesRouteImport } from './routes/llm-profiles'
-import { Route as EditorRouteImport } from './routes/editor'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatRouteImport } from './routes/chat'
+import { Route as EditorRouteImport } from './routes/editor'
+import { Route as LlmProfilesRouteImport } from './routes/llm-profiles'
+import { Route as ReaderRouteImport } from './routes/reader'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as TemplatesRouteImport } from './routes/templates'
 
-const TemplatesRoute = TemplatesRouteImport.update({
-  id: '/templates',
-  path: '/templates',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReaderRoute = ReaderRouteImport.update({
-  id: '/reader',
-  path: '/reader',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LlmProfilesRoute = LlmProfilesRouteImport.update({
-  id: '/llm-profiles',
-  path: '/llm-profiles',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const EditorRoute = EditorRouteImport.update({
-  id: '/editor',
-  path: '/editor',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatRoute = ChatRouteImport.update({
@@ -47,9 +27,29 @@ const ChatRoute = ChatRouteImport.update({
   path: '/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const EditorRoute = EditorRouteImport.update({
+  id: '/editor',
+  path: '/editor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LlmProfilesRoute = LlmProfilesRouteImport.update({
+  id: '/llm-profiles',
+  path: '/llm-profiles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReaderRoute = ReaderRouteImport.update({
+  id: '/reader',
+  path: '/reader',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TemplatesRoute = TemplatesRouteImport.update({
+  id: '/templates',
+  path: '/templates',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -123,39 +123,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/templates': {
-      id: '/templates'
-      path: '/templates'
-      fullPath: '/templates'
-      preLoaderRoute: typeof TemplatesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reader': {
-      id: '/reader'
-      path: '/reader'
-      fullPath: '/reader'
-      preLoaderRoute: typeof ReaderRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/llm-profiles': {
-      id: '/llm-profiles'
-      path: '/llm-profiles'
-      fullPath: '/llm-profiles'
-      preLoaderRoute: typeof LlmProfilesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/editor': {
-      id: '/editor'
-      path: '/editor'
-      fullPath: '/editor'
-      preLoaderRoute: typeof EditorRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chat': {
@@ -165,11 +137,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ChatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/llm-profiles': {
+      id: '/llm-profiles'
+      path: '/llm-profiles'
+      fullPath: '/llm-profiles'
+      preLoaderRoute: typeof LlmProfilesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reader': {
+      id: '/reader'
+      path: '/reader'
+      fullPath: '/reader'
+      preLoaderRoute: typeof ReaderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/templates': {
+      id: '/templates'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof TemplatesRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

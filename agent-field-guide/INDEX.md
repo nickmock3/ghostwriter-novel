@@ -18,6 +18,7 @@
 | Windows / MSIX | Windows x64 MSIXをStore提出またはローカル検証するとき | Store用未署名MSIXとsideload用署名コピーを分け、信頼ストア・Partner Centerのsubmission状態を確認する | [Windows MSIXのStore提出とローカルsideload](windows-msix-build-and-sideload.md) |
 | Windows / Codex CLI | Web devで`codex.cmd`が先に見つかりhealthが`spawn EINVAL`または`invalid-installation`になるとき | Volta shimは実行せず固定内容だけを認識し、package image内のnative `codex.exe`を再検証する | [WindowsのVolta Codex shimからnative executableを確認する](entries/windows-volta-codex-shim.md) |
 | Tauri / Windows MSIX | Tauriは同梱sidecarを起動できるのに、その先の外部processから同じEXEを起動できないとき | package内processの起動成功は、package外childによるWindowsApps内EXEの再起動可能性を保証しない。同一binaryをpackage外へ置く対照実験で切り分ける | [Tauri MSIXのWindowsApps内sidecarを外部processへ直接再起動させない](entries/windows-msix-tauri-sidecar-external-process-boundary.md) |
+| Desktop / sidecar HTTP | Rust側のHTTPクライアントを更新するとき | 認証付きループバック接続で環境プロキシの適用を確認する | [ureq更新時はsidecarのループバック通信でプロキシ設定を確認する](entries/ureq-sidecar-loopback-proxy.md) |
 | Desktop / Codex diagnostics | Web版とpackaged desktop版でCodexの結果が異なるとき | dataRootの容量制限付きJSONLへ段階と分類だけを記録し、MSIXではPFN配下から探索する | [packaged desktopのCodex失敗をサニタイズ済みJSONLで切り分ける](entries/codex-packaged-diagnostic-log.md) |
 | Testing / Playwright | APIモックを外して保存・編集案の永続化を確認するとき | 一時dataRootの専用サーバーとrealpath済みworkspaceを使い、保存表示とディスク本文を別々に確認する | [実ファイルE2Eでは保存領域と復元キーのrootを揃える](entries/real-filesystem-e2e-isolation.md) |
 | Chat / persistence | 自動Applyの保存順序やproposal IDを変更するとき | tool実行中の先行保存と別processのMCPを追い、保存済みIDをaccumulatorで維持する | [チャット自動Applyはターン終了より前に別プロセスでも実行される](entries/chat-auto-apply-persistence-boundaries.md) |
