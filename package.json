@@ -26,10 +26,10 @@
     "version:set": "bun run scripts/app-version.ts set"
   },
   "dependencies": {
-    "@ai-sdk/anthropic": "4.0.71",
-    "@ai-sdk/deepseek": "3.0.58",
-    "@ai-sdk/google": "4.0.87",
-    "@ai-sdk/openai": "4.0.83",
+    "@ai-sdk/anthropic": "4.0.106",
+    "@ai-sdk/deepseek": "3.0.88",
+    "@ai-sdk/google": "4.0.122",
+    "@ai-sdk/openai": "4.0.121",
     "@codemirror/lang-javascript": "^6.2.5",
     "@codemirror/lang-markdown": "^6.5.0",
     "@tanstack/react-router": "^1.169.2",
@@ -38,7 +38,7 @@
     "@tauri-apps/plugin-dialog": "2",
     "@tauri-apps/plugin-opener": "2",
     "@uiw/react-codemirror": "^4.25.9",
-    "ai": "7.0.127",
+    "ai": "7.0.176",
     "diff": "^9.0.0",
     "jose": "6.2.12",
     "react": "latest",

@@ -43,6 +43,8 @@ const providers = [
       { available: true, displayName: "GPT-6 Astra", id: "gpt-6-astra", supportsTools: true },
       { available: true, displayName: "GPT-6 Sol", id: "gpt-6-sol", supportsTools: true },
       { available: true, displayName: "GPT-6 Luna", id: "gpt-6-luna", supportsTools: true },
+      { available: true, displayName: "GPT-6.2 Astra", id: "gpt-6.2-astra", supportsTemperature: false, supportsTools: true },
+      { available: true, displayName: "GPT-6.2 Sol", id: "gpt-6.2-sol", supportsTemperature: false, supportsTools: true },
     ],
   },
   {

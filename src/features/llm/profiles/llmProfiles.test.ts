@@ -36,6 +36,10 @@ const configuredProviders: AvailableLlmProvider[] = [
       { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6 Astra", id: "gpt-6-astra", supportsTemperature: false, supportsTools: true },
       { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6 Sol", id: "gpt-6-sol", supportsTemperature: false, supportsTools: true },
       { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6 Luna", id: "gpt-6-luna", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6.1 Sol", id: "gpt-6.1-sol", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6.1 Terra", id: "gpt-6.1-terra", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6.2 Astra", id: "gpt-6.2-astra", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_050_000, displayName: "GPT-6.2 Sol", id: "gpt-6.2-sol", supportsTemperature: false, supportsTools: true },
     ],
   },
   {
@@ -50,6 +54,9 @@ const configuredProviders: AvailableLlmProvider[] = [
       { available: true, displayName: "Gemini 3.1 Flash Lite", id: "gemini-3.1-flash-lite", supportsTools: true },
       { available: true, displayName: "Gemini 3.1 Pro", id: "gemini-3.1-pro", supportsTools: true },
       { available: true, displayName: "Gemini 3.1 Flash", id: "gemini-3.1-flash", supportsTools: true },
+      { available: true, contextWindowTokens: 1_048_576, displayName: "Gemini 4 Carbon", id: "gemini-4-carbon", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_048_576, displayName: "Gemini 4 Argon", id: "gemini-4-argon", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_048_576, displayName: "Gemini 4 Hydrogen", id: "gemini-4-hydrogen", supportsTemperature: false, supportsTools: true },
     ],
   },
   {
@@ -65,6 +72,9 @@ const configuredProviders: AvailableLlmProvider[] = [
       { available: true, contextWindowTokens: 200_000, displayName: "Claude Haiku 4.5 (2025-10-01)", id: "claude-haiku-4-5-20251001", supportsTools: true },
       { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Opus 5", id: "claude-opus-5", supportsTemperature: false, supportsTools: true },
       { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Fable 5.1", id: "claude-fable-5-1", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Fable 5.2", id: "claude-fable-5-2", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Sonnet 5.5", id: "claude-sonnet-5-5", supportsTemperature: false, supportsTools: true },
+      { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Haiku 5.5", id: "claude-haiku-5-5", supportsTemperature: false, supportsTools: true },
       { available: true, contextWindowTokens: 1_000_000, displayName: "Claude Opus 5.5", id: "claude-opus-5-5", supportsTemperature: false, supportsTools: true },
     ],
   },
@@ -85,18 +95,18 @@ describe("LLM profiles", () => {
       ["builtin:deepseek:writing", "deepseek", "deepseek-v4-pro"],
       ["builtin:deepseek:simple", "deepseek", "deepseek-flash"],
       ["builtin:deepseek:search", "deepseek", "deepseek-flash"],
-      ["builtin:openai:main", "openai", "gpt-6-sol"],
-      ["builtin:openai:writing", "openai", "gpt-6-astra"],
+      ["builtin:openai:main", "openai", "gpt-6.2-sol"],
+      ["builtin:openai:writing", "openai", "gpt-6.2-astra"],
       ["builtin:openai:simple", "openai", "gpt-6-luna"],
       ["builtin:openai:search", "openai", "gpt-6-luna"],
-      ["builtin:gemini:main", "gemini", "gemini-3.8-flash"],
-      ["builtin:gemini:writing", "gemini", "gemini-3.8-flash"],
+      ["builtin:gemini:main", "gemini", "gemini-4-hydrogen"],
+      ["builtin:gemini:writing", "gemini", "gemini-4-hydrogen"],
       ["builtin:gemini:simple", "gemini", "gemini-3.5-flash-lite"],
       ["builtin:gemini:search", "gemini", "gemini-3.5-flash-lite"],
       ["builtin:anthropic:main", "anthropic", "claude-opus-5-5"],
-      ["builtin:anthropic:writing", "anthropic", "claude-fable-5-1"],
-      ["builtin:anthropic:simple", "anthropic", "claude-haiku-4-5-20251001"],
-      ["builtin:anthropic:search", "anthropic", "claude-haiku-4-5-20251001"],
+      ["builtin:anthropic:writing", "anthropic", "claude-fable-5-2"],
+      ["builtin:anthropic:simple", "anthropic", "claude-haiku-5-5"],
+      ["builtin:anthropic:search", "anthropic", "claude-haiku-5-5"],
     ]);
     expect(builtInLlmProfiles.every((profile) => profile.source === "built-in")).toBe(true);
   });
@@ -153,7 +163,7 @@ describe("LLM profiles", () => {
       role: "writing",
     });
 
-    expect(writing.modelId).toBe("claude-fable-5-1");
+    expect(writing.modelId).toBe("claude-fable-5-2");
     expect(getLlmProfileTemperature(writing)).toBeUndefined();
   });
 

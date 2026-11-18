@@ -2,13 +2,15 @@
 
 ## When this matters
 
-SIWC検証コードをGhostwriterへ移す、またはAI SDKのメジャーバージョンを更新するとき。
+SIWC検証コードをGhostwriterへ移す、またはAI SDKのバージョンを更新するとき。
 
 ## Field note
 
 ai 6.0.176で成功したtool往復・追質問テストは、ai 7.0.127への更新後に`result.response.messages`のままだと追質問のtool・reasoning履歴が欠落した。SDK 7では最後のステップのresponseであり、全ステップの履歴は`result.responseMessages`で取得する。型チェックだけではこの意味の差を検出できない。
 
-SIWCはHTTP側の保存済みresponse IDによる継続を使わないため、必要な履歴の再送を実際のHTTP inputで検証する。SDK 7 / openai 4.0.83では公開provider optionsによるnamespace、store:false、developer変換、暗号化reasoningの再送を合成HTTP/SSEで確認できた。実サービス・本番統合の保証ではない。
+SIWCはHTTP側の保存済みresponse IDによる継続を使わないため、必要な履歴の再送を実際のHTTP inputで検証する。SDK 7の公開provider optionsによるnamespace、store:false、developer変換、暗号化reasoningの再送は合成HTTP/SSEで確認できる。
+
+`@ai-sdk/openai` 4.0.100以降は、終端イベントなしのEOFを`interrupted`と報告する。SIWCの完了判定はSDKのラベルに依存せず、`response.completed`がない場合に切断として扱う。
 
 ## Reliable procedure
 

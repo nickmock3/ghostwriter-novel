@@ -417,9 +417,9 @@ describe("SIWC on installed AI SDK 7（偽HTTP/SSE契約検証）", () => {
       raw: "response.incomplete",
     },
     {
-      name: "途中の正常EOF",
+      name: "終端イベントなしのEOF",
       terminal: undefined,
-      finish: "other",
+      finish: "interrupted",
       raw: undefined,
     },
     {

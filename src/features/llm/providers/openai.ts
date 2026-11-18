@@ -31,7 +31,7 @@ export function createOpenAIModelProviderPlugin(
       });
 
       return wrapLanguageModel({
-        model: modelId.startsWith("gpt-6-") ? provider.responses(modelId) : provider(modelId),
+        model: /^gpt-6(?:\.\d+)?-/.test(modelId) ? provider.responses(modelId) : provider(modelId),
         middleware: defaultSettingsMiddleware({
           settings: { providerOptions: { openai: { reasoningSummary: "auto" } } },
         }),
@@ -84,6 +84,34 @@ export function createOpenAIModelProviderPlugin(
         contextWindowTokens: 1_050_000,
         displayName: "GPT-6 Luna",
         id: "gpt-6-luna",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_050_000,
+        displayName: "GPT-6.1 Sol",
+        id: "gpt-6.1-sol",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_050_000,
+        displayName: "GPT-6.1 Terra",
+        id: "gpt-6.1-terra",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_050_000,
+        displayName: "GPT-6.2 Astra",
+        id: "gpt-6.2-astra",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_050_000,
+        displayName: "GPT-6.2 Sol",
+        id: "gpt-6.2-sol",
         supportsTemperature: false,
         supportsTools: true,
       },

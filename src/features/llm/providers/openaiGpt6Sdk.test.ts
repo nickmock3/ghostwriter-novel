@@ -5,7 +5,15 @@ import { z } from "zod";
 import { createOpenAIModelProviderPlugin } from "./openai";
 
 describe("GPT-6 OpenAI SDK request", () => {
-  it.each(["gpt-6-astra", "gpt-6-sol", "gpt-6-luna"])(
+  it.each([
+    "gpt-6-astra",
+    "gpt-6-sol",
+    "gpt-6-luna",
+    "gpt-6.1-sol",
+    "gpt-6.1-terra",
+    "gpt-6.2-astra",
+    "gpt-6.2-sol",
+  ])(
     "uses Responses with tools and omits sampling for %s",
     async (modelId) => {
       const requests: Array<{ body: Record<string, unknown>; url: string }> = [];

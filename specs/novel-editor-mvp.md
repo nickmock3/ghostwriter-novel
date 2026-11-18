@@ -526,6 +526,10 @@ type LlmProviderPlugin = {
     - `gpt-6-astra`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
     - `gpt-6-sol`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
     - `gpt-6-luna`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
+    - `gpt-6.1-sol`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
+    - `gpt-6.1-terra`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
+    - `gpt-6.2-astra`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
+    - `gpt-6.2-sol`（`contextWindowTokens`: 1050000、`supportsTemperature`: false）
 - `gemini`
   - provider package: `@ai-sdk/google`
   - APIキー: `GOOGLE_GENERATIVE_AI_API_KEY`
@@ -535,10 +539,13 @@ type LlmProviderPlugin = {
     - `gemini-3.7-flash`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
     - `gemini-3.6-flash`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
     - `gemini-3.5-flash-lite`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
-    - `gemini-3.5-flash`（`contextWindowTokens`: 1048576）
+    - `gemini-3.5-flash`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
     - `gemini-3.1-flash-lite`（`contextWindowTokens`: 1048576）
     - `gemini-3.1-pro`（`contextWindowTokens`: 1048576）
     - `gemini-3.1-flash`（`contextWindowTokens`: 1048576）
+    - `gemini-4-carbon`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
+    - `gemini-4-argon`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
+    - `gemini-4-hydrogen`（`contextWindowTokens`: 1048576、`supportsTemperature`: false）
 - `anthropic`
   - provider package: `@ai-sdk/anthropic`
   - APIキー: `ANTHROPIC_API_KEY`
@@ -554,6 +561,9 @@ type LlmProviderPlugin = {
     - `claude-opus-5`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
     - `claude-opus-5-5`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
     - `claude-fable-5-1`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
+    - `claude-fable-5-2`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
+    - `claude-sonnet-5-5`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
+    - `claude-haiku-5-5`（`contextWindowTokens`: 1000000、`supportsTemperature`: false）
 - `openai-compatible`
   - provider package: `@ai-sdk/openai`
   - APIキー: `GHOSTWRITER_OPENAI_COMPATIBLE_API_KEY`
@@ -569,9 +579,9 @@ OpenAI、Anthropic、Gemini、DeepSeekの固定モデル候補を更新すると
 
 非廃止の既存モデルID（例: `gpt-5.4-mini`、`claude-sonnet-4-6`）は互換のため候補に残す。内蔵プリセットは最新推奨モデルへ更新するが、保存済みプロフィールや用途別割り当ては利用可能な限りそのまま維持する。
 
-DeepSeekの`deepseek-flash`は既定のthinking modeで`temperature`が効かないため送らない。旧`deepseek-v4-flash`は退役済みだが互換ルーティングが有効な間は保存済み設定のため候補に残す。Geminiの`gemini-3.8-flash`、`gemini-3.7-flash`、`gemini-3.6-flash`、`gemini-3.5-flash-lite`とAnthropicの`claude-opus-4-7`以降のモデル（`claude-opus-4-7`、`claude-fable-5`、`claude-fable-5-1`、`claude-opus-4-8`、`claude-sonnet-5`、`claude-opus-5`、`claude-opus-5-5`）はAPIが`temperature`/`top_p`/`top_k`を拒否する。モデル定義の`supportsTemperature: false`を`ResolvedLlmProfile`へ引き継ぎ、実行時は`sampling`パラメータを送らない。他のモデルでは従来どおりプロフィールの`temperature`を使う。
+DeepSeekの`deepseek-flash`は既定のthinking modeで`temperature`が効かないため送らない。旧`deepseek-v4-flash`は互換ルーティングが有効な間は保存済み設定のため候補に残す。Gemini 4、Gemini 3.8 Flash、3.7 Flash、3.6 Flash、3.5 Flash-Lite、3.5 Flash、およびカタログ上で`supportsTemperature: false`のClaudeモデルはsamplingを省略する。旧Gemini 3.5 Flashと3.7 FlashはGoogle側でそれぞれ3.6 Flashと3.8 Flashへ転送される。モデル定義の`supportsTemperature: false`を`ResolvedLlmProfile`へ引き継ぎ、実行時はプロフィールの`temperature`を省略する。
 
-OpenAIのGPT-6系はResponses APIで実行し、reasoning時は`temperature`などのsamplingパラメータを送らない。
+OpenAIのGPT-6系はResponses APIで実行し、reasoning時は`temperature`などのsamplingパラメータを送らない。Claude Fable 5.2、Sonnet 5.5、Haiku 5.5は、ツール実行の途中でsystem promptなどが変わった場合、APIのprefix検証に失敗したthinking blockの再利用を省略して実行を続ける。Claude Fable 5.2は原則として30日間のデータ保持が有効なClaude API環境が必要。
 
 `contextWindowTokens`が未定義または不明なモデルでは、コンテキスト使用率表示のfallbackとして`200000` tokensを使う。これはusage上限や出力上限ではなく、使用率計算専用の既定値とする。解決順は、ユーザー定義プロフィールの`contextWindowTokensOverride`、provider/model定義の`contextWindowTokens`、fallback `200000`の順とする。`contextWindowTokensOverride`は`maxOutputTokens`とは別フィールドとして扱う。
 
@@ -632,20 +642,20 @@ type LlmRoleAssignments = {
   - `simple`: `deepseek-flash`
   - `search`: `deepseek-flash`
 - `openai`
-  - `main`: `gpt-6-sol`
-  - `writing`: `gpt-6-astra`
+  - `main`: `gpt-6.2-sol`
+  - `writing`: `gpt-6.2-astra`
   - `simple`: `gpt-6-luna`
   - `search`: `gpt-6-luna`
 - `gemini`
-  - `main`: `gemini-3.8-flash`
-  - `writing`: `gemini-3.8-flash`
+  - `main`: `gemini-4-hydrogen`
+  - `writing`: `gemini-4-hydrogen`
   - `simple`: `gemini-3.5-flash-lite`
   - `search`: `gemini-3.5-flash-lite`
 - `anthropic`
   - `main`: `claude-opus-5-5`
-  - `writing`: `claude-fable-5-1`
-  - `simple`: `claude-haiku-4-5-20251001`
-  - `search`: `claude-haiku-4-5-20251001`
+  - `writing`: `claude-fable-5-2`
+  - `simple`: `claude-haiku-5-5`
+  - `search`: `claude-haiku-5-5`
 
 内蔵プリセットのルール:
 

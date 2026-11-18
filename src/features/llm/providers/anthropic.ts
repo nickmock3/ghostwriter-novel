@@ -3,10 +3,17 @@ import {
   type AnthropicProvider,
   type AnthropicProviderSettings,
 } from "@ai-sdk/anthropic";
+import { defaultSettingsMiddleware, wrapLanguageModel } from "ai";
 import { readLlmProviderConfig, type LlmProviderConfig } from "../runtimeEnv";
 import type { LlmProviderPlugin, ModelProvider } from "./types";
 
 const defaultAnthropicBaseURL = "https://api.anthropic.com/v1";
+
+const modelsWithThinkingPrefixChecks = new Set([
+  "claude-fable-5-2",
+  "claude-sonnet-5-5",
+  "claude-haiku-5-5",
+]);
 
 export type CreateAnthropicModelProviderOptions = {
   createAnthropicProvider?: (settings: AnthropicProviderSettings) => AnthropicProvider;
@@ -28,10 +35,28 @@ export function createAnthropicModelProviderPlugin(
         throw new Error("ANTHROPIC_API_KEY is required to create an Anthropic language model");
       }
 
-      return createAnthropicProvider({
+      const model = createAnthropicProvider({
         apiKey,
         baseURL: config.baseURL ?? defaultAnthropicBaseURL,
       })(modelId);
+
+      if (!modelsWithThinkingPrefixChecks.has(modelId)) {
+        return model;
+      }
+
+      // Activating a skill can change the system prompt between tool steps.
+      return wrapLanguageModel({
+        model,
+        middleware: defaultSettingsMiddleware({
+          settings: {
+            providerOptions: {
+              anthropic: {
+                thinking: { type: "adaptive", blockBinding: { prefixMismatchBehavior: "drop_block" } },
+              },
+            },
+          },
+        }),
+      });
     },
     displayName: "Anthropic",
     envKey: "ANTHROPIC_API_KEY",
@@ -101,6 +126,27 @@ export function createAnthropicModelProviderPlugin(
         contextWindowTokens: 1_000_000,
         displayName: "Claude Fable 5.1",
         id: "claude-fable-5-1",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_000_000,
+        displayName: "Claude Fable 5.2",
+        id: "claude-fable-5-2",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_000_000,
+        displayName: "Claude Sonnet 5.5",
+        id: "claude-sonnet-5-5",
+        supportsTemperature: false,
+        supportsTools: true,
+      },
+      {
+        contextWindowTokens: 1_000_000,
+        displayName: "Claude Haiku 5.5",
+        id: "claude-haiku-5-5",
         supportsTemperature: false,
         supportsTools: true,
       },

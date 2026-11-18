@@ -1,3 +1,6 @@
+import type { DeepSeekProviderSettings } from "@ai-sdk/deepseek";
+import type { GoogleGenerativeAIProviderSettings } from "@ai-sdk/google";
+import type { OpenAIProviderSettings } from "@ai-sdk/openai";
 import { describe, expect, it, vi } from "vitest";
 import {
   createDeepSeekModelProvider,
@@ -38,7 +41,7 @@ describe("DeepSeek model provider", () => {
   });
 
   it("reads DEEPSEEK_API_KEY and configures the native DeepSeek provider", () => {
-    const calls: Array<{ apiKey: string; baseURL?: string }> = [];
+    const calls: Array<Pick<DeepSeekProviderSettings, "apiKey" | "baseURL">> = [];
     const chatCalls: string[] = [];
     const provider = createDeepSeekModelProvider({
       createDeepSeekProvider: (settings) => {
@@ -207,7 +210,7 @@ describe("latest native API model metadata", () => {
 
 describe("OpenAI model provider", () => {
   it("reads OPENAI_API_KEY and configures the native OpenAI provider with base URL override", () => {
-    const calls: Array<{ apiKey: string; baseURL?: string }> = [];
+    const calls: Array<Pick<OpenAIProviderSettings, "apiKey" | "baseURL">> = [];
     const provider = createOpenAIModelProvider({
       createOpenAIProvider: (settings) => {
         calls.push({
@@ -242,7 +245,7 @@ describe("OpenAI model provider", () => {
 
 describe("OpenAI-compatible model provider", () => {
   it("configures an independent OpenAI-compatible provider with required base URL and optional API key", () => {
-    const calls: Array<{ apiKey?: string; baseURL?: string }> = [];
+    const calls: Array<Pick<OpenAIProviderSettings, "apiKey" | "baseURL">> = [];
     const provider = createOpenAICompatibleModelProvider({
       createOpenAIProvider: (settings) => {
         calls.push({
@@ -376,7 +379,7 @@ describe("Gemini model provider", () => {
   });
 
   it("reads GOOGLE_GENERATIVE_AI_API_KEY and configures the native Google provider with base URL override", () => {
-    const calls: Array<{ apiKey: string; baseURL?: string }> = [];
+    const calls: Array<Pick<GoogleGenerativeAIProviderSettings, "apiKey" | "baseURL">> = [];
     const provider = createGeminiModelProvider({
       createGoogleProvider: (settings) => {
         calls.push({
@@ -477,6 +480,10 @@ describe("LLM provider registry", () => {
       "gpt-6-astra",
       "gpt-6-sol",
       "gpt-6-luna",
+      "gpt-6.1-sol",
+      "gpt-6.1-terra",
+      "gpt-6.2-astra",
+      "gpt-6.2-sol",
       "gemini-3.8-flash",
       "gemini-3.7-flash",
       "gemini-3.6-flash",
@@ -485,6 +492,9 @@ describe("LLM provider registry", () => {
       "gemini-3.1-flash-lite",
       "gemini-3.1-pro",
       "gemini-3.1-flash",
+      "gemini-4-carbon",
+      "gemini-4-argon",
+      "gemini-4-hydrogen",
       "claude-sonnet-4-6",
       "claude-opus-4-7",
       "claude-haiku-4-5",
@@ -495,6 +505,9 @@ describe("LLM provider registry", () => {
       "claude-opus-5",
       "claude-opus-5-5",
       "claude-fable-5-1",
+      "claude-fable-5-2",
+      "claude-sonnet-5-5",
+      "claude-haiku-5-5",
       "local-model",
     ]);
   });
@@ -555,7 +568,7 @@ describe("LLM provider registry", () => {
   });
 
   it("creates OpenAI-compatible models through Chat Completions", () => {
-    const calls: Array<{ apiKey?: string; baseURL?: string }> = [];
+    const calls: Array<Pick<OpenAIProviderSettings, "apiKey" | "baseURL">> = [];
     const chatCalls: string[] = [];
     const responsesCalls: string[] = [];
     const provider = createOpenAICompatibleModelProvider({
@@ -618,6 +631,24 @@ describe("LLM provider registry", () => {
       modelId: "gpt-5.4-mini",
       providerId: "openai",
     });
+  });
+
+  it.each([
+    { modelId: "gpt-6.1-sol", providerId: "openai" },
+    { modelId: "gpt-6.1-terra", providerId: "openai" },
+    { modelId: "gpt-6.2-astra", providerId: "openai" },
+    { modelId: "gpt-6.2-sol", providerId: "openai" },
+    { modelId: "gemini-4-carbon", providerId: "gemini" },
+    { modelId: "gemini-4-argon", providerId: "gemini" },
+    { modelId: "gemini-4-hydrogen", providerId: "gemini" },
+    { modelId: "claude-fable-5-2", providerId: "anthropic" },
+    { modelId: "claude-sonnet-5-5", providerId: "anthropic" },
+    { modelId: "claude-haiku-5-5", providerId: "anthropic" },
+  ])("allows $modelId in tool-enabled chat", (requestedSelection) => {
+    expect(resolveChatModelSelection({
+      requestedSelection,
+      requireTools: true,
+    })).toEqual(requestedSelection);
   });
 
   it("rejects unknown providers, unknown models, and non-tool models", () => {
@@ -788,6 +819,42 @@ describe("LLM provider registry", () => {
             supportsTools: true,
             unavailableReason: "OpenAI のAPIキーが未設定です。",
           },
+          {
+            available: false,
+            contextWindowTokens: 1_050_000,
+            displayName: "GPT-6.1 Sol",
+            id: "gpt-6.1-sol",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "OpenAI のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_050_000,
+            displayName: "GPT-6.1 Terra",
+            id: "gpt-6.1-terra",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "OpenAI のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_050_000,
+            displayName: "GPT-6.2 Astra",
+            id: "gpt-6.2-astra",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "OpenAI のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_050_000,
+            displayName: "GPT-6.2 Sol",
+            id: "gpt-6.2-sol",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "OpenAI のAPIキーが未設定です。",
+          },
         ],
       },
       {
@@ -835,6 +902,7 @@ describe("LLM provider registry", () => {
             contextWindowTokens: 1_048_576,
             displayName: "Gemini 3.5 Flash",
             id: "gemini-3.5-flash",
+            supportsTemperature: false,
             supportsTools: true,
             unavailableReason: "Gemini のAPIキーが未設定です。",
           },
@@ -859,6 +927,33 @@ describe("LLM provider registry", () => {
             contextWindowTokens: 1_048_576,
             displayName: "Gemini 3.1 Flash",
             id: "gemini-3.1-flash",
+            supportsTools: true,
+            unavailableReason: "Gemini のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_048_576,
+            displayName: "Gemini 4 Carbon",
+            id: "gemini-4-carbon",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "Gemini のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_048_576,
+            displayName: "Gemini 4 Argon",
+            id: "gemini-4-argon",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "Gemini のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_048_576,
+            displayName: "Gemini 4 Hydrogen",
+            id: "gemini-4-hydrogen",
+            supportsTemperature: false,
             supportsTools: true,
             unavailableReason: "Gemini のAPIキーが未設定です。",
           },
@@ -951,6 +1046,33 @@ describe("LLM provider registry", () => {
             contextWindowTokens: 1_000_000,
             displayName: "Claude Fable 5.1",
             id: "claude-fable-5-1",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "Anthropic のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_000_000,
+            displayName: "Claude Fable 5.2",
+            id: "claude-fable-5-2",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "Anthropic のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_000_000,
+            displayName: "Claude Sonnet 5.5",
+            id: "claude-sonnet-5-5",
+            supportsTemperature: false,
+            supportsTools: true,
+            unavailableReason: "Anthropic のAPIキーが未設定です。",
+          },
+          {
+            available: false,
+            contextWindowTokens: 1_000_000,
+            displayName: "Claude Haiku 5.5",
+            id: "claude-haiku-5-5",
             supportsTemperature: false,
             supportsTools: true,
             unavailableReason: "Anthropic のAPIキーが未設定です。",

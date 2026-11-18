@@ -287,12 +287,14 @@ R2 bucket名の実値は `R2_BUCKET` で指定します。
 対応しているprovider IDとmodel IDは次のとおりです。
 
 - `deepseek`: `deepseek-v4-pro`, `deepseek-v4-flash`, `deepseek-flash`
-- `openai`: `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`
-- `gemini`: `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite`, `gemini-3.5-flash`, `gemini-3.1-flash-lite`, `gemini-3.1-pro`, `gemini-3.1-flash`
-- `anthropic`: `claude-sonnet-4-6`, `claude-opus-4-7`, `claude-haiku-4-5`, `claude-fable-5`, `claude-opus-4-8`, `claude-sonnet-5`, `claude-haiku-4-5-20251001`, `claude-opus-5`, `claude-opus-5-5`, `claude-fable-5-1`
+- `openai`: `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-5.6-luna`, `gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-6.1-sol`, `gpt-6.1-terra`, `gpt-6.2-astra`, `gpt-6.2-sol`
+- `gemini`: `gemini-3.8-flash`, `gemini-3.7-flash`, `gemini-3.6-flash`, `gemini-3.5-flash-lite`, `gemini-3.5-flash`, `gemini-3.1-flash-lite`, `gemini-3.1-pro`, `gemini-3.1-flash`, `gemini-4-carbon`, `gemini-4-argon`, `gemini-4-hydrogen`
+- `anthropic`: `claude-sonnet-4-6`, `claude-opus-4-7`, `claude-haiku-4-5`, `claude-fable-5`, `claude-opus-4-8`, `claude-sonnet-5`, `claude-haiku-4-5-20251001`, `claude-opus-5`, `claude-opus-5-5`, `claude-fable-5-1`, `claude-fable-5-2`, `claude-sonnet-5-5`, `claude-haiku-5-5`
 - `openai-compatible`: `local-model`、または `GHOSTWRITER_OPENAI_COMPATIBLE_MODELS` で指定したmodel ID
 
-非廃止の既存モデルIDは互換のため候補に残しています。退役済みの `deepseek-v4-flash` も互換ルーティングが続く間は保存済み設定のため残します。内蔵プリセットは最新推奨モデルを使います。OpenAIのGPT-6系はResponses APIで実行し、reasoning時は `temperature` などのsamplingパラメータを送信しません。DeepSeekの `deepseek-flash` は既定のthinking modeで `temperature` が効かないため送信しません。Geminiの `gemini-3.8-flash`、`gemini-3.7-flash`、`gemini-3.6-flash` と `gemini-3.5-flash-lite`、AnthropicのClaude Opus 4.7以降のモデル（`claude-opus-4-7`、`claude-fable-5`、`claude-fable-5-1`、`claude-opus-4-8`、`claude-sonnet-5`、`claude-opus-5`、`claude-opus-5-5`）はAPIが `temperature` などのsamplingパラメータを拒否するため、実行時は送信しません。
+内蔵プリセットには、OpenAIの通常・執筆用にGPT-6.2 Sol・Astra、Geminiの通常・執筆用にGemini 4 Hydrogen、Anthropicの執筆用にClaude Fable 5.2、軽作業・検索用にClaude Haiku 5.5を使います。Gemini 4 CarbonとArgonには有料枠が必要です。Claude Fable 5.2は原則として30日間のデータ保持が有効なClaude API環境で利用できます。
+
+保存済みプロフィールとの互換性のため、引き続きAPIで利用できる既存モデルIDも候補に含めます。Gemini 3.5 Flashと3.7 FlashはGoogle側でそれぞれ3.6 Flashと3.8 Flashに転送されます。OpenAIのGPT-6系はResponses APIで実行します。sampling非対応のモデルでは、プロフィールの `temperature` を送信しません。
 
 4社が新しいAPIモデルを公開したときの調査、テスト、実装、文書同期は [LLMモデルカタログ更新手順](docs/llm-model-catalog-update.md) に従います。ChatGPTプランの動的モデルとOpenAI互換providerはこの固定カタログ更新の対象外です。
 

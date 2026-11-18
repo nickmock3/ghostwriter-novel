@@ -22,6 +22,7 @@
 | Testing / Playwright | APIモックを外して保存・編集案の永続化を確認するとき | 一時dataRootの専用サーバーとrealpath済みworkspaceを使い、保存表示とディスク本文を別々に確認する | [実ファイルE2Eでは保存領域と復元キーのrootを揃える](entries/real-filesystem-e2e-isolation.md) |
 | Chat / persistence | 自動Applyの保存順序やproposal IDを変更するとき | tool実行中の先行保存と別processのMCPを追い、保存済みIDをaccumulatorで維持する | [チャット自動Applyはターン終了より前に別プロセスでも実行される](entries/chat-auto-apply-persistence-boundaries.md) |
 | OpenAI / model catalog | 新しいOpenAI API model IDを候補へ追加するとき | SDKが文字列IDを受けてもreasoning判定や送信パラメータが合うとは限らない | [新しいOpenAIモデルはAI SDKのID判定を確認する](entries/openai-new-model-sdk-capabilities.md) |
+| Claude / tool continuation | 署名付きthinkingを再送するモデルを追加するとき | ツールステップ間のsystem更新でもprefix検証に失敗する | [Claudeのthinking署名はツール実行中のsystem prompt更新でも無効になる](entries/claude-thinking-prefix-checks.md) |
 | DeepSeek / model catalog | 新しいDeepSeek API model IDを候補へ追加するとき | SDKのthinking履歴判定が旧IDだけに対応している場合がある | [DeepSeekの新IDではSDKのthinking履歴判定を確認する](entries/deepseek-model-id-sdk-recognition.md) |
 | Chat / route lifetime | バックグラウンド実行や選択文引き渡しを変更するとき | 通信と画面の寿命を分け、処理済み追加要求IDもセッションへ保持する | [チャットの状態と画面の寿命を分ける](entries/chat-session-view-lifetime.md) |
 | Chat / reasoning | 推論途中経過やCodex通知変換を変更するとき | 要約のopt-inと実際の受信を分け、turn/start応答より先の通知はターン照合を待つ | [推論表示は公開要約の受信とターン識別を分けて確認する](entries/chat-reasoning-stream-boundaries.md) |
