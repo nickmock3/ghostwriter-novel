@@ -31,6 +31,7 @@ const REQUIRED_LAYOUT_FILES = [
   "ghostwriter.exe",
   "ghostwriter-sidecar.exe",
   "rg.exe",
+  "LICENSE.txt",
   "SIWC-LICENSE.txt",
   join("Assets", "Square44x44Logo.png"),
   join("Assets", "Square150x150Logo.png"),
@@ -205,6 +206,7 @@ export function createWindowsMsixLayout(projectRoot: string, version: string): s
   const layoutRoot = join(projectRoot, WINDOWS_MSIX_LAYOUT_DIRECTORY);
   const releaseRoot = join(projectRoot, "src-tauri", "target", WINDOWS_MSIX_TARGET, "release");
   const sourceFiles = [
+    [join(projectRoot, "LICENSE"), "LICENSE.txt"],
     [join(projectRoot, "src", "features", "siwc", "LICENSE"), "SIWC-LICENSE.txt"],
     [join(releaseRoot, "ghostwriter.exe"), "ghostwriter.exe"],
     [join(releaseRoot, "ghostwriter-sidecar.exe"), "ghostwriter-sidecar.exe"],

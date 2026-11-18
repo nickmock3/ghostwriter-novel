@@ -12,7 +12,16 @@ beforeEach(() => {
   vi.stubGlobal("fetch", vi.fn(async (url, init) => {
     if (String(url).startsWith("/api/conversations")) return Response.json({ activeConversation: null, conversations: [], errors: [] });
     if (String(url) === "/api/siwc/models") return Response.json(signedIn ? { ok: true, value: { accountId: "00000000-0000-4000-8000-000000000001", models: [{ slug: "dynamic", displayName: "Dynamic" }] } } : { ok: false, error: "not_signed_in" });
-    if (String(url) === "/api/chat/messages") { requests.push(JSON.parse(String(init?.body))); return Response.json({ message: "usage_limit" }, { status: 400 }); }
+    if (String(url) === "/api/chat/messages") {
+      requests.push(JSON.parse(String(init?.body)));
+      if (requests.length === 1) return Response.json({ message: "usage_limit" }, { status: 400 });
+      const timestamp = "2026-11-19T00:00:00.000Z";
+      return Response.json({ conversation: {
+        id: "resumed-conversation", title: "利用再開", workspaceId: "test",
+        createdAt: timestamp, lastOpenedAt: timestamp, updatedAt: timestamp, editProposals: [],
+        messages: [{ id: "reply", role: "assistant", createdAt: timestamp, content: "ChatGPTで利用を再開しました" }],
+      } });
+    }
     return new Response(null, { status: 404 });
   }));
 });
@@ -37,6 +46,15 @@ it("guides a new user to ChatGPT, refreshes after login and sends the selected b
   expect(within(alert).queryByRole("link", { name: "ChatGPT接続設定" })).not.toBeInTheDocument();
   expect(screen.getByLabelText("会話の実行方式")).toHaveValue("chatgpt");
   expect(requests).toHaveLength(1);
+
+  const composer = screen.getByPlaceholderText("書きたいこと、相談したいことを入力");
+  fireEvent.change(composer, { target: { value: "利用再開のテスト" } });
+  fireEvent.click(screen.getByRole("button", { name: "送信" }));
+  expect(await screen.findByText("ChatGPTで利用を再開しました")).toBeInTheDocument();
+  expect(screen.queryByText(/ChatGPTプランの利用上限/)).not.toBeInTheDocument();
+  expect(requests).toHaveLength(2);
+  expect(requests[1]).toMatchObject({ modelSelection: { providerId: "openai-chatgpt", modelId: "dynamic" } });
+  expect(requests[1]?.llmProfileId).toBeUndefined();
 });
 it("executes SIWC-only assist with explicit model and leaves Apply to the user", async () => {
   signedIn = true;

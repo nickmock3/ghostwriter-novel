@@ -121,7 +121,7 @@ describe("Windows MSIX manifest", () => {
 });
 
 describe("Windows MSIX layout validation", () => {
-  it("requires executables, manifest, visual assets, and the upstream SIWC notice", async () => {
+  it("requires executables, manifest, visual assets, and both license notices", async () => {
     const layoutRoot = await mkdtemp(join(tmpdir(), "ghostwriter-msix-layout-"));
     temporaryDirectories.push(layoutRoot);
     await mkdir(join(layoutRoot, "Assets"), { recursive: true });
@@ -138,6 +138,8 @@ describe("Windows MSIX layout validation", () => {
       writeFile(join(layoutRoot, "Assets", "Square150x150Logo.png"), "logo"),
     ]);
 
+    expect(() => assertWindowsMsixLayout(layoutRoot, "1.0.0")).toThrow(/missing: LICENSE\.txt/);
+    await writeFile(join(layoutRoot, "LICENSE.txt"), readFileSync(join(process.cwd(), "LICENSE")));
     expect(() => assertWindowsMsixLayout(layoutRoot, "1.0.0")).not.toThrow();
 
     await rm(join(layoutRoot, "SIWC-LICENSE.txt"));

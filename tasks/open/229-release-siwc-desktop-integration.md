@@ -75,6 +75,16 @@ MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostw
 - `bun run typecheck` と `bun run test:desktop` が成功。desktopはRustの単体14件、起動smoke、Vitest 80件が成功。
 - `bun run test:e2e -- e2e/siwc-settings.spec.ts e2e/siwc-workflow.spec.ts --workers=1 --trace=retain-on-failure` のChromium 2件が成功。OAuthとLLMには合成データを使用した。
 
+### 2026-11-19 Windows 1.0.10.0候補の上書き検証とStore提出準備
+
+タスク全体の難易度は高を維持する。今回の梱包変更は中と判断する。既存のMSIX identityとデータを引き継ぐ上書き更新に加え、両MITライセンスの同梱、通常起動での登録移行、提出候補とソースの対応を確認する。先に既存のlayoutテストに本体ライセンスの欠落検出を追加する。実際に生成したMSIXの展開結果で両ライセンスを原本と比較し、署名済みコピーで上書き検証する。利用上限と復帰は実アカウントの利用枠を消費せず、合成エラーと成功応答でも検証する。
+
+- MSIXの先行テストは本体ライセンスを欠くlayoutで失敗し、同梱対応後に成功。`bun run version:check`、`bun run build:desktop:windows`、`bun run package:windows:msix`、`bun run validate:windows:msix`、`bun run validate:desktop:runtime x86_64-pc-windows-msvc` が成功。
+- 署名済みコピーで1.0.8.0から同じパッケージIDのまま上書きし、環境変数なしで起動。暗号化後も登録ID、client ID、host IDが一致し、期限切れだったセッションが再ログインなしで更新された。以前の検証用ChatGPT会話で応答を受け、AIアシストの推敲案を生成できた。原稿への適用は行っていない。
+- `bun run test -- scripts/windows-msix.test.ts src/features/siwc/SiwcConnections.test.tsx src/features/siwc/siwcResponses.test.ts --maxWorkers=1` は37件成功。`bun run typecheck` と `bun run test:e2e -- e2e/siwc-settings.spec.ts e2e/siwc-workflow.spec.ts --workers=1 --trace=retain-on-failure`（Chromium 2件）も成功。利用上限は合成応答で確認した。実アカウントの利用上限を検証目的で使い切る操作は行っていない。
+- `bun run test -- --maxWorkers=1 --testTimeout=60000` は1267件成功、既存2件スキップ。`bun run test:desktop` はRust 14件、起動smoke、Vitest 80件が成功。
+- [審査メモ案](../../store-assets/ja-jp/microsoft-store-certification-notes.md)を用意した。公開情報の更新と試験用アクセスの用意が済むまで提出を保留する。[再判定とパッケージの記録](../../docs/siwc-validation-status.md#2026-11-19-windows-10100候補と提出の再判定)
+
 ### 検証済み項目と再検証の範囲
 
 単一接続の安全性確認は完了済み。アカウント追加・切替UIの削除は認証API、refresh、保存・編集処理を変更しておらず、それらの実接続確認を最初から繰り返す必要はない。

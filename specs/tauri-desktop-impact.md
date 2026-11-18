@@ -72,6 +72,7 @@ API呼出しはtransport境界へ集約する。
 - Store提出用MSIX versionは`major.minor.patch.revision`とし、stable SemVerの`x.y.z`を`x.y.z.0`へ変換する。Revisionは常に`0`であり、非ゼロRevisionになるpreview SemVerはMSIX生成前に拒否する。majorは`1`以上、major/minor/patchは各`0`から`65535`の範囲とする。MSIの既存version変換は独立した互換metadataとして維持する。
 - manifest capabilityはfull-trust desktop起動に必要な`runFullTrust`だけを宣言し、`broadFileSystemAccess`は追加しない。ユーザーがネイティブダイアログで選択したワークスペースへの通常のWin32アクセスを維持する。
 - Store artifactは未署名MSIXとしてCI artifactへ保存し、Partner CenterでのStore署名と配信に渡す。ローカルsideloadでは同じPublisher subjectを持つ一時的なテスト証明書で別途署名し、秘密鍵はリポジトリやCI artifactへ含めない。
+- MSIXには本体のMITライセンスを`LICENSE.txt`、移植したSIWCのMIT帰属表示を`SIWC-LICENSE.txt`として同梱する。layout検証とMSIX展開後の検証で両ファイルの存在を確認する。
 - MSI preview版とMSIX Store版は異なるinstaller identityとして技術上併存し得るため、自動移行や自動削除は行わない。正式移行時はMSI版を先にアンインストールする運用とし、アプリデータとCredential Managerの保持可否を実機更新検証で確定する。
 
 ## 採用理由
