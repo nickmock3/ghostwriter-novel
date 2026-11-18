@@ -88,7 +88,7 @@ export function createSiwcService(options: SiwcServiceOptions) {
   return {
     withRun,
     async status() {
-      const read = await store.read();
+      const read = await serial(store.read);
       if (!read.ok) return read;
       return success({ accounts: listAccounts(read.value, now()), busy: mutating || runs > 0 });
     },

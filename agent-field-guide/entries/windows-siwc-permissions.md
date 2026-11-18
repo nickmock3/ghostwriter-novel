@@ -18,6 +18,8 @@ POSIXのmodeやdirectory fsyncをWindows成功の証拠にしない。DirectoryS
 - 複数Bunプロセスから同じlockを使う検証と、保存後に別インスタンスから読む検証を行う。
 - 実ACLの外部process確認はモックより時間がかかる。高負荷の並行テストでは、その経路を繰り返すケースに限って待ち時間を調整する。
 
+保存形式の移行を最初の読取りに組み込むと、起動時に並行する設定の状態取得とモデル候補取得が同じprocess内でも保存lockを取り合う。状態取得もモデル候補が使う既存の資格情報transactionの直列化に通し、移行する側はprocess間lock内でファイルを読み直す。コンパイルしたWindows sidecarでも、合成した旧ファイルからの初回移行と別プロセス起動後の復号を確認できる。
+
 ## Failure signals
 
 chmodテストだけの成功、Windowsで認証テストがすべてskip、Get-AclのCouldNotAutoloadMatchingModule、更新後のdirectory fsync失敗、15秒timeout後に後処理が走ってENOTEMPTYになる場合。

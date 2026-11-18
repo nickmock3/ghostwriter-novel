@@ -69,7 +69,7 @@ Ghostwriterは無料配布のローカルデスクトップアプリで、利用
 ### 次の提出候補に必要な対応
 
 1. **公開情報をそろえる。** 公開中のプライバシーポリシーと公式サイトには旧Codex接続が記載されている。SIWCで扱うアカウント情報とOAuth資格情報の保護、利用者の操作に伴う入力・履歴・参照原稿のOpenAIへの送信、ログアウトとアクセス解除を明記する。日本語Store掲載案に残るプロプライエタリのライセンス条項を、配布するバイナリの実際のライセンスに合わせる。配布候補に対応するソースを公開し、MSIXには既存のSIWC帰属表示に加えて本体のMITライセンス文を同梱する。[公開プライバシーポリシー](https://ghostwriter.mock-kobo.com/privacy)・[公式サイト](https://ghostwriter.mock-kobo.com/)・[Store掲載案](../store-assets/ja-jp/microsoft-store-listing-ja-JP.md)・[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)
-2. **Windowsの保存保護を説明できる状態にする。** 現行のSIWCは、OAuthトークンと確認済みメールを本人限定ACLで保護したJSONに保存する。対象ファイル自体はアプリ側で暗号化していない。Microsoftの10.5.4への適合を示せるよう、Windowsのユーザー単位の暗号化などで保護し、既存の登録から移行できることを確認する。10.5.4への対応は公開準備上の判断で、Microsoftの個別審査結果ではない。[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)・[OpenAIの資格情報保護](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions#credential-security)
+2. **Windowsの保存保護を配布版で確認する。** 1.0.9.0の保存保護は本人限定ACL。後続の実装では、OAuthトークンと確認済みメールを含むファイル全体を現在のWindowsユーザーのDPAPIで暗号化し、既存登録を初回アクセス時に移行する。更新インストールでの実アカウント引き継ぎを公開前に確認する。10.5.4への対応は公開準備上の判断で、Microsoftの個別審査結果ではない。[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)・[OpenAIの資格情報保護](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions#credential-security)・[保存仕様](../specs/siwc-responses-migration.md)
 3. **利用中と上限到達時の案内を確認する。** 利用量の確認先は、左下のアイコンが開くChatGPTの利用状況ページでよい。公開前に確認するのは、送信に使うプランがモデル選択付近で分かることと、上限到達後の再送抑止・再開の動作。APIキーへの自動切替を防ぐ既存の動作を維持する。[OpenAIのUIガイド](https://developers.openai.com/siwc/ui-ux-guidelines#show-when-the-chatgpt-plan-is-in-use)・[上限時の復旧](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
 4. **通常起動の候補を作って再判定する。** Store版でSIWCを既定で使える構成にし、環境変数なしの通常起動と更新インストールで変更した境界を確認する。新しい未署名MSIXと掲載案を照合し、Partner Centerには対応プランが必要な機能の試験手順と、審査に必要なアクセス手段を用意する。提出・公開は再判定後に扱う。[Microsoft Store Policies 10.3](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#103-product-is-testable)
 
@@ -80,7 +80,7 @@ Windows x64配布候補を、SIWCが既定で有効な構成に更新した。�
 - `bun run test -- --maxWorkers=2 --testTimeout=60000` は1262件成功・既存2件スキップ。`bun run typecheck`、`bun run test:desktop`（Rust 14件、起動smoke、Vitest 80件）、バージョン整合確認が成功。
 - Windows build・MSIX生成・MSIXレイアウト検証・デスクトップruntime検証に成功。未署名候補 `Ghostwriter_1.0.9.0_x64.msix` のSHA-256は `F0E51F3E87D92254B53A0125BCA676C69F4B5BD8C9D935806280A770A526A5C5`。ローカル用コピーの `signtool verify /pa` は成功し、署名は `Valid`。
 - MSIXに同梱するsidecarを独立した一時データ領域で起動し、previewフラグなしで認証付きSIWC状態APIが200、モデル候補にChatGPTプランが含まれ、認証なしでは401であることを実HTTPで確認した。変更箇所は起動とサーバー設定に限るため、Playwrightは今回再実行していない。
-- 1.0.9.0の更新インストールと通常起動からの実アカウント確認は未実施。Storeへの提出は公開情報・資格情報保護・利用案内の対応と再判定を待つ。
+- 1.0.9.0の更新インストールと通常起動からの実アカウント確認は未実施。Storeへの提出は、公開情報・利用案内の対応、暗号化を含む後続候補の更新インストール検証と再判定を待つ。
 
 ## 記録の出所
 

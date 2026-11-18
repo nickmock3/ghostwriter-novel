@@ -91,11 +91,15 @@ OSS `9e498f8` / refresh実装 `8771a41` の認証・OIDC・登録・logout・ref
 
 保存はPOSIX owner-only（directory0700/file0600）、atomic renameとprocess間lockを使用。Windowsでは新規directoryの作成時から継承を切り、実行ユーザーSIDだけのFullControl（子へ継承）を設定する。読み書き時にdirectory/fileの所有者・許可先を検証し、既存の広いACL、保存先と祖先のreparse point、資格情報のhardlinkを拒否する。既存ACLは自動修復しない。一時fileのACLを秘密情報の書込み前に確認し、file flush→close→renameで置換する。Windowsではdirectory fsyncを行わず、置換失敗時に旧fileを先に削除するfallbackは使わない。lockが残った場合はbusyとなり、自動削除・token再送はしない。
 
-Windowsの保護はファイルアクセス制限であり暗号化ではない。同一ユーザー権限の別プロセスや管理者からの保護は保証しない。AI toolによる読取りは共通workspace境界でも拒否する。Windows PowerShell 5.1 / .NET FrameworkのDirectorySecurityを用い、固定スクリプトへpathをstdinのJSONデータとして渡す。helperの例外本文は公開せず、権限不適合はunsafe_storage、helper実行失敗はstorageへ分類する。
+WindowsではACLに加え、Windows DPAPIの`CurrentUser`で資格情報のJSON全体を暗号化する。保存ファイルは`format: "windows-dpapi-v1"`と`ciphertext`を持つ。保存データの復号は元のWindowsユーザーとそのDPAPI鍵を前提とする。同一ユーザー権限の別プロセスや管理者からの保護は保証しない。AI toolによる読取りは共通workspace境界でも拒否する。
+
+Windowsの旧形式の資格情報は、初回アクセス時にprocess間lock内で読み直し、登録ID、host ID、client登録、セッション、選択中のアカウントを引き継いで暗号化する。暗号化または置換に失敗した場合は旧ファイルを保持し、次回アクセス時に再試行する。平文のバックアップは作らない。破損した暗号化ファイルは読み書きとも`storage`として拒否する。旧版アプリで移行後のファイルを読むことはできない。
+
+Windows PowerShell 5.1 / .NET Frameworkの`DirectorySecurity`と`ProtectedData`を用い、固定スクリプトへパスと資格情報をそれぞれstdinのデータとして渡す。helperの例外本文は公開せず、権限不適合は`unsafe_storage`、helper実行失敗は`storage`へ分類する。
 
 Windowsの外部ブラウザ起動は固定PowerShellスクリプトへURLをstdinで渡し、ProcessStartInfo.FileNameとUseShellExecuteで既定のHTTPS関連付けを使う。URLをコマンド文字列へ連結しない。macOSのopen/Linuxのxdg-openも含め、auth.openai.comのHTTPS URL・userinfoなしだけを受け付ける。起動失敗はauthorization_failedとして返す。Windowsの実OAuth・配布版での確認結果は検証状況文書に記録済み。
 
-Windowsの資格情報チェックとブラウザ起動の補助PowerShellは、windowsHideに加えて`-WindowStyle Hidden`を指定する。状態確認のためにコンソールを利用者へ表示しない。非表示化のためにACL検証を省略しない。
+Windowsの資格情報チェック・暗号化とブラウザ起動の補助PowerShellは、windowsHideに加えて`-WindowStyle Hidden`を指定する。状態確認のためにコンソールを利用者へ表示しない。非表示化のためにACL検証を省略しない。
 
 Tauri WebViewからloopbackへの通信は`Sec-Fetch-Site: cross-site`でも、外側sidecarのBearerと許可Origin検証を通るnative originならSIWC APIで受け付ける。Webのcross-site拒否、不正Bearer・外部Originの拒否は維持する。
 
