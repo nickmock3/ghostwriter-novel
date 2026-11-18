@@ -71,7 +71,7 @@ Ghostwriterは無料配布のローカルデスクトップアプリで、利用
 1. **公開情報をそろえる。** 公開中のプライバシーポリシーと公式サイトには旧Codex接続が記載されている。SIWCで扱うアカウント情報とOAuth資格情報の保護、利用者の操作に伴う入力・履歴・参照原稿のOpenAIへの送信、ログアウトとアクセス解除を明記する。日本語Store掲載案に残るプロプライエタリのライセンス条項を、配布するバイナリの実際のライセンスに合わせる。配布候補に対応するソースを公開し、MSIXには既存のSIWC帰属表示に加えて本体のMITライセンス文を同梱する。[公開プライバシーポリシー](https://ghostwriter.mock-kobo.com/privacy)・[公式サイト](https://ghostwriter.mock-kobo.com/)・[Store掲載案](../store-assets/ja-jp/microsoft-store-listing-ja-JP.md)・[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)
 2. **Windowsの保存保護を配布版で確認する。** 1.0.10.0で、OAuthトークンと確認済みメールを含むファイル全体のDPAPI暗号化と、更新インストール時の実アカウント引き継ぎを確認した。[Microsoft Store Policies 10.5](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#105-personal-information)・[OpenAIの資格情報保護](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions#credential-security)・[保存仕様](../specs/siwc-responses-migration.md)
 3. **利用中と上限到達時の案内を確認する。** 利用量の確認先は左下のアイコンが開くChatGPTの利用状況ページ。1.0.10.0でChatGPTプランの表示を実機確認した。上限時の案内、自動再送とAPIキーへの自動切替の抑止、ChatGPTプランでの手動再開は合成応答で確認した。[OpenAIのUIガイド](https://developers.openai.com/siwc/ui-ux-guidelines#show-when-the-chatgpt-plan-is-in-use)・[上限時の復旧](https://developers.openai.com/siwc/token-sharing-open-source/errors-and-recovery)
-4. **通常起動の候補を作って再判定する。** Store版でSIWCを既定で使える構成にし、環境変数なしの通常起動と更新インストールで変更した境界を確認する。新しい未署名MSIXと掲載案を照合し、Partner Centerには対応プランが必要な機能の試験手順と、審査に必要なアクセス手段を用意する。提出・公開は再判定後に扱う。[Microsoft Store Policies 10.3](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#103-product-is-testable)
+4. **通常起動の候補を作って再判定する。** Store版でSIWCを既定で使える構成にし、環境変数なしの通常起動と更新インストールで変更した境界を確認する。新しい未署名MSIXと掲載案を照合し、Partner Centerにはサインインなしで確認できる執筆機能と、対応プランが必要な任意のAI機能の手順を記載する。提出・公開は再判定後に扱う。[Microsoft Store Policies 10.3](https://learn.microsoft.com/en-us/windows/apps/publish/store-policies#103-product-is-testable)
 
 ### 1.0.9.0の通常起動対応候補
 
@@ -87,7 +87,7 @@ Windows x64配布候補を、SIWCが既定で有効な構成に更新した。�
 **実機の上書き検証は完了。Store提出は保留。** この端末の1.0.8.0を署名済みの1.0.10.0で上書きした。同じパッケージIDの通常起動でプレビュー設定なしに資格情報がDPAPI形式に移行し、同じ登録の期限切れセッションが再ログインなしで更新された。検証用ワークスペースで既存のChatGPT会話への応答と、AIアシストの推敲案生成を確認した。
 
 - Store向けx64 MSIXのSHA-256は `A01AE6C2E80533A4C07670134144378442235401278102D201CB19CED91645A3`。未署名を確認し、展開して本体 `LICENSE.txt` と `SIWC-LICENSE.txt` がそれぞれ原本と同一であることを確認した。ローカル検証用コピーは `signtool verify /pa` に成功した。
-- 公式サイトのプライバシーポリシーは別リポジトリで管理されている。公開情報の対応と、審査者が認証・利用許可を完了できる試験アクセスの用意が残る。[審査メモ案](../store-assets/ja-jp/microsoft-store-certification-notes.md)・[Microsoftの審査メモ案内](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/manage-submission-options#notes-for-certification)
+- 公式サイトのプライバシーポリシーは別リポジトリで管理されている。公開情報を更新したら、審査メモにローカル編集と任意のChatGPT機能の手順を記載して提出する方針。MicrosoftからAI機能の追加検証について連絡があれば、その時点で対応方法を確認する。[審査メモ案](../store-assets/ja-jp/microsoft-store-certification-notes.md)・[Microsoftの審査メモ案内](https://learn.microsoft.com/en-us/windows/apps/publish/publish-your-app/msix/manage-submission-options#notes-for-certification)
 
 ## 記録の出所
 

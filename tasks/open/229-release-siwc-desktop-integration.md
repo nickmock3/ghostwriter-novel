@@ -83,7 +83,7 @@ MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostw
 - 署名済みコピーで1.0.8.0から同じパッケージIDのまま上書きし、環境変数なしで起動。暗号化後も登録ID、client ID、host IDが一致し、期限切れだったセッションが再ログインなしで更新された。以前の検証用ChatGPT会話で応答を受け、AIアシストの推敲案を生成できた。原稿への適用は行っていない。
 - `bun run test -- scripts/windows-msix.test.ts src/features/siwc/SiwcConnections.test.tsx src/features/siwc/siwcResponses.test.ts --maxWorkers=1` は37件成功。`bun run typecheck` と `bun run test:e2e -- e2e/siwc-settings.spec.ts e2e/siwc-workflow.spec.ts --workers=1 --trace=retain-on-failure`（Chromium 2件）も成功。利用上限は合成応答で確認した。実アカウントの利用上限を検証目的で使い切る操作は行っていない。
 - `bun run test -- --maxWorkers=1 --testTimeout=60000` は1267件成功、既存2件スキップ。`bun run test:desktop` はRust 14件、起動smoke、Vitest 80件が成功。
-- [審査メモ案](../../store-assets/ja-jp/microsoft-store-certification-notes.md)を用意した。公開情報の更新と試験用アクセスの用意が済むまで提出を保留する。[再判定とパッケージの記録](../../docs/siwc-validation-status.md#2026-11-19-windows-10100候補と提出の再判定)
+- [審査メモ案](../../store-assets/ja-jp/microsoft-store-certification-notes.md)を用意した。ローカル執筆はサインインなしで試験できるため、試験用ChatGPTアカウントの準備は提出前の条件から外す。任意のAI機能の前提と手順を審査メモに明記する。公開情報の更新は引き続き必要。[再判定とパッケージの記録](../../docs/siwc-validation-status.md#2026-11-19-windows-10100候補と提出の再判定)
 
 ### 検証済み項目と再検証の範囲
 
