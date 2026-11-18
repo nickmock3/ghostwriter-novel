@@ -33,11 +33,20 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await page.getByRole("link", { name: "チャットモード" }).click();
     await expect(page.getByLabel("会話の実行方式")).toHaveValue("chatgpt");
     await expect(page.getByLabel("ChatGPTモデル", { exact: true })).toHaveValue("test-model");
-    await expect(page.getByText("ChatGPTプラン利用中")).toBeVisible();
-    await expect(page.getByRole("link", { name: "利用状況を管理" })).toHaveAttribute("href", "https://chatgpt.com/settings/usage");
+    await expect(page.locator("form").getByRole("link", { name: "利用状況を管理" })).toHaveCount(0);
+    const chatUsageLink = page.getByRole("navigation", { name: "画面切り替え" })
+      .getByRole("link", { name: /ChatGPTプラン利用中.*利用状況を管理/ });
+    await expect(chatUsageLink).toBeVisible();
+    await expect(chatUsageLink).toHaveAttribute("href", "https://chatgpt.com/settings/usage");
     await page.getByPlaceholder("書きたいこと、相談したいことを入力").fill("draft.txtのbeforeをafterへ変更してください");
     await page.getByRole("button", { name: "送信", exact: true }).click();
     await expect(page.getByText("編集しました", { exact: true })).toBeVisible();
+    const fixedModel = page.getByLabel("ChatGPTモデル", { exact: true });
+    await expect(fixedModel).toBeDisabled();
+    await expect(fixedModel).toHaveAccessibleDescription("この会話ではモデルを変更できません。変更するには新規会話を開始してください。");
+    await expect(page.getByTitle(/この会話ではモデルを変更できません。/)).toBeVisible();
+    await expect(page.getByText("この会話ではモデルを変更できません。", { exact: false })).toHaveCount(0);
+    await page.screenshot({ path: testInfo.outputPath("siwc-chat.png"), fullPage: true });
     await expect.poll(() => readFile(join(root, "draft.txt"), "utf8")).toBe("after");
     await page.getByRole("button", { name: "Undo", exact: true }).click();
     await expect.poll(() => readFile(join(root, "draft.txt"), "utf8")).toBe("before");
@@ -63,6 +72,7 @@ test("SIWC UI through real HTTP, runAgentLoop, files and history (synthetic OAut
     await page.getByRole("link", { name: "チャットモード" }).click();
     await expect(page.getByText("履歴を引き継ぎました", { exact: true })).toBeVisible();
     await page.getByLabel("会話の実行方式").selectOption("vercel-ai");
+    await expect(chatUsageLink).toHaveCount(0);
     await expect(page.getByText("履歴を引き継ぎました", { exact: true })).toHaveCount(0);
     await page.reload();
     await expect(page.getByLabel("会話の実行方式")).toHaveValue("vercel-ai");

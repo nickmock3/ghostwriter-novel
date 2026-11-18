@@ -26,7 +26,7 @@ it("guides a new user to ChatGPT, refreshes after login and sends the selected b
   signedIn = true;
   fireEvent.click(screen.getByRole("button", { name: "モデルを再取得" }));
   await waitFor(() => expect(screen.getByLabelText("ChatGPTモデル")).toHaveValue("dynamic"));
-  expect(screen.getByText("ChatGPTプラン利用中")).toBeVisible();
+  expect(screen.queryByRole("link", { name: "利用状況を管理" })).not.toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "送信" }));
   await waitFor(() => expect(requests).toHaveLength(1));
   expect(requests[0]).toMatchObject({ modelSelection: { providerId: "openai-chatgpt", modelId: "dynamic" } });

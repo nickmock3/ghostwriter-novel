@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import {
+  FiBarChart2,
   FiBookOpen,
   FiCpu,
   FiEdit3,
@@ -14,6 +15,7 @@ import { APP_DISPLAY_VERSION } from "../shared/appVersion";
 import { useChatSession } from "./ChatSessionContext";
 import { writeStoredWorkMode } from "./workspaceSessionStorage";
 import { isWorkspaceRestorePending, type WorkspaceRestoreState } from "../features/workspace/useWorkspaceSession";
+import { chatGptUsageUrl } from "../features/siwc/ChatGptUsage";
 
 type AppShellProps = {
   onTemplateApplied: () => void;
@@ -28,10 +30,12 @@ export function AppShell({
   workspaceRestoreState,
   workspaceRoot,
 }: AppShellProps) {
-  const { notification } = useChatSession();
+  const { controller, notification } = useChatSession();
   const notificationLabel = notification === "failed" ? "チャットの応答に失敗しました" : "チャットの応答が完了しました";
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const showWorkspaceBar = pathname === "/editor" || pathname === "/chat";
+  const showChatGptUsage = pathname === "/chat" && workspaceRoot !== null &&
+    controller.connection.connection === "chatgpt" && !controller.connection.blocked;
 
   useEffect(() => {
     if (!workspaceRoot) {
@@ -112,6 +116,19 @@ export function AppShell({
           <FiCpu aria-hidden="true" focusable="false" />
           <span>LLMプロフィール管理</span>
         </Link>
+        {showChatGptUsage ? (
+          <a
+            className="app-sidebar-button app-sidebar-usage"
+            data-sidebar-placement="bottom"
+            aria-label="ChatGPTプラン利用中 · 利用状況を管理"
+            title="ChatGPTプラン利用中 · 利用状況を管理"
+            href={chatGptUsageUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FiBarChart2 aria-hidden="true" focusable="false" />
+          </a>
+        ) : null}
         <Link
           className="app-sidebar-button"
           aria-label="設定ページ"

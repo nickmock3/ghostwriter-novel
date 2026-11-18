@@ -62,6 +62,19 @@
   margin-top: auto;
 }
 
+.app-sidebar-usage + .app-sidebar-button[data-sidebar-placement="bottom"] {
+  margin-top: 0;
+}
+
+.app-sidebar-button.app-sidebar-usage svg {
+  box-sizing: border-box;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 3px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+}
+
 .app-sidebar-button svg {
   width: 1rem;
   height: 1rem;

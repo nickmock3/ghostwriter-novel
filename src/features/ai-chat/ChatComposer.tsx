@@ -318,7 +318,7 @@ export function ChatComposer({
             {connection?.connection === "codex" ? <option value="codex-app-server" disabled>旧Codex接続（廃止）</option> : null}
           </select>
         </label>
-        {connection?.connection === "chatgpt" ? <ChatGptModelControls state={connection} disabled={isLoading} fixed={connectionFixed} /> : connection?.connection === "codex" ? null : (
+        {connection?.connection === "chatgpt" ? <ChatGptModelControls state={connection} disabled={isLoading} fixed={connectionFixed} showPlanUsage={false} /> : connection?.connection === "codex" ? null : (
           <LlmModelSelector
             chatModelValue={chatModelValue}
             disabled={isModelSelectorDisabled}

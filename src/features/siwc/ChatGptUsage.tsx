@@ -1,7 +1,9 @@
 import { siwcExecutionMessage } from "./useAiConnection";
 
+export const chatGptUsageUrl = "https://chatgpt.com/settings/usage";
+
 export function ChatGptUsageLink() {
-  return <a href="https://chatgpt.com/settings/usage" target="_blank" rel="noopener noreferrer">利用状況を管理</a>;
+  return <a href={chatGptUsageUrl} target="_blank" rel="noopener noreferrer">利用状況を管理</a>;
 }
 
 export function ChatGptRecoveryLink({ code }: { code: string }) {
