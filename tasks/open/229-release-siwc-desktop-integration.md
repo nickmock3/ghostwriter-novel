@@ -85,6 +85,21 @@ MITライセンスの[公開リポジトリ](https://github.com/nickmock3/ghostw
 - `bun run test -- --maxWorkers=1 --testTimeout=60000` は1267件成功、既存2件スキップ。`bun run test:desktop` はRust 14件、起動smoke、Vitest 80件が成功。
 - [審査メモ案](../../store-assets/ja-jp/microsoft-store-certification-notes.md)を用意した。ローカル執筆はサインインなしで試験できるため、試験用ChatGPTアカウントの準備は提出前の条件から外す。任意のAI機能の前提と手順を審査メモに明記する。公開情報の更新は引き続き必要。[再判定とパッケージの記録](../../docs/siwc-validation-status.md#2026-11-19-windows-10100候補と提出の再判定)
 
+### 公式サイトのプライバシーポリシー改訂（別リポジトリ）
+
+公式サイトの別リポジトリで、[公開プライバシーポリシー](https://ghostwriter.mock-kobo.com/privacy)の `/privacy` を生成する原稿を更新する。対象は、ChatGPTへの直接サインインを利用できるWindows版1.0.10.0のデータの取扱い。以下の項番は改訂前の公開ページで確認したもの。
+
+| 現行ページの箇所 | 更新内容 |
+| --- | --- |
+| **3. AI機能を利用するときの外部送信** | 旧Codexの記載をChatGPTへの直接サインインに更新する。ChatGPTプランでチャットやAIアシストを実行すると、処理に必要な入力、会話履歴、参照する原稿・資料、編集指示などが端末からOpenAIへ直接送信される場合があると記載する。APIキー接続の場合は、利用者が選んだAI提供元が送信先。ローカルで原稿を開く・編集する・保存する操作はサインインなしで利用できる。 |
+| **4. AIサービスとCodexの取扱い** | 見出しと本文を「ChatGPTおよびAIサービスの取扱い」に更新する。OpenAIや各AI提供元に送った情報の利用・保持等は、該当するサービスの規約とプライバシーポリシーを案内する。モック工房によるAI通信の中継や作品データを集約するクラウドを提供していない旨は維持する。 [OpenAIのプライバシーポリシー](https://openai.com/ja-JP/policies/privacy-policy/) |
+| **5. APIキーの取扱い** | 既存のAPIキーの説明に、ChatGPTサインインの取扱いを追記する。認証はOpenAIのサイトで行い、Ghostwriterはアカウント識別子、提供される場合は確認済みメールアドレス、OAuthトークンを端末に保存する。利用目的は接続・アカウント表示、セッションの維持、AI機能への認証。Windows 1.0.10.0では現在のWindowsユーザーのDPAPIで資格情報ファイルを暗号化し、同ユーザーにアクセスを制限する。 [Ghostwriterの保存仕様](../../specs/siwc-responses-migration.md#認証基盤の実装) |
+| **8. 利用者による削除と管理** | Ghostwriterの設定にある「ログアウト」を案内する。ログアウト時に端末のトークンを削除し、OpenAI側のセッション失効を試みる。再サインイン用の登録情報、端末の原稿・会話履歴は残る。失効を確認できない場合などは、ChatGPT側の設定からGhostwriterとの連携を解除できる旨を記載する。 [OpenAIの連携解除案内](https://developers.openai.com/siwc/token-sharing-open-source/profiles-and-sessions#end-the-renewable-session) |
+| **冒頭の「制定日・最終更新日」と10. ポリシーの改定** | 制定日を維持し、最終更新日を実際の改訂公開日に更新する。 |
+
+- [ ] 別リポジトリで改訂を公開し、同じ `/privacy` のURLを未ログインのブラウザーで開いて、改訂内容・最終更新日・提供元リンクを確認する。
+- [ ] Partner CenterのプライバシーポリシーURLがこの公開ページを指していることを確認する。別リポジトリでの変更コミットまたはPRをタスク229に記録する。 [Microsoft Storeポリシー 10.5](https://learn.microsoft.com/ja-jp/windows/apps/publish/store-policies#105-個人情報)
+
 ### 検証済み項目と再検証の範囲
 
 単一接続の安全性確認は完了済み。アカウント追加・切替UIの削除は認証API、refresh、保存・編集処理を変更しておらず、それらの実接続確認を最初から繰り返す必要はない。
